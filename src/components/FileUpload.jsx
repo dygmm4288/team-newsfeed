@@ -28,7 +28,7 @@ function FileUpload({setImgUrl,userId}) {
 
   return (
     <StImageInputContainer>
-      <input type="file" onChange={handleFileSelect}/>
+      <StImageInput type="file" onChange={handleFileSelect}/>
       <StButton onClick={handleUpload}>변경사항 저장</StButton>
     </StImageInputContainer>
   )
@@ -44,6 +44,10 @@ const StImageInputContainer = styled.div`
   gap: 10px;
 `;
 
-const StButton = styled.button`
+const StImageInput = styled.input`
+  cursor: pointer;
+`;
 
+const StButton = styled.button`
+  cursor: pointer;
 `;
