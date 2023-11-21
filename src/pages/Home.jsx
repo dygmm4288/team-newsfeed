@@ -28,7 +28,7 @@ const StContainer = styled.div`
   flex-direction: column;
   align-items: center;
   border: 2px solid black;
-  width: 1200px;
+  width: 960px;
 `;
 
 const StCategoryAndMain = styled.div`
