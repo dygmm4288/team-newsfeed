@@ -1,17 +1,14 @@
-import React from 'react'
+import React from 'react';
 import styled from 'styled-components';
 
 function MyPage() {
   return (
     <OuterFrame>
       {/* Layout(Header) */}
-      <div> 
-      </div>
+      <div></div>
       <MyInformationBox>
         <ProfilePicture />
-        <MyId>
-          아이디 : 
-        </MyId>
+        <MyId>아이디 :</MyId>
         <ButtonBox>
           <Button>홈으로 가기</Button>
           <Button>프로필 사진 수정</Button>
@@ -23,22 +20,29 @@ function MyPage() {
           <MyPost>포스트 1</MyPost>
           <MyPost>포스트 2</MyPost>
           <MyPost>포스트 s3</MyPost>
+          <MyPost>포스트 s3</MyPost>
+          <MyPost>포스트 s3</MyPost>
+          <MyPost>포스트 s3</MyPost>
+          <MyPost>포스트 s3</MyPost>
+          <MyPost>포스트 s3</MyPost>
+          <MyPost>포스트 s3</MyPost>
+          <MyPost>포스트 s3</MyPost>
+          <MyPost>포스트 s3</MyPost>
         </MyPostList>
       </MyPostBox>
     </OuterFrame>
-  )
+  );
 }
 
-export default MyPage
+export default MyPage;
 
-const  OuterFrame = styled.div`
- border: 1px solid red;
- display: flex;
- flex-direction: column;
- justify-content: space-between;
- align-items: center;
- gap: 50px;
- min-height: 100vh;
+const OuterFrame = styled.div`
+  border: 1px solid red;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 50px;
+  min-height: 100vh;
 `;
 
 const MyInformationBox = styled.div`
@@ -58,7 +62,7 @@ const ProfilePicture = styled.img`
   background-color: red;
 `;
 
-const  MyId = styled.div`
+const MyId = styled.div`
   border: 1px solid black;
   display: flex;
   flex-direction: row;
@@ -78,18 +82,14 @@ const ButtonBox = styled.div`
   height: 150px;
 `;
 
-const Button = styled.button`
-
-`;
+const Button = styled.button``;
 
 const MyPostBox = styled.div`
   border: 1px solid black;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   width: 800px;
-  height: 500px;
 `;
 
 const MyPostList = styled.div`
@@ -103,7 +103,7 @@ const MyPostList = styled.div`
   width: 750px;
   height: 450px;
   padding: 10px;
-  /* overflow-y: scroll; */
+  overflow-y: scroll;
 `;
 
 const MyPost = styled.div`
@@ -111,6 +111,5 @@ const MyPost = styled.div`
   display: flex;
   flex-basis: 350px;
   width: 700px;
-  /* height: 350px; */
+  min-height: 350px; // min-height  주면 최소 크기 보장
 `;
-
