@@ -104,7 +104,6 @@ const MyPostList = styled.div`
   height: 450px;
   padding: 10px;
   overflow-y: scroll;
-
 `;
 
 const MyPost = styled.div`
