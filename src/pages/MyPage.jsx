@@ -3,75 +3,80 @@ import styled from 'styled-components';
 
 function MyPage() {
   return (
-    <OuterFrame>
-      {/* Layout(Header) */}
-      <div></div>
-      <MyInformationBox>
-        <ProfilePicture />
-        <MyId>아이디 :</MyId>
-        <ButtonBox>
-          <Button>홈으로 가기</Button>
-          <Button>프로필 사진 수정</Button>
-        </ButtonBox>
-      </MyInformationBox>
-      <MyPostBox>
-        <h3>내가 쓴 글</h3>
-        <MyPostList>
-          <MyPost>포스트 1</MyPost>
-          <MyPost>포스트 2</MyPost>
-          <MyPost>포스트 s3</MyPost>
-          <MyPost>포스트 s3</MyPost>
-          <MyPost>포스트 s3</MyPost>
-          <MyPost>포스트 s3</MyPost>
-          <MyPost>포스트 s3</MyPost>
-          <MyPost>포스트 s3</MyPost>
-          <MyPost>포스트 s3</MyPost>
-          <MyPost>포스트 s3</MyPost>
-          <MyPost>포스트 s3</MyPost>
-        </MyPostList>
-      </MyPostBox>
-    </OuterFrame>
+    <StOuterFrame>
+      <StMainContainer>
+        {/* Layout(Header) */}
+        <div></div>
+        <StMyInformationContainer>
+          <StProfilePicture />
+          <StMyId>아이디 : </StMyId>
+          <StButtonContainer>
+            <StButton>홈으로 가기</StButton>
+            <StButton>프로필 사진 수정</StButton>
+          </StButtonContainer>
+        </StMyInformationContainer>
+        <StMyPostContainer>
+          <h3>내가 쓴 글</h3>
+          <StMyPostList>
+            <StMyPost>포스트 1</StMyPost>
+            <StMyPost>포스트 2</StMyPost>
+            <StMyPost>포스트 3</StMyPost>
+            <StMyPost>포스트 4</StMyPost>
+          </StMyPostList>
+        </StMyPostContainer>
+      </StMainContainer>
+    </StOuterFrame>
   );
 }
 
 export default MyPage;
 
-const OuterFrame = styled.div`
+const StOuterFrame = styled.div`
+  border: 1px solid red;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+`;
+
+const StMainContainer = styled.div`
   border: 1px solid red;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 50px;
   min-height: 100vh;
+  width: 960px;
 `;
 
-const MyInformationBox = styled.div`
+const StMyInformationContainer = styled.div`
   border: 1px solid black;
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+  gap: 80px;
   height: 200px;
   width: 800px;
 `;
 
-const ProfilePicture = styled.img`
-  width: 50px;
-  height: 50px;
+const StProfilePicture = styled.img`
+  width: 150px;
+  height: 150px;
   background-color: red;
 `;
 
-const MyId = styled.div`
+const StMyId = styled.div`
   border: 1px solid black;
   display: flex;
   flex-direction: row;
   align-items: center;
   width: 250px;
   height: 50px;
+  padding: 10px;
 `;
 
-const ButtonBox = styled.div`
+const StButtonContainer = styled.div`
   border: 1px solid black;
   display: flex;
   flex-direction: column;
@@ -82,17 +87,17 @@ const ButtonBox = styled.div`
   height: 150px;
 `;
 
-const Button = styled.button``;
+const StButton = styled.button``;
 
-const MyPostBox = styled.div`
-  border: 1px solid black;
+const StMyPostContainer = styled.div`
+  border: 1px solid blue;
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 800px;
 `;
 
-const MyPostList = styled.div`
+const StMyPostList = styled.div`
   border: 1px solid red;
   flex-wrap: nowrap;
   display: flex;
@@ -102,14 +107,14 @@ const MyPostList = styled.div`
   gap: 20px;
   width: 750px;
   height: 450px;
-  padding: 10px;
   overflow-y: scroll;
+  margin: 15px;
 `;
 
-const MyPost = styled.div`
+const StMyPost = styled.div`
   border: 1px solid black;
   display: flex;
   flex-basis: 350px;
   width: 700px;
-  min-height: 350px; // min-height  주면 최소 크기 보장
+  min-height: 150px; // min-height  주면 최소 크기 보장
 `;
