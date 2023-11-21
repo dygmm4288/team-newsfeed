@@ -1,16 +1,11 @@
 import { BrowserRouter } from 'react-router-dom';
+import GlobalStyle from './GlobalStyle';
 import Router from './Router';
 
-import { useEffect } from 'react';
-import { app } from './firebase/firebase.config';
-
 function App() {
-  useEffect(() => {
-    console.log(app);
-  }, []);
-
   return (
     <BrowserRouter>
+      <GlobalStyle />
       <Router />
     </BrowserRouter>
   );
