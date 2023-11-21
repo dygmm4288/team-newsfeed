@@ -3,6 +3,7 @@ import GlobalStyle from './GlobalStyle';
 import Router from './Router';
 
 function App() {
+  console.log(app);
   return (
     <BrowserRouter>
       <GlobalStyle />
