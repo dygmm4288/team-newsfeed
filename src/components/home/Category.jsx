@@ -20,6 +20,19 @@ function Category() {
 export default Category;
 
 const StContainer = styled.div`
+  display: flex;
+  justify-content: center;
   width: 25%;
   border: 2px solid black;
+
+  ul {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100px;
+    border: 2px solid blue;
+
+    li {
+    }
+  }
 `;
