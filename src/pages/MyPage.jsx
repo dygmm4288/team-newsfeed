@@ -1,18 +1,34 @@
-import React from 'react';
+import React, { useEffect,useState } from 'react';
 import styled from 'styled-components';
+import FileUpload from '../components/FileUpload';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import {storage} from '../firebase/firebase.config';
 
+// import { onAuthStateChanged } from "firebase/firebase.config.js";
+// import { auth } from "firebase/firebase.config.js";
+const userId = 'hamin';
 function MyPage() {
+
+  const [imgUrl,setImgUrl] = useState('');
+
+
+  useEffect(async () => {
+    const imgRef = ref(storage,`profile/${userId}`);
+    const downloadURL = await getDownloadURL(imgRef);
+    setImgUrl(downloadURL)
+  },[]);
+
   return (
     <StOuterFrame>
       <StMainContainer>
         {/* Layout(Header) */}
         <div></div>
         <StMyInformationContainer>
-          <StProfilePicture />
+          <StProfilePicture src={imgUrl}/>
           <StMyId>아이디 : </StMyId>
           <StButtonContainer>
             <StButton>홈으로 가기</StButton>
-            <StButton>프로필 사진 수정</StButton>
+            <FileUpload setImgUrl={setImgUrl} imgUrl={imgUrl} userId={userId}/>
           </StButtonContainer>
         </StMyInformationContainer>
         <StMyPostContainer>
