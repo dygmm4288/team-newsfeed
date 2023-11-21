@@ -116,5 +116,5 @@ const StMyPost = styled.div`
   display: flex;
   flex-basis: 350px;
   width: 700px;
-  min-height: 150px; // min-height  주면 최소 크기 보장
+  min-height: 150px;
 `;
