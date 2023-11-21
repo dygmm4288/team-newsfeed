@@ -22,7 +22,7 @@ function MyPage() {
         <MyPostList>
           <MyPost>포스트 1</MyPost>
           <MyPost>포스트 2</MyPost>
-          <MyPost>포스트 3</MyPost>
+          <MyPost>포스트 s3</MyPost>
         </MyPostList>
       </MyPostBox>
     </OuterFrame>
