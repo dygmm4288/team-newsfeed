@@ -4,8 +4,6 @@ import FileUpload from '../components/FileUpload';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import {storage} from '../firebase/firebase.config';
 
-// import { onAuthStateChanged } from "firebase/firebase.config.js";
-// import { auth } from "firebase/firebase.config.js";
 const userId = 'hamin';
 function MyPage() {
 
@@ -25,14 +23,14 @@ function MyPage() {
         <div></div>
         <StMyInformationContainer>
           <StProfilePicture src={imgUrl}/>
-          <StMyId>아이디 : </StMyId>
+          <StMyInformation>안녕하세요, {userId}님!<br /> E-mail: <br />Username : </StMyInformation>
           <StButtonContainer>
             <StButton>홈으로 가기</StButton>
             <FileUpload setImgUrl={setImgUrl} imgUrl={imgUrl} userId={userId}/>
           </StButtonContainer>
         </StMyInformationContainer>
         <StMyPostContainer>
-          <h3>내가 쓴 글</h3>
+          <StMyPostTitle>My Post</StMyPostTitle>
           <StMyPostList>
             <StMyPost>포스트 1</StMyPost>
             <StMyPost>포스트 2</StMyPost>
@@ -79,16 +77,19 @@ const StMyInformationContainer = styled.div`
 const StProfilePicture = styled.img`
   width: 150px;
   height: 150px;
-  background-color: red;
+  object-fit: cover;
+  border-radius: 50%;
+  background-color: #d9d9d9;
 `;
 
-const StMyId = styled.div`
+const StMyInformation = styled.div`
   border: 1px solid black;
   display: flex;
   flex-direction: row;
   align-items: center;
+  line-height: 2.0;
   width: 250px;
-  height: 50px;
+  height: 65%;
   padding: 10px;
 `;
 
@@ -103,7 +104,9 @@ const StButtonContainer = styled.div`
   height: 150px;
 `;
 
-const StButton = styled.button``;
+const StButton = styled.button`
+  width: 80%;
+`;
 
 const StMyPostContainer = styled.div`
   border: 1px solid blue;
@@ -111,6 +114,13 @@ const StMyPostContainer = styled.div`
   flex-direction: column;
   align-items: center;
   width: 800px;
+`;
+
+const StMyPostTitle = styled.h3`
+  align-self: flex-start;
+  margin: 10px 10px 0 30px;
+  font-size: 1.3rem;
+  font-weight: 700;
 `;
 
 const StMyPostList = styled.div`

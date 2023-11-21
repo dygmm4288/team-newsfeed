@@ -1,5 +1,6 @@
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import React, { useState } from 'react';
+import styled from 'styled-components';
 import { storage } from '../firebase/firebase.config';
 
 function FileUpload({setImgUrl,userId}) {
@@ -11,7 +12,13 @@ function FileUpload({setImgUrl,userId}) {
 
   const handleUpload = async () => {
     const imageRef = ref(storage, `profile/${userId}`);
-    await uploadBytes(imageRef, selectedFile);
+    if(window.confirm("프로필 사진을 변경하시겠습니까?")){
+      await uploadBytes(imageRef, selectedFile);
+      alert("변경사항이 저장되었습니다.");
+      setSelectedFile(""); // input 필드 초기화 안됨
+    } else {
+      return
+    }
     
     // image file URL save
     const downloadURL = await getDownloadURL(imageRef);
@@ -20,11 +27,23 @@ function FileUpload({setImgUrl,userId}) {
   };
 
   return (
-    <div>
+    <StImageInputContainer>
       <input type="file" onChange={handleFileSelect}/>
-      <button onClick={handleUpload}>변경사항 저장</button>
-    </div>
+      <StButton onClick={handleUpload}>변경사항 저장</StButton>
+    </StImageInputContainer>
   )
 }
 
 export default FileUpload;
+
+const StImageInputContainer = styled.div`
+  border: 1px solid red;
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  gap: 10px;
+`;
+
+const StButton = styled.button`
+
+`;
