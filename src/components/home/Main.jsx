@@ -1,35 +1,80 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import ProfilePicture from '../../assets/Layout/Test-ProfilePicture.png';
+import Post from './Post';
+import { addDoc, collection, getDocs, query } from 'firebase/firestore';
+import { db } from '../../firebase/firebase.config';
 
 function Main() {
+  const [content, setContent] = useState('');
+  const [posts, setPosts] = useState([]);
+
+  // const hanbleSetPost = (event) => {
+  //   event.preventDefault();
+  //   const newPost = {
+  //     userId: 'test',
+  //     content: content
+  //   };
+  //   if (content <= 0) {
+  //     alert('내용을 입력해 주세요💌');
+  //   } else {
+  //     setPosts([newPost, ...posts]);
+  //     setContent('');
+  //   }
+  // };
+
+  // data get (가져오기)
+  useEffect(() => {
+    const fetchData = async () => {
+      const querySnapshot = await getDocs(collection(db, 'posts'));
+      querySnapshot.forEach((doc) => {
+        console.log(doc.data());
+      });
+    };
+    fetchData();
+  }, []);
+
+  //
+  const hanbleAddPost = async (event) => {
+    event.preventDefault();
+    const newPost = {
+      userId: 'test',
+      content: content
+    };
+    if (content <= 0) {
+      alert('내용을 입력해 주세요💌');
+    } else {
+      setPosts(() => {
+        return [newPost, ...posts];
+      });
+      setContent('');
+      // Firestore에서 'posts' 컬렉션에 대한 참조 생성하기
+      const collectionRef = collection(db, 'posts');
+      // 'posts' 컬렉션에 newPost 문서를 추가합니다.
+      await addDoc(collectionRef, newPost);
+    }
+  };
+
+  // useEffect(() => {
+  //   console.log(posts);
+  // }, [posts]);
+
   return (
     <StContainer>
-      <div>
-        <input placeholder="어떤 이야기를 나누고 싶나요?" />
-      </div>
+      <form onSubmit={(event) => hanbleAddPost(event)}>
+        <input
+          type="text"
+          value={content}
+          onChange={(event) => {
+            setContent(event.target.value);
+          }}
+          placeholder="어떤 이야기를 나누고 싶나요?"
+        />
+        <button type="submit">추가</button>
+      </form>
       <StPostBox>
-        <StPost>
-          <StPostTop>
-            <img src={ProfilePicture} alt="ProfilePicture" />
-            <p>아이디</p>
-          </StPostTop>
-          <StPostBottom>
-            <button>···</button>
-            <p>내용</p>
-          </StPostBottom>
-        </StPost>
-
-        <StPost>
-          <StPostTop>
-            <img src={ProfilePicture} alt="ProfilePicture" />
-            <p>아이디</p>
-          </StPostTop>
-          <StPostBottom>
-            <button>···</button>
-            <p>내용 test</p>
-          </StPostBottom>
-        </StPost>
+        <Post />
+        <Post />
+        <Post />
       </StPostBox>
     </StContainer>
   );
@@ -50,42 +95,4 @@ const StPostBox = styled.ul`
   flex-direction: column;
   align-items: center;
   gap: 20px;
-`;
-
-const StPost = styled.li`
-  width: 350px;
-  min-height: 250px;
-  border: 2px solid black;
-`;
-
-const StPostTop = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  height: 20%;
-  padding: 0 10px;
-
-  img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-  }
-`;
-
-const StPostBottom = styled.div`
-  position: relative;
-  height: 80%;
-  padding: 15px;
-  border: 2px solid blue;
-  border-radius: 20px;
-
-  button {
-    position: absolute;
-    right: 4%;
-  }
-
-  p {
-    height: 100%;
-    padding-bottom: 20px;
-  }
 `;
