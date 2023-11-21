@@ -99,7 +99,6 @@ const StButtonContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 30px;
   width: 150px;
   height: 150px;
 `;
@@ -107,6 +106,7 @@ const StButtonContainer = styled.div`
 const StButton = styled.button`
   width: 80%;
   cursor: pointer;
+  margin: 10px 0 10px 0;
 `;
 
 const StMyPostContainer = styled.div`
