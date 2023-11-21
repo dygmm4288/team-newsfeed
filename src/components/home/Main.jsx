@@ -27,7 +27,7 @@ function Main() {
           </StPostTop>
           <StPostBottom>
             <button>···</button>
-            <p>내용</p>
+            <p>내용 test</p>
           </StPostBottom>
         </StPost>
       </StPostBox>
