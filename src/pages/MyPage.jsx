@@ -1,4 +1,5 @@
 import React, { useEffect,useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import FileUpload from '../components/FileUpload';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
@@ -6,9 +7,8 @@ import {storage} from '../firebase/firebase.config';
 
 const userId = 'hamin';
 function MyPage() {
-
+  const navigate = useNavigate();
   const [imgUrl,setImgUrl] = useState('');
-
 
   useEffect(async () => {
     const imgRef = ref(storage,`profile/${userId}`);
@@ -25,7 +25,7 @@ function MyPage() {
           <StProfilePicture src={imgUrl}/>
           <StMyInformation>안녕하세요, {userId}님!<br /> E-mail: <br />Username : </StMyInformation>
           <StButtonContainer>
-            <StButton>홈으로 가기</StButton>
+            <StButton onClick={()=>{navigate(-1)}}>홈으로 가기</StButton>
             <FileUpload setImgUrl={setImgUrl} imgUrl={imgUrl} userId={userId}/>
           </StButtonContainer>
         </StMyInformationContainer>
@@ -106,6 +106,7 @@ const StButtonContainer = styled.div`
 
 const StButton = styled.button`
   width: 80%;
+  cursor: pointer;
 `;
 
 const StMyPostContainer = styled.div`
