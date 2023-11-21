@@ -20,9 +20,9 @@ function MyPage() {
       <MyPostBox>
         <h3>내가 쓴 글</h3>
         <MyPostList>
-          <MyPost>
-            포스트 1
-          </MyPost>
+          <MyPost>포스트 1</MyPost>
+          <MyPost>포스트 2</MyPost>
+          <MyPost>포스트 3</MyPost>
         </MyPostList>
       </MyPostBox>
     </OuterFrame>
@@ -38,6 +38,7 @@ const  OuterFrame = styled.div`
  justify-content: space-between;
  align-items: center;
  gap: 50px;
+ min-height: 100vh;
 `;
 
 const MyInformationBox = styled.div`
@@ -88,13 +89,28 @@ const MyPostBox = styled.div`
   align-items: center;
   justify-content: center;
   width: 800px;
+  height: 500px;
 `;
 
 const MyPostList = styled.div`
-  border: 1px solid black;
+  border: 1px solid red;
+  flex-wrap: nowrap;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 20px;
+  width: 750px;
+  height: 450px;
+  padding: 10px;
+  /* overflow-y: scroll; */
 `;
 
 const MyPost = styled.div`
   border: 1px solid black;
+  display: flex;
+  flex-basis: 350px;
+  width: 700px;
+  /* height: 350px; */
 `;
 
