@@ -24,6 +24,7 @@ export const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null);
 
   const signInWithEmail = (email, password) => {
+    setError(null);
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredentialImpl) => {
         setUser(userCredentialImpl.user);
@@ -31,16 +32,16 @@ export const AuthProvider = ({ children }) => {
       .catch((err) => setError(err));
   };
   const signOutUser = () => {
+    setError(null);
     signOut(auth);
   };
 
   const setUserNickname = (nickname) => {
-    updateProfileBy({ displayName: nickname });
+    return updateProfileBy({ displayName: nickname });
   };
   const setUserProfileImgUrl = (profileImgUrl) => {
-    updateProfile({ photoURL: profileImgUrl });
+    return updateProfileBy({ photoURL: profileImgUrl });
   };
-
   useEffect(() => {
     onAuthStateChanged(auth, (authUser) => {
       if (authUser) {
@@ -74,16 +75,24 @@ export const AuthProvider = ({ children }) => {
 export const useAuth = () => useContext(AuthContext);
 
 const updateProfileBy = (updatedValue) => {
-  if (!auth.currentUser) return;
+  if (!auth.currentUser)
+    return new Promise((_, rej) => {
+      rej(new Error('Not valid auth current user'));
+    });
   updateProfile(auth.currentUser, updatedValue)
     .then(() => {
-      console.log('update success');
+      console.log(
+        '[updateProfile] : Update Profile Success, update value is : ',
+        updatedValue
+      );
     })
     .catch((err) => {
-      console.error('update failed');
-      console.error(err);
+      console.error(
+        '[Error updateProfile] : Update Profile Fail, err is : ',
+        err
+      );
     })
     .finally(() => {
-      console.log('update logic progressed');
+      console.log('[updateProfile] : update Profile processed');
     });
 };
