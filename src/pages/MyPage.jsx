@@ -1,23 +1,35 @@
 import React, { useEffect,useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import FileUpload from '../components/FileUpload';
+// import FileUpload from '../components/FileUpload';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import {storage} from '../firebase/firebase.config';
 import Header from '../components/Layout/Header';
-import SettingButton from '../components/SettingButton';
+// import SettingButton from '../components/SettingButton';
+import { useAuth } from '../contexts/auth.context';
 
-const userId = 'hamin';
+const userNickname = 'hamin';
+
 function MyPage() {
   const navigate = useNavigate();
   const [imgUrl,setImgUrl] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedFileIsFilled, setSelectedFileIsFilled] = useState(false);
+  const [editedNickname, setEditedNickname] = useState(userNickname); // 초기값: user 정보에서 nickname 가져와야함
+  const {userInfo, signInWithEmail} = useAuth();
+
+
+  const handleFileSelect = (event) => {
+    const selectFile = event.target.files[0];
+    setSelectedFile(selectFile);
+    setSelectedFileIsFilled(true);
+  }
+
 
   useEffect(() => {
     const fetchProfileImage = async () => {
-      const imgRef = ref(storage,`profile/${userId}`);
+      const imgRef = ref(storage,`profile/${userNickname}`);
       const downloadURL = await getDownloadURL(imgRef);
       setImgUrl(downloadURL);
     }
@@ -26,8 +38,52 @@ function MyPage() {
 
   useEffect(() => {
     setSelectedFile(null);
-    // setIsEditing(false);
   },[selectedFileIsFilled]);
+
+  const saveUpdatedProfile = async (e) => {
+    const imageRef = ref(storage, `profile/${userNickname}`);
+
+    e.preventDefault();
+    // validation check
+    // 글자수 검사: 닉네임 10자
+    //여기에 selectFile를 어떻게 넣지?
+    if (editedNickname === 0){
+      alert("닉네임을 입력해주세요.");
+      return;
+    } else if (editedNickname > 10){
+      alert("닉네임을 10자 이내로 입력해주세요.");
+      return;
+    } else if (/^\s*$/.test(editedNickname)){
+      alert("공백만 입력하셨습니다. 다시 입력해주세요.");
+    } else {
+      if(window.confirm("변경사항을 저장하시겠습니까?")){
+        await uploadBytes(imageRef, selectedFile);
+        setSelectedFileIsFilled(true);
+        setEditedNickname(editedNickname);
+        alert("변경사항이 저장되었습니다.");
+        setSelectedFileIsFilled(false);
+        setIsEditing(false);
+      } else {
+        return
+      }
+    }
+    
+
+
+    
+    // image file URL save 
+    const downloadURL = await getDownloadURL(imageRef);
+    console.log("downloadURL", downloadURL);
+    setImgUrl(downloadURL);
+  };
+
+  const typeEditedNickname = (event) => {
+    setEditedNickname(event.target.value);
+  }
+
+  const goEditMode = () => {
+    setIsEditing(true);
+  }
 
   return (
     <StOuterFrame>
@@ -35,34 +91,28 @@ function MyPage() {
         <Header />
           <StMyInformationContainer>
             <StProfilePicture src={imgUrl}/>
-            {isEditing === false ?
-              <StMyInformation>
+            <StMyInformation>
                 <StMyInformationDetailsContainer>
-                  <StHiMyNickname>안녕하세요, {userId}님!</StHiMyNickname>
-                  E-mail: <StMyEmail></StMyEmail>
-                  닉네임: <StMyNickName></StMyNickName>
+                  <StHiMyNickname>안녕하세요, {userNickname}님!</StHiMyNickname>
+                  <StMyEmail>E-mail: {userInfo?.email}</StMyEmail>
+                  {/* 닉네임: <StMyNickName>니크네임</StMyNickName> */}
+                  {!isEditing && <>닉네임: <StMyNickName>{editedNickname}</StMyNickName></>}
+                  {isEditing && <form onSumit={saveUpdatedProfile}>
+                    닉네임: <input onChange={typeEditedNickname} value={editedNickname}/>
+                    <StImageInputAfterContainer>
+                      <StImageInput type="file" onChange={handleFileSelect}/>
+                    </StImageInputAfterContainer> 
+                    
+                  </form>}
                 </StMyInformationDetailsContainer>
                 <StButtonContainer>
-                  {/* <StButton onClick={()=>{navigate(-1)}}>홈으로 가기</StButton> */}
-                  {/* <FileUpload setImgUrl={setImgUrl} imgUrl={imgUrl} userId={userId}/> */}
+                  {!isEditing && (<StProfileEditButton onClick={goEditMode}>프로필 수정하기</StProfileEditButton>)}
+                  {isEditing && (<StButtonSmallContainer>
+                  <StButton onClick={()=>setIsEditing(false)}>취소하기</StButton>
+                  <StButton onClick={saveUpdatedProfile}>변경사항 저장</StButton>
+                </StButtonSmallContainer>)}
                 </StButtonContainer>
-              </StMyInformation>
-              :
-              <StMyInformation>
-              <StMyInformationDetailsContainer>
-                <StHiMyNickname>안녕하세요, {userId}님!</StHiMyNickname>
-                E-mail: <StMyEmail></StMyEmail>
-                닉네임: <StMyNickName></StMyNickName>
-                프로필 사진: <FileUpload setImgUrl={setImgUrl} imgUrl={imgUrl} userId={userId} isEditing={isEditing} setIsEditing={setIsEditing}/>
-              </StMyInformationDetailsContainer>
-              <StButtonContainer>
-                <SettingButton setImgUrl={setImgUrl} userId={userId} isEditing={isEditing} setIsEditing={setIsEditing} selectedFile={selectedFile} setSelectedFile={setSelectedFile} selectedFileIsFilled={selectedFileIsFilled} setSelectedFileIsFilled={setSelectedFileIsFilled}/>
-                {/* <StButton onClick={()=>{navigate(-1)}}>홈으로 가기</StButton> */}
-                {/* <FileUpload setImgUrl={setImgUrl} imgUrl={imgUrl} userId={userId}/> */}
-              </StButtonContainer>
             </StMyInformation>
-            }
-
           </StMyInformationContainer>
         <StMyPostContainer>
           <StMyPostTitle>My Post</StMyPostTitle>
@@ -127,6 +177,15 @@ const StMyEmail = styled.p`
 
 const StMyNickName = styled.p`
    color: green;
+`;
+
+const StButtonSmallContainer = styled.div`
+  border: 1px solid red;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 80%;
+  gap: 10px;
 `;
 
 const StProfilePicture = styled.img`
@@ -199,3 +258,25 @@ const StMyPost = styled.div`
   width: 700px;
   min-height: 150px;
 `;
+
+const StImageInputAfterContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  gap: 10px;
+  border: 5px solid pink;
+`;
+
+const StImageInput = styled.input`
+  cursor: pointer;
+  width: 100%;
+`;
+
+
+const StProfileEditButton = styled.button`
+  margin-top: 10px;
+  margin-bottom: 10px;
+`;
+
