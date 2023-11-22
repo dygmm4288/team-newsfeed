@@ -9,7 +9,7 @@ function Main() {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [posts, setPosts] = useState([]);
-  const [categoryFilter, setCategoryFilter] = useState('전체보기');
+  const [category, setCategory] = useState('전체보기');
 
   // data get (가져오기)
   useEffect(() => {
@@ -41,12 +41,19 @@ function Main() {
         //profileImg : 회원가입시 등록한 이미지 값
         title: title,
         content: content,
-        createdAt: new Date().toLocaleString()
+        createdAt: new Date().toLocaleString(),
+        category: category
         //updatedAt은 수정쪽에서 건들기
         //likeCount,review는 추가기능
       };
 
-      setPosts([...posts, newPost]);
+      setPosts([newPost, ...posts]);
+
+      //Firestore에서 'posts'컬렉션에 대한 참조 생성하기
+      const collectionRef = collection(db, 'posts');
+      // 'posts' 컬렉션에 newPost 문서를 추가합니다.
+      await addDoc(collectionRef, newPost);
+
       setTitle('');
       setContent('');
     } else {
@@ -89,10 +96,7 @@ function Main() {
           }}
           placeholder="어떤 이야기를 나누고 싶나요?"
         />
-        <select
-          value={categoryFilter}
-          onChange={(e) => setCategoryFilter(e.target.value)}
-        >
+        <select value={category} onChange={(e) => setCategory(e.target.value)}>
           <option value={'전체보기'}>전체보기</option>
           <option value={'발라드'}>발라드</option>
           <option value={'힙합'}>힙합</option>
