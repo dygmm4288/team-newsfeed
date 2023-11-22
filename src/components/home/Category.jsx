@@ -1,10 +1,12 @@
 import React, { useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { categories } from '../../data/categories';
 
 function Category() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const selectedCategory = searchParams.get('category');
 
   const handleCategorySelect = useCallback((selectedCategory) => {
     navigate(`?category=${encodeURIComponent(selectedCategory)}`);
@@ -16,11 +18,20 @@ function Category() {
   return (
     <StContainer>
       <StCategoryBox>
-        <button onClick={() => handleNavigateHome('/')}>전체보기</button>
+        <StCategoryButton
+          $selected={!selectedCategory}
+          onClick={() => handleNavigateHome('/')}
+        >
+          전체보기
+        </StCategoryButton>
         {categories.map((category) => (
-          <button key={category} onClick={() => handleCategorySelect(category)}>
+          <StCategoryButton
+            key={category}
+            $selected={selectedCategory === category}
+            onClick={() => handleCategorySelect(category)}
+          >
             {category}
-          </button>
+          </StCategoryButton>
         ))}
       </StCategoryBox>
     </StContainer>
@@ -51,15 +62,17 @@ const StCategoryBox = styled.div`
   border-radius: 20px;
   box-shadow: 0 1px 5px #464646;
   background-color: #ffffff; //클릭되면 색변화
+`;
+const StCategoryButton = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  background: ${(props) => (props.$selected ? '#007bff' : 'transparent')};
+  border: none;
+  cursor: pointer;
 
-  button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-  }
+  border-radius: 0.5rem;
+  color: ${(props) => (props.$selected ? '#ffffff' : '#000000')};
 `;
