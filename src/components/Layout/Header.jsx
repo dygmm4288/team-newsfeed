@@ -56,7 +56,7 @@ const StIdAndProfilePicture = styled.div`
   
   img {
     /* width: 100px;
-    height: 100px; */
+    height: 100px;*/
     object-fit: cover;
     border-radius: 50%;
     cursor: pointer;
