@@ -53,6 +53,7 @@ const GlobalStyle = createGlobalStyle`
   }
   html {
     scroll-behavior: smooth;
+    height: 100vh;
   }
 
   a:visited  {
