@@ -1,9 +1,8 @@
 import React, { useRef } from 'react';
-import Header from '../components/Layout/Header';
 import styled from 'styled-components';
+import Header from '../components/Layout/Header';
 import Category from '../components/home/Category';
 import Main from '../components/home/Main';
-import { memoryEagerGarbageCollector } from 'firebase/firestore';
 
 // Data 임시 기록
 // PostInfo(Document)
@@ -33,7 +32,7 @@ import { memoryEagerGarbageCollector } from 'firebase/firestore';
 export default function Home() {
   const a = useRef(null);
 
-  a.addEventListener('click', () => {
+  a.current?.addEventListener('click', () => {
     document.body.scrollTop = 0;
   });
 

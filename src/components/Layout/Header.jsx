@@ -1,29 +1,28 @@
 import React from 'react';
-import styled from 'styled-components';
-import ProfilePicture from '../../assets/Layout/Test-ProfilePicture.png';
 import { useNavigate } from 'react-router-dom';
-import { useAuth, signInWithEmail } from '../../contexts/auth.context';
+import styled from 'styled-components';
+import { useAuth } from '../../contexts/auth.context';
 
 function Header() {
   const navigate = useNavigate();
   const { userInfo } = useAuth();
 
   return (
-    <HeaderOutLine>
-      <StContainer>
-        <div>Beat Bridge</div>
+    <StHeader>
+      <StWrapper>
+        <h1>Beat Bridge</h1>
         <StIdAndProfilePicture onClick={() => navigate('/mypage')}>
           <p>{userInfo?.email}</p>
-          <img src={ProfilePicture} alt="ProfilePicture" />
+          <img src={userInfo?.profileImgUrl} alt="profile-picture" />
         </StIdAndProfilePicture>
-      </StContainer>
-    </HeaderOutLine>
+      </StWrapper>
+    </StHeader>
   );
 }
 
 export default Header;
 
-const HeaderOutLine = styled.div`
+const StHeader = styled.div`
   display: flex;
   justify-content: center;
   position: fixed;
@@ -32,18 +31,16 @@ const HeaderOutLine = styled.div`
   height: 70px;
   padding: 0 10px;
   background-color: #ffffff;
-  box-shadow: 0 1px 5px #464646;
+  box-shadow: var(--box-shadow);
 `;
 
-const StContainer = styled.div`
+const StWrapper = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   width: 960px;
   height: 100%;
-  /* border: 2px solid black; */
-
   > div {
     cursor: pointer;
   }
@@ -51,12 +48,13 @@ const StContainer = styled.div`
 
 const StIdAndProfilePicture = styled.div`
   display: flex;
+  flex-direction: row;
   align-items: center;
   cursor: pointer;
-  
+
   img {
-    /* width: 100px;
-    height: 100px; */
+    width: 64px;
+    height: 64px;
     object-fit: cover;
     border-radius: 50%;
     cursor: pointer;

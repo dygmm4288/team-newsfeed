@@ -47,6 +47,10 @@ const GlobalStyle = createGlobalStyle`
   * {
     box-sizing: border-box;
   }
+
+  :root {
+    --box-shadow: 1px 1px 6px #3a3a3a;
+  }
 `;
 
 export default GlobalStyle;
