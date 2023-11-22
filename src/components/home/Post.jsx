@@ -3,8 +3,8 @@ import ProfilePicture from '../../assets/Layout/Test-ProfilePicture.png';
 import styled from 'styled-components';
 
 function Post({ posts }) {
-  const changedPost = () => {};
-  const deletePost = () => {};
+  // const changedPost = () => {};
+  // const deletePost = () => {};
 
   return (
     <>
