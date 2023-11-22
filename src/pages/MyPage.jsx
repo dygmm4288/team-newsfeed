@@ -4,17 +4,16 @@ import styled from 'styled-components';
 import FileUpload from '../components/FileUpload';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import {storage} from '../firebase/firebase.config';
+import Header from '../components/Layout/Header';
+import SettingButton from '../components/SettingButton';
 
 const userId = 'hamin';
 function MyPage() {
   const navigate = useNavigate();
   const [imgUrl,setImgUrl] = useState('');
-
-  // useEffect(async () => {
-  //   const imgRef = ref(storage,`profile/${userId}`);
-  //   const downloadURL = await getDownloadURL(imgRef);
-  //   setImgUrl(downloadURL)
-  // },[]);
+  const [isEditing, setIsEditing] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFileIsFilled, setSelectedFileIsFilled] = useState(false);
 
   useEffect(() => {
     const fetchProfileImage = async () => {
@@ -25,19 +24,46 @@ function MyPage() {
     fetchProfileImage();
   },[]);
 
+  useEffect(() => {
+    setSelectedFile(null);
+    // setIsEditing(false);
+  },[selectedFileIsFilled]);
+
   return (
     <StOuterFrame>
       <StMainContainer>
-        {/* Layout(Header) */}
-        <div></div>
-        <StMyInformationContainer>
-          <StProfilePicture src={imgUrl}/>
-          <StMyInformation>안녕하세요, {userId}님!<br /> E-mail: <br />Username : </StMyInformation>
-          <StButtonContainer>
-            <StButton onClick={()=>{navigate(-1)}}>홈으로 가기</StButton>
-            <FileUpload setImgUrl={setImgUrl} imgUrl={imgUrl} userId={userId}/>
-          </StButtonContainer>
-        </StMyInformationContainer>
+        <Header />
+          <StMyInformationContainer>
+            <StProfilePicture src={imgUrl}/>
+            {isEditing === false ?
+              <StMyInformation>
+                <StMyInformationDetailsContainer>
+                  <StHiMyNickname>안녕하세요, {userId}님!</StHiMyNickname>
+                  E-mail: <StMyEmail></StMyEmail>
+                  닉네임: <StMyNickName></StMyNickName>
+                </StMyInformationDetailsContainer>
+                <StButtonContainer>
+                  {/* <StButton onClick={()=>{navigate(-1)}}>홈으로 가기</StButton> */}
+                  {/* <FileUpload setImgUrl={setImgUrl} imgUrl={imgUrl} userId={userId}/> */}
+                </StButtonContainer>
+              </StMyInformation>
+              :
+              <StMyInformation>
+              <StMyInformationDetailsContainer>
+                <StHiMyNickname>안녕하세요, {userId}님!</StHiMyNickname>
+                E-mail: <StMyEmail></StMyEmail>
+                닉네임: <StMyNickName></StMyNickName>
+                프로필 사진: <FileUpload setImgUrl={setImgUrl} imgUrl={imgUrl} userId={userId} isEditing={isEditing} setIsEditing={setIsEditing}/>
+              </StMyInformationDetailsContainer>
+              <StButtonContainer>
+                <SettingButton setImgUrl={setImgUrl} userId={userId} isEditing={isEditing} setIsEditing={setIsEditing} selectedFile={selectedFile} setSelectedFile={setSelectedFile} selectedFileIsFilled={selectedFileIsFilled} setSelectedFileIsFilled={setSelectedFileIsFilled}/>
+                {/* <StButton onClick={()=>{navigate(-1)}}>홈으로 가기</StButton> */}
+                {/* <FileUpload setImgUrl={setImgUrl} imgUrl={imgUrl} userId={userId}/> */}
+              </StButtonContainer>
+            </StMyInformation>
+            }
+
+          </StMyInformationContainer>
         <StMyPostContainer>
           <StMyPostTitle>My Post</StMyPostTitle>
           <StMyPostList>
@@ -83,6 +109,26 @@ const StMyInformationContainer = styled.div`
   width: 800px;
 `;
 
+const StMyInformation = styled.div`
+  border: 1px solid blue;
+  display: flex;
+  flex-direction: row;
+`;
+
+const StMyInformationDetailsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  border: 1px solid orange;
+`;
+
+const StMyEmail = styled.p`
+  color: purple;
+`;
+
+const StMyNickName = styled.p`
+   color: green;
+`;
+
 const StProfilePicture = styled.img`
   width: 150px;
   height: 150px;
@@ -91,14 +137,13 @@ const StProfilePicture = styled.img`
   background-color: #d9d9d9;
 `;
 
-const StMyInformation = styled.div`
+const StHiMyNickname = styled.div`
   border: 1px solid black;
   display: flex;
   flex-direction: row;
   align-items: center;
   line-height: 2.0;
   width: 250px;
-  height: 65%;
   padding: 10px;
 `;
 

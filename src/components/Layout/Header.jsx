@@ -30,7 +30,7 @@ const StIdAndProfilePicture = styled.div`
   align-items: center;
   img {
     /* width: 100px;
-    height: 100px; */
+    height: 100px;*/
     object-fit: cover;
     border-radius: 50%;
   }
