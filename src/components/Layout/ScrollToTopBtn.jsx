@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
 function ScrollToTopBtn() {
@@ -7,15 +7,12 @@ function ScrollToTopBtn() {
   // 스크롤 이벤트 핸들러
   const handleScroll = () => {
     // 스크롤이 일정 이상 내려갔을 때 버튼을 보여줌
+    if (!scrollToTopBtnRef.current) return;
     if (window.scrollY > 150) {
-      if (scrollToTopBtnRef.current) {
-        scrollToTopBtnRef.current.style.scale = '1';
-      }
+      scrollToTopBtnRef.current.style.scale = '1';
     } else {
       // 스크롤이 일정 이하로 올라갔을 때 버튼을 숨김
-      if (scrollToTopBtnRef.current) {
-        scrollToTopBtnRef.current.style.scale = '0';
-      }
+      scrollToTopBtnRef.current.style.scale = '0';
     }
   };
 
@@ -30,18 +27,16 @@ function ScrollToTopBtn() {
   }, []);
 
   // 스크롤을 맨 위로 이동하는 핸들러
-  const handleScrollToTop = () => {
+  const handleScrollToTop = useCallback(() => {
     if (scrollToTopBtnRef.current) {
       document.documentElement.scrollTop = 0;
     }
-  };
+  }, []);
 
   return (
-    <>
-      <StScrollToTopBtn ref={scrollToTopBtnRef} onClick={handleScrollToTop}>
-        ▲
-      </StScrollToTopBtn>
-    </>
+    <StScrollToTopBtn ref={scrollToTopBtnRef} onClick={handleScrollToTop}>
+      ▲
+    </StScrollToTopBtn>
   );
 }
 
@@ -61,7 +56,7 @@ const StScrollToTopBtn = styled.button`
   border: none;
   color: #fff;
   background-color: #007bff;
-  box-shadow: 1px 1px 6px #3a3a3a;
+  box-shadow: var(--box-shadow);
   scale: 0;
   transition: 0.2s ease-in-out;
   cursor: pointer;
