@@ -10,10 +10,19 @@ function MyPage() {
   const navigate = useNavigate();
   const [imgUrl,setImgUrl] = useState('');
 
-  useEffect(async () => {
-    const imgRef = ref(storage,`profile/${userId}`);
-    const downloadURL = await getDownloadURL(imgRef);
-    setImgUrl(downloadURL)
+  // useEffect(async () => {
+  //   const imgRef = ref(storage,`profile/${userId}`);
+  //   const downloadURL = await getDownloadURL(imgRef);
+  //   setImgUrl(downloadURL)
+  // },[]);
+
+  useEffect(() => {
+    const fetchProfileImage = async () => {
+      const imgRef = ref(storage,`profile/${userId}`);
+      const downloadURL = await getDownloadURL(imgRef);
+      setImgUrl(downloadURL);
+    }
+    fetchProfileImage();
   },[]);
 
   return (
