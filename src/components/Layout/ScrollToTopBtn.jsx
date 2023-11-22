@@ -38,16 +38,16 @@ function ScrollToTopBtn() {
 
   return (
     <>
-      <StscrollToTopBtn ref={scrollToTopBtnRef} onClick={handleScrollToTop}>
+      <StScrollToTopBtn ref={scrollToTopBtnRef} onClick={handleScrollToTop}>
         ▲
-      </StscrollToTopBtn>
+      </StScrollToTopBtn>
     </>
   );
 }
 
 export default ScrollToTopBtn;
 
-const StscrollToTopBtn = styled.button`
+const StScrollToTopBtn = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;

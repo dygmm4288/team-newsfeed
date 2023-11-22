@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import Header from '../components/Layout/Header';
 import ScrollToTopBtn from '../components/Layout/ScrollToTopBtn';
 import Category from '../components/home/Category';
 import Main from '../components/home/Main';
@@ -31,10 +30,10 @@ import Main from '../components/home/Main';
 // }
 
 export default function Home() {
+  console.log('home');
   return (
     <StHomeOutLine>
       <StContainer>
-        <Header />
         <StCategoryAndMain>
           <Category />
           <Main />
