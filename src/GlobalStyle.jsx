@@ -51,6 +51,9 @@ const GlobalStyle = createGlobalStyle`
   :root {
     --box-shadow: 1px 1px 6px #3a3a3a;
   }
+  html {
+    scroll-behavior: smooth;
+  }
 `;
 
 export default GlobalStyle;

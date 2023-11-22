@@ -1,6 +1,7 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import Header from '../components/Layout/Header';
+import ScrollToTopBtn from '../components/Layout/ScrollToTopBtn';
 import Category from '../components/home/Category';
 import Main from '../components/home/Main';
 
@@ -30,12 +31,6 @@ import Main from '../components/home/Main';
 // }
 
 export default function Home() {
-  const a = useRef(null);
-
-  a.current?.addEventListener('click', () => {
-    document.body.scrollTop = 0;
-  });
-
   return (
     <StHomeOutLine>
       <StContainer>
@@ -44,7 +39,7 @@ export default function Home() {
           <Category />
           <Main />
         </StCategoryAndMain>
-        <StscrollToTopBtn ref={a}>▲</StscrollToTopBtn>
+        <ScrollToTopBtn />
       </StContainer>
     </StHomeOutLine>
   );
@@ -67,31 +62,4 @@ const StCategoryAndMain = styled.div`
   flex-direction: row;
   width: 100%;
   margin-top: 70px;
-`;
-
-const StscrollToTopBtn = styled.button`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  width: 40px;
-  height: 40px;
-  padding: 10px;
-  border-radius: 50%;
-  border: none;
-  color: #fff;
-  background-color: #007bff;
-  box-shadow: 1px 1px 6px #3a3a3a;
-  cursor: pointer;
-
-  &:hover {
-    scale: 1.1;
-    background-color: #3c9aff;
-  }
-
-  /* &.scrolled {
-    
-  } */
 `;

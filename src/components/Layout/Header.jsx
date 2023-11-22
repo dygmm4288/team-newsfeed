@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAuth } from '../../contexts/auth.context';
@@ -7,13 +7,17 @@ function Header() {
   const navigate = useNavigate();
   const { userInfo } = useAuth();
 
+  const handleNavigateToMyPage = useCallback(() => {
+    navigate('/mypage');
+  }, []);
+
   return (
     <StHeader>
       <StWrapper>
         <h1>Beat Bridge</h1>
-        <StIdAndProfilePicture onClick={() => navigate('/mypage')}>
+        <StIdAndProfilePicture onClick={handleNavigateToMyPage}>
           <p>{userInfo?.email}</p>
-          <img src={userInfo?.profileImgUrl} alt="profile-picture" />
+          <img src={userInfo?.profileImgUrl} alt="profile avatar" />
         </StIdAndProfilePicture>
       </StWrapper>
     </StHeader>
@@ -29,7 +33,6 @@ const StHeader = styled.div`
   z-index: 1000;
   width: 100%;
   height: 70px;
-  padding: 0 10px;
   background-color: #ffffff;
   box-shadow: var(--box-shadow);
 `;
