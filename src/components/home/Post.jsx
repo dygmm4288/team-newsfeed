@@ -1,10 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ProfilePicture from '../../assets/Layout/Test-ProfilePicture.png';
 import styled from 'styled-components';
 
-function Post({ posts }) {
-  // const changedPost = () => {};
-  // const deletePost = () => {};
+function Post({ posts, setPosts }) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedContent, setEditidContent] = useState('');
+  const changedPost = () => {};
+  const deletePost = () => {
+    const confirmDelete = window.confirm('정말로 삭제하시겠습니까?');
+
+    if (confirmDelete) {
+      // const updatedPost = posts.filter((post)=> post.?? != ??)
+      // setPosts(updatedPost);
+    }
+  };
 
   return (
     <>
@@ -14,11 +23,14 @@ function Post({ posts }) {
             <img src={ProfilePicture} alt="ProfilePicture" />
             <p>{posts.nickname}</p>
             <p>{posts.title}</p>
-            <p>{posts.content}</p>
+            <p>{posts.createdAt}</p>
           </StPostTop>
           <StPostBottom>
-            <button>···</button>
-            <p>내용</p>
+            <div>
+              <button onClick={() => changedPost}>수정</button>
+              <button onClick={() => deletePost}>삭제</button>
+            </div>
+            <p>{posts.content}</p>
           </StPostBottom>
         </StPost>
       ))}
