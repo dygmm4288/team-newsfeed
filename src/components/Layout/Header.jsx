@@ -1,13 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
 import ProfilePicture from '../../assets/Layout/Test-ProfilePicture.png';
+import { useAuth } from '../../contexts/auth.context';
 
 function Header() {
+
+  const {userInfo, signInWithEmail} = useAuth();
+
   return (
     <StContainer>
       <div>Beat Bridge</div>
       <StIdAndProfilePicture>
-        <p>아이디</p>
+        <p>{userInfo.email}</p>
         <img src={ProfilePicture} alt="ProfilePicture" />
       </StIdAndProfilePicture>
     </StContainer>
