@@ -1,18 +1,25 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 function Category() {
+  const navigate = useNavigate();
+
+  const handleCategorySelect = (selectedCategory) => {
+    navigate(`?category=${selectedCategory}`);
+  };
+
   return (
     <StContainer>
-      <ul>
-        <li>전체보기</li>
-        <li>발라드</li>
-        <li>힙합</li>
-        <li>R&B</li>
-        <li>락</li>
-        <li>댄스</li>
-        <li>연예인</li>
-      </ul>
+      <StCategoryBox>
+        <button onClick={() => navigate('/')}>전체보기</button>
+        <button onClick={() => handleCategorySelect('발라드')}>발라드</button>
+        <button onClick={() => handleCategorySelect('힙합')}>힙합</button>
+        <button onClick={() => handleCategorySelect('R&B')}>R&B</button>
+        <button onClick={() => handleCategorySelect('락')}>락</button>
+        <button onClick={() => handleCategorySelect('댄스')}>댄스</button>
+        <button onClick={() => handleCategorySelect('연예인')}>연예인</button>
+      </StCategoryBox>
     </StContainer>
   );
 }
@@ -21,18 +28,35 @@ export default Category;
 
 const StContainer = styled.div`
   display: flex;
-  justify-content: center;
   width: 25%;
+  margin: 40px 0;
+  /* border: 2px solid black; */
+`;
+
+const StCategoryBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  z-index: 1000;
+  overflow: hidden;
+  width: 210px;
+  height: 300px;
+  padding: 10px;
   border: 2px solid black;
+  border-radius: 20px;
+  box-shadow: 0 1px 5px #464646;
+  background-color: #ffffff; //클릭되면 색변화
 
-  ul {
+  button {
     display: flex;
-    flex-direction: column;
-    gap: 10px;
-    width: 100px;
-    border: 2px solid blue;
-
-    li {
-    }
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    cursor: pointer;
   }
 `;
