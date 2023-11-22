@@ -11,7 +11,7 @@ function Header() {
     <StContainer>
       <div>Beat Bridge</div>
       <StIdAndProfilePicture>
-        <p>{userInfo.email}</p>
+        <p>{userInfo?.email}</p>
         <img src={ProfilePicture} alt="ProfilePicture" />
       </StIdAndProfilePicture>
     </StContainer>

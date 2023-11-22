@@ -1,9 +1,9 @@
 // import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-// import { storage } from '../firebase/firebase.config';
+// import React, { useEffect, useState } from 'react';
+// import styled from 'styled-components';
+// // import { storage } from '../firebase/firebase.config';
 
-function FileUpload({setImgUrl,userId,isEditing,setIsEditing,selectedFile,setSelectedFile,selectedFileIsFilled,setSelectedFileIsFilled}) {
+// function FileUpload({setImgUrl,userId,isEditing,setIsEditing,selectedFile,setSelectedFile,selectedFileIsFilled,setSelectedFileIsFilled}) {
   // const [selectedFile, setSelectedFile] = useState(null);
   // const [selectedFileIsFilled, setSelectedFileIsFilled] = useState(false);
 
@@ -12,10 +12,10 @@ function FileUpload({setImgUrl,userId,isEditing,setIsEditing,selectedFile,setSel
   //   // setIsEditing(false);
   // },[selectedFileIsFilled]);
 
-  const handleFileSelect = (event) => {
-    setSelectedFile(event.target.files[0]);
-    setSelectedFileIsFilled(true);
-  }
+  // const handleFileSelect = (event) => {
+  //   setSelectedFile(event.target.files[0]);
+  //   setSelectedFileIsFilled(true);
+  // }
 
   // const handleUpload = async () => {
   //   const imageRef = ref(storage, `profile/${userId}`);
@@ -36,55 +36,56 @@ function FileUpload({setImgUrl,userId,isEditing,setIsEditing,selectedFile,setSel
 
 
 
-  return (
-    <StImageInputContainer>
-      {selectedFileIsFilled === false ?
-          // (<StProfileEditButton onClick={()=> setIsEditing(true)}>프로필 사진<br />수정하기</StProfileEditButton>)
-        // (<StProfileEditButton onClick={()=> {setSelectedFileIsFilled(true), setIsEditing(true)}}>프로필 사진<br />수정하기</StProfileEditButton>)
-        <></>
-      : (<StImageInputAfterContainer>
-          <StImageInput type="file" onChange={handleFileSelect}/>
-          {/* <StButton onClick={()=>setSelectedFileIsFilled(false)}>취소하기</StButton>
-          <StButton onClick={handleUpload}>변경사항 저장</StButton> */}
-        </StImageInputAfterContainer>
-        )
-      }
+//   return (
+//     <StImageInputContainer>
+//       {isEditing === false ?
+//           // (<StProfileEditButton onClick={()=> setIsEditing(true)}>프로필 사진<br />수정하기</StProfileEditButton>)
+//         // (<StProfileEditButton onClick={()=> {setSelectedFileIsFilled(true), setIsEditing(true)}}>프로필 사진<br />수정하기</StProfileEditButton>)
+//         <>
+//           <p>?</p>
+//         </>
+//       : (<StImageInputAfterContainer>
+//           <StImageInput type="file" onChange={handleFileSelect}/>
+//           {/* <StButton onClick={()=>setSelectedFileIsFilled(false)}>취소하기</StButton>
+//           <StButton onClick={handleUpload}>변경사항 저장</StButton> */}
+//         </StImageInputAfterContainer>
+//         )
+//       }
 
-    </StImageInputContainer>
-  )
-}
+//     </StImageInputContainer>
+//   )
+// }
 
-export default FileUpload;
+// export default FileUpload;
 
-const StImageInputContainer = styled.div`
-  border: 1px solid red;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  width: 80%;
-  gap: 10px;
-`;
+// const StImageInputContainer = styled.div`
+//   border: 1px solid red;
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: center;
+//   width: 80%;
+//   gap: 10px;
+// `;
 
 // const StProfileEditButton = styled.button`
 //   margin-top: 10px;
 //   margin-bottom: 10px;
 // `;
 
-const StImageInputAfterContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  gap: 10px;
-`;
+// const StImageInputAfterContainer = styled.div`
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: center;
+//   align-items: center;
+//   width: 100%;
+//   gap: 10px;
+// `;
 
-const StImageInput = styled.input`
-  cursor: pointer;
-  width: 100%;
-`;
+// const StImageInput = styled.input`
+//   cursor: pointer;
+//   width: 100%;
+// `;
 
 // const StButton = styled.button`
 //   cursor: pointer;
 //   width: 100%;
-// `;
