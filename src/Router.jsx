@@ -2,6 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 import Auth from './pages/Auth';
 import Home from './pages/Home';
 import MyPage from './pages/MyPage';
+import SignUp from './pages/SignUp';
 
 export default function Router() {
   return (
