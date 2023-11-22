@@ -11,11 +11,6 @@ function FileUpload({setImgUrl,userId}) {
     setSelectedFile(null);
   },[selectedFileIsFilled]);
 
-  // const cancelProfileSetting = () => {
-  //   setSelectedFileIsFilled(false);
-  //   console.log("?",selectedFileIsFilled);
-  // }
-
   const handleFileSelect = (event) => {
     setSelectedFile(event.target.files[0]);
     setSelectedFileIsFilled(true);
@@ -32,7 +27,7 @@ function FileUpload({setImgUrl,userId}) {
       return
     }
     
-    // image file URL save
+    // image file URL save 
     const downloadURL = await getDownloadURL(imageRef);
     console.log("downloadURL", downloadURL);
     setImgUrl(downloadURL);
