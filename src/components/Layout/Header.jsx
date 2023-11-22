@@ -7,13 +7,13 @@ import { useAuth, signInWithEmail } from '../../contexts/auth.context';
 function Header() {
   const navigate = useNavigate();
 
-  const { user } = useAuth();
+  const { userInfo } = useAuth();
 
   return (
     <StContainer>
       <div>Beat Bridge</div>
       <StIdAndProfilePicture onClick={() => navigate('/mypage')}>
-        <p>{user?.email}</p>
+        <p>{userInfo?.email}</p>
         <img src={ProfilePicture} alt="ProfilePicture" />
       </StIdAndProfilePicture>
     </StContainer>
