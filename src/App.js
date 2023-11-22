@@ -1,14 +1,15 @@
 import { BrowserRouter } from 'react-router-dom';
 import GlobalStyle from './GlobalStyle';
 import Router from './Router';
-import { app } from './firebase/firebase.config';
+import { AuthProvider } from './contexts/auth.context';
 
 function App() {
-  console.log(app);
   return (
     <BrowserRouter>
-      <GlobalStyle />
-      <Router />
+      <AuthProvider>
+        <GlobalStyle />
+        <Router />
+      </AuthProvider>
     </BrowserRouter>
   );
 }
