@@ -1,13 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
 import ProfilePicture from '../../assets/Layout/Test-ProfilePicture.png';
+import { useNavigate } from 'react-router-dom';
 
 function Header() {
+  const navigate = useNavigate();
+
   return (
     <StContainer>
       <div>Beat Bridge</div>
-      <StIdAndProfilePicture>
-        <p>아이디</p>
+      <StIdAndProfilePicture onClick={() => navigate('/mypage')}>
+        <p>닉네임</p>
         <img src={ProfilePicture} alt="ProfilePicture" />
       </StIdAndProfilePicture>
     </StContainer>

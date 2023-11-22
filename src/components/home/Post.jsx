@@ -7,7 +7,7 @@ function Post() {
     <StPost>
       <StPostTop>
         <img src={ProfilePicture} alt="ProfilePicture" />
-        <p>아이디</p>
+        <p>닉네임</p>
       </StPostTop>
       <StPostBottom>
         <button>···</button>
