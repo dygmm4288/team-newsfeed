@@ -105,7 +105,7 @@ function Main() {
         <button type="submit">추가</button>
       </form>
       <StPostBox>
-        <Post title={title} content={content} posts={posts} />
+        <Post posts={posts} />
       </StPostBox>
     </StContainer>
   );
@@ -118,7 +118,8 @@ const StContainer = styled.div`
   flex-direction: column;
   align-items: center;
   width: 75%;
-  border: 2px solid black;
+  margin: 40px 0;
+  /* border: 2px solid black; */
 `;
 
 const StPostBox = styled.ul`

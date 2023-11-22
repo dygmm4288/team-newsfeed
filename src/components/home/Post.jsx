@@ -14,11 +14,10 @@ function Post({ posts }) {
             <img src={ProfilePicture} alt="ProfilePicture" />
             <p>{posts.nickname}</p>
             <p>{posts.title}</p>
-            <p>{posts.content}</p>
           </StPostTop>
           <StPostBottom>
             <button>···</button>
-            <p>내용</p>
+            <p>{posts.content}</p>
           </StPostBottom>
         </StPost>
       ))}
@@ -31,7 +30,7 @@ export default Post;
 const StPost = styled.li`
   width: 500px;
   min-height: 300px;
-  border: 2px solid black;
+  margin-top: 20px;
 `;
 
 const StPostTop = styled.div`

@@ -28,9 +28,9 @@ export default Category;
 
 const StContainer = styled.div`
   display: flex;
-  justify-content: center;
   width: 25%;
-  border: 2px solid black;
+  margin: 40px 0;
+  /* border: 2px solid black; */
 `;
 
 const StCategoryBox = styled.div`
@@ -38,10 +38,16 @@ const StCategoryBox = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 100px;
-  height: 200px;
-  margin: 10px;
+  position: fixed;
+  z-index: 1000;
+  overflow: hidden;
+  width: 210px;
+  height: 300px;
+  padding: 10px;
   border: 2px solid black;
+  border-radius: 20px;
+  box-shadow: 0 1px 5px #464646;
+  background-color: #ffffff; //클릭되면 색변화
 
   button {
     display: flex;
@@ -49,6 +55,8 @@ const StCategoryBox = styled.div`
     align-items: center;
     width: 100%;
     height: 100%;
-    border: 2px solid black;
+    background: transparent;
+    border: none;
+    cursor: pointer;
   }
 `;
