@@ -36,7 +36,7 @@ function MyPage() {
     const imageRef = ref(storage, `profile/${userNickname}`);
     e.preventDefault();
     // validation check
-    // 글자수 검사: 닉네임 10자
+    // 글자수 검사: 닉네임 10자.
     //여기에 selectFile를 어떻게 넣지?
     if (editedNickname.length === 0){
       alert("닉네임을 입력해주세요.");
