@@ -20,8 +20,8 @@ function Post() {
 export default Post;
 
 const StPost = styled.li`
-  width: 350px;
-  min-height: 250px;
+  width: 500px;
+  min-height: 300px;
   border: 2px solid black;
 `;
 

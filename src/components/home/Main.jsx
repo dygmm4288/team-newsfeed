@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Post from './Post';
-import { addDoc, collection, getDocs, query } from 'firebase/firestore';
+import { addDoc, collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/firebase.config';
 
 function Main() {
@@ -33,7 +33,7 @@ function Main() {
     fetchData();
   }, []);
 
-  //
+  // data get (추가하기)
   const hanbleAddPost = async (event) => {
     event.preventDefault();
     const newPost = {

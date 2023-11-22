@@ -4,15 +4,15 @@ import styled from 'styled-components';
 function Category() {
   return (
     <StContainer>
-      <ul>
-        <li>전체보기</li>
-        <li>발라드</li>
-        <li>힙합</li>
-        <li>R&B</li>
-        <li>락</li>
-        <li>댄스</li>
-        <li>연예인</li>
-      </ul>
+      <StCategoryBox>
+        <button>전체보기</button>
+        <button>발라드</button>
+        <button>힙합</button>
+        <button>R&B</button>
+        <button>락</button>
+        <button>댄스</button>
+        <button>연예인</button>
+      </StCategoryBox>
     </StContainer>
   );
 }
@@ -24,15 +24,24 @@ const StContainer = styled.div`
   justify-content: center;
   width: 25%;
   border: 2px solid black;
+`;
 
-  ul {
+const StCategoryBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 200px;
+  margin: 10px;
+  border: 2px solid black;
+
+  button {
     display: flex;
-    flex-direction: column;
-    gap: 10px;
-    width: 100px;
-    border: 2px solid blue;
-
-    li {
-    }
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    border: 2px solid black;
   }
 `;
