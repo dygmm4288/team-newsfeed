@@ -9,7 +9,7 @@ import { auth } from '../firebase/firebase.config';
 
 // initialState
 const initialState = {
-  user: auth.currentUser,
+  userInfo: auth.currentUser,
   signInWithEmail: (email, password) => {},
   signOutUser: () => {},
   setUserNickname: (nickname) => {},
