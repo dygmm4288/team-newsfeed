@@ -2,15 +2,18 @@ import React from 'react';
 import styled from 'styled-components';
 import ProfilePicture from '../../assets/Layout/Test-ProfilePicture.png';
 import { useNavigate } from 'react-router-dom';
+import { useAuth, signInWithEmail } from '../../contexts/auth.context';
 
 function Header() {
   const navigate = useNavigate();
+
+  const { user } = useAuth();
 
   return (
     <StContainer>
       <div>Beat Bridge</div>
       <StIdAndProfilePicture onClick={() => navigate('/mypage')}>
-        <p>닉네임</p>
+        <p>{user?.email}</p>
         <img src={ProfilePicture} alt="ProfilePicture" />
       </StIdAndProfilePicture>
     </StContainer>
