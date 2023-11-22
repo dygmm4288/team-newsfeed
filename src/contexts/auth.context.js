@@ -1,6 +1,8 @@
 import {
+  GithubAuthProvider,
   onAuthStateChanged,
   signInWithEmailAndPassword,
+  signInWithRedirect,
   signOut,
   updateProfile
 } from 'firebase/auth';
@@ -14,6 +16,7 @@ const initialState = {
   signOutUser: () => {},
   setUserNickname: (nickname) => {},
   setUserProfileImgUrl: (profileImgUrl) => {},
+  signInWithGithub: () => {},
   error: null
 };
 // context 생성
@@ -34,6 +37,18 @@ export const AuthProvider = ({ children }) => {
   const signOutUser = () => {
     setError(null);
     signOut(auth);
+  };
+  const signInWithGithub = () => {
+    const provider = GithubAuthProvider();
+    setError(null);
+    signInWithRedirect(auth, provider)
+      .then((result) => {
+        setUser(result.user);
+      })
+      .catch((err) => {
+        setError(err);
+        console.error(err);
+      });
   };
 
   const setUserNickname = (nickname) => {
@@ -66,7 +81,8 @@ export const AuthProvider = ({ children }) => {
     error,
     signOutUser,
     setUserNickname,
-    setUserProfileImgUrl
+    setUserProfileImgUrl,
+    signInWithGithub
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
