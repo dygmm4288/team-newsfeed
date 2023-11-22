@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAuth } from '../../contexts/auth.context';
 
@@ -14,7 +14,9 @@ function Header() {
   return (
     <StHeader>
       <StWrapper>
-        <h1>Beat Bridge</h1>
+        <Link to="/">
+          <h1>Beat Bridge</h1>
+        </Link>
         <StIdAndProfilePicture onClick={handleNavigateToMyPage}>
           <p>{userInfo?.email}</p>
           <img src={userInfo?.profileImgUrl} alt="profile avatar" />

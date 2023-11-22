@@ -54,6 +54,13 @@ const GlobalStyle = createGlobalStyle`
   html {
     scroll-behavior: smooth;
   }
+
+  a:visited  {
+    color:transparent;
+  }
+  a {
+    text-decoration:none;
+  }
 `;
 
 export default GlobalStyle;
