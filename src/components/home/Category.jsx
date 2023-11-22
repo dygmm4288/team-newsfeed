@@ -6,7 +6,7 @@ function Category() {
   const navigate = useNavigate();
 
   const handleCategorySelect = (selectedCategory) => {
-    navigate(`?category=${selectedCategory}`);
+    navigate(`/?category=${selectedCategory}`);
   };
 
   return (
@@ -15,7 +15,7 @@ function Category() {
         <button onClick={() => navigate('/')}>전체보기</button>
         <button onClick={() => handleCategorySelect('발라드')}>발라드</button>
         <button onClick={() => handleCategorySelect('힙합')}>힙합</button>
-        <button onClick={() => handleCategorySelect('R&B')}>R&B</button>
+        <button onClick={() => handleCategorySelect('RnB')}>R&B</button>
         <button onClick={() => handleCategorySelect('락')}>락</button>
         <button onClick={() => handleCategorySelect('댄스')}>댄스</button>
         <button onClick={() => handleCategorySelect('연예인')}>연예인</button>

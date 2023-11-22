@@ -1,10 +1,30 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ProfilePicture from '../../assets/Layout/Test-ProfilePicture.png';
 import styled from 'styled-components';
+import { useLocation } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 function Post({ posts }) {
   const changedPost = () => {};
   const deletePost = () => {};
+
+  // location 이용
+  // const location = useLocation();
+  // const queryString = location.search;
+  // const category = queryString.get('category');
+
+  // useEffect(() => {
+  //   console.log('현재 카테고리:', queryString);
+  // }, [queryString]);
+
+  // useSearchParams 이용
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const category = searchParams.get('category');
+
+  useEffect(() => {
+    console.log('현재 카테고리:', category);
+  }, [category]);
 
   return (
     <>

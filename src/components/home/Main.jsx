@@ -3,14 +3,12 @@ import styled from 'styled-components';
 import Post from './Post';
 import { addDoc, collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/firebase.config';
-import { useParams } from 'react-router-dom';
 
 function Main() {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [posts, setPosts] = useState([]);
 
-  const { category } = useParams();
   const [selectedCategory, setSelectedCategory] = useState('전체보기');
 
   // data get (가져오기)
@@ -19,7 +17,6 @@ function Main() {
       const querySnapshot = await getDocs(collection(db, 'posts'));
       const fetchedPosts = [];
       querySnapshot.forEach((doc) => {
-        console.log(doc.data());
         fetchedPosts.push(doc.data());
       });
       setPosts(fetchedPosts);
