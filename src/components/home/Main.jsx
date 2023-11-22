@@ -1,80 +1,110 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Post from './Post';
-import { addDoc, collection, getDocs, query } from 'firebase/firestore';
+import { collection, getDocs, getFirestore } from 'firebase/firestore';
+import { addDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebase.config';
 
 function Main() {
+  const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [posts, setPosts] = useState([]);
-
-  // const hanbleSetPost = (event) => {
-  //   event.preventDefault();
-  //   const newPost = {
-  //     userId: 'test',
-  //     content: content
-  //   };
-  //   if (content <= 0) {
-  //     alert('내용을 입력해 주세요💌');
-  //   } else {
-  //     setPosts([newPost, ...posts]);
-  //     setContent('');
-  //   }
-  // };
+  const [categoryFilter, setCategoryFilter] = useState('전체보기');
 
   // data get (가져오기)
   useEffect(() => {
     const fetchData = async () => {
       const querySnapshot = await getDocs(collection(db, 'posts'));
+      const fetchedPosts = [];
       querySnapshot.forEach((doc) => {
         console.log(doc.data());
+        fetchedPosts.push(doc.data());
       });
+      setPosts(fetchedPosts);
     };
     fetchData();
   }, []);
 
-  //
+  //setDoc, addDoc 알아보기
+  // Firestore에서 'made posts' 컬렉션에 대한 참조 생성하기
+  // const collectionRef = collection(db, 'made posts');
+  // 'posts' 컬렉션에 newPost 문서를 추가합니다.
+  // await addDoc(collectionRef, newPost);
+
   const hanbleAddPost = async (event) => {
     event.preventDefault();
-    const newPost = {
-      userId: 'test',
-      content: content
-    };
-    if (content <= 0) {
-      alert('내용을 입력해 주세요💌');
-    } else {
-      setPosts(() => {
-        return [newPost, ...posts];
-      });
+
+    if (title.trim() && content.trim()) {
+      const newPost = {
+        // userId: 'test', 게시물 고유 아이디 - 필요한 이유?? 삭제 수정하려고
+        // nickname : 회원가입 후 작성한 닉네임 값
+        //profileImg : 회원가입시 등록한 이미지 값
+        title: title,
+        content: content,
+        createdAt: new Date().toLocaleString()
+        //updatedAt은 수정쪽에서 건들기
+        //likeCount,review는 추가기능
+      };
+
+      setPosts([...posts, newPost]);
+      setTitle('');
       setContent('');
-      // Firestore에서 'posts' 컬렉션에 대한 참조 생성하기
-      const collectionRef = collection(db, 'posts');
-      // 'posts' 컬렉션에 newPost 문서를 추가합니다.
-      await addDoc(collectionRef, newPost);
+    } else {
+      alert('제목과 내용 모두 입력해주세요💌');
     }
   };
+  // setPosts(() => {
+  //   return [newPost, ...posts];
+  // });
 
   // useEffect(() => {
   //   console.log(posts);
   // }, [posts]);
 
   return (
+    //flex로 input 세로 배치 할 예정
     <StContainer>
       <form onSubmit={(event) => hanbleAddPost(event)}>
         <input
           type="text"
+          value={title}
+          onChange={(e) => {
+            if (e.target.value.length <= 15) {
+              setTitle(e.target.value);
+            } else {
+              alert('제목이 너무 깁니다!');
+            }
+          }}
+          placeholder="제목을 입력해주세요"
+        ></input>
+        <input
+          type="textarea"
           value={content}
-          onChange={(event) => {
-            setContent(event.target.value);
+          onChange={(e) => {
+            if (e.target.value.length <= 100) {
+              setContent(e.target.value);
+            } else {
+              alert('내용이 너무 깁니다!');
+            }
           }}
           placeholder="어떤 이야기를 나누고 싶나요?"
         />
+        <select
+          value={categoryFilter}
+          onChange={(e) => setCategoryFilter(e.target.value)}
+        >
+          <option value={'전체보기'}>전체보기</option>
+          <option value={'발라드'}>발라드</option>
+          <option value={'힙합'}>힙합</option>
+          <option value={'R&B'}>R&B</option>
+          <option value={'락'}>락</option>
+          <option value={'댄스'}>댄스</option>
+          <option value={'연예인'}>연예인</option>
+        </select>
         <button type="submit">추가</button>
       </form>
       <StPostBox>
-        <Post />
-        <Post />
-        <Post />
+        <Post title={title} content={content} posts={posts} />
       </StPostBox>
     </StContainer>
   );
