@@ -1,24 +1,27 @@
-import React from 'react';
-import styled from 'styled-components';
+import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import { categories } from '../../data/categories';
 
 function Category() {
   const navigate = useNavigate();
 
-  const handleCategorySelect = (selectedCategory) => {
-    navigate(`?category=${selectedCategory}`);
-  };
+  const handleCategorySelect = useCallback((selectedCategory) => {
+    navigate(`?category=${encodeURIComponent(selectedCategory)}`);
+  }, []);
+  const handleNavigateHome = useCallback(() => {
+    navigate('/');
+  }, []);
 
   return (
     <StContainer>
       <StCategoryBox>
-        <button onClick={() => navigate('/')}>전체보기</button>
-        <button onClick={() => handleCategorySelect('발라드')}>발라드</button>
-        <button onClick={() => handleCategorySelect('힙합')}>힙합</button>
-        <button onClick={() => handleCategorySelect('R&B')}>R&B</button>
-        <button onClick={() => handleCategorySelect('락')}>락</button>
-        <button onClick={() => handleCategorySelect('댄스')}>댄스</button>
-        <button onClick={() => handleCategorySelect('연예인')}>연예인</button>
+        <button onClick={() => handleNavigateHome('/')}>전체보기</button>
+        {categories.map((category) => (
+          <button key={category} onClick={() => handleCategorySelect(category)}>
+            {category}
+          </button>
+        ))}
       </StCategoryBox>
     </StContainer>
   );

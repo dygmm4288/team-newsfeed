@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import Category from '../components/home/Category';
 import Main from '../components/home/Main';
@@ -29,6 +30,9 @@ Category
 } */
 
 export default function Home() {
+  const [searchParams] = useSearchParams();
+  const category = searchParams.get('category');
+
   return (
     <StContainer>
       <StCategoryAndMain>
