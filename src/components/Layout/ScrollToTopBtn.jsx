@@ -62,6 +62,7 @@ const StscrollToTopBtn = styled.button`
   color: #fff;
   background-color: #007bff;
   box-shadow: 1px 1px 6px #3a3a3a;
+  scale: 0;
   transition: 0.2s ease-in-out;
   cursor: pointer;
 
