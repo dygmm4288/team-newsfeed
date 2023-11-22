@@ -3,24 +3,13 @@ import styled from 'styled-components';
 import Post from './Post';
 import { addDoc, collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/firebase.config';
+import { useParams } from 'react-router-dom';
 
 function Main() {
   const [content, setContent] = useState('');
   const [posts, setPosts] = useState([]);
 
-  // const hanbleSetPost = (event) => {
-  //   event.preventDefault();
-  //   const newPost = {
-  //     userId: 'test',
-  //     content: content
-  //   };
-  //   if (content <= 0) {
-  //     alert('내용을 입력해 주세요💌');
-  //   } else {
-  //     setPosts([newPost, ...posts]);
-  //     setContent('');
-  //   }
-  // };
+  const { category } = useParams();
 
   // data get (가져오기)
   useEffect(() => {
