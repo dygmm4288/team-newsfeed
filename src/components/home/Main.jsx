@@ -10,8 +10,8 @@ function Main() {
   const [content, setContent] = useState('');
   const [posts, setPosts] = useState([]);
 
-  // const { category } = useParams();
-  const [category, setCategory] = useState('전체보기');
+  const { category } = useParams();
+  const [selectedCategory, setSelectedCategory] = useState('전체보기');
 
   // data get (가져오기)
   useEffect(() => {
@@ -39,7 +39,7 @@ function Main() {
         title: title,
         content: content,
         createdAt: new Date().toLocaleString(),
-        category: category
+        category: selectedCategory
         //updatedAt은 수정쪽에서 건들기
         //likeCount,review는 추가기능
       };
@@ -93,7 +93,10 @@ function Main() {
           }}
           placeholder="어떤 이야기를 나누고 싶나요?"
         />
-        <select value={category} onChange={(e) => setCategory(e.target.value)}>
+        <select
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
+        >
           <option value={'전체보기'}>전체보기</option>
           <option value={'발라드'}>발라드</option>
           <option value={'힙합'}>힙합</option>
