@@ -11,14 +11,6 @@ import Header from '../components/Layout/Header';
 import { useAuth } from '../contexts/auth.context';
 
 const userNickname = 'hamin';
-// import FileUpload from '../components/FileUpload';
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-import {storage} from '../firebase/firebase.config';
-import Header from '../components/Layout/Header';
-// import SettingButton from '../components/SettingButton';
-import { useAuth } from '../contexts/auth.context';
-
-const userNickname = 'hamin';
 
 function MyPage() {
   const navigate = useNavigate();
@@ -216,35 +208,6 @@ const StButtonSmallContainer = styled.div`
   gap: 10px;
 `;
 
-const StMyInformation = styled.div`
-  border: 1px solid blue;
-  display: flex;
-  flex-direction: row;
-`;
-
-const StMyInformationDetailsContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  border: 1px solid orange;
-`;
-
-const StMyEmail = styled.p`
-  color: purple;
-`;
-
-const StMyNickName = styled.p`
-   color: green;
-`;
-
-const StButtonSmallContainer = styled.div`
-  border: 1px solid red;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  width: 80%;
-  gap: 10px;
-`;
-
 const StProfilePicture = styled.img`
   width: 150px;
   height: 150px;
@@ -256,7 +219,6 @@ const StProfilePicture = styled.img`
   background-color: #d9d9d9;
 `;
 
-const StHiMyNickname = styled.div`
 const StHiMyNickname = styled.div`
   border: 1px solid black;
   display: flex;
@@ -283,11 +245,7 @@ const StButton = styled.button`
   cursor: pointer;
   margin: 10px 0 10px 0;
 `;
-const StButton = styled.button`
-  width: 80%;
-  cursor: pointer;
-  margin: 10px 0 10px 0;
-`;
+
 
 const StMyPostContainer = styled.div`
   border: 1px solid blue;
@@ -295,13 +253,6 @@ const StMyPostContainer = styled.div`
   flex-direction: column;
   align-items: center;
   width: 800px;
-`;
-
-const StMyPostTitle = styled.h3`
-  align-self: flex-start;
-  margin: 10px 10px 0 30px;
-  font-size: 1.3rem;
-  font-weight: 700;
 `;
 
 const StMyPostTitle = styled.h3`
@@ -353,26 +304,3 @@ const StProfileEditButton = styled.button`
   margin-top: 10px;
   margin-bottom: 10px;
 `;
-
-
-const StImageInputAfterContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  gap: 10px;
-  border: 5px solid pink;
-`;
-
-const StImageInput = styled.input`
-  cursor: pointer;
-  width: 100%;
-`;
-
-
-const StProfileEditButton = styled.button`
-  margin-top: 10px;
-  margin-bottom: 10px;
-`;
-
