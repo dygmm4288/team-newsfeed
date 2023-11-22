@@ -21,36 +21,27 @@ function MyPage() {
 
 
   const handleFileSelect = (event) => {
-    const selectFile = event.target.files[0];
-    setSelectedFile(selectFile);
+    const selectedFile = event.target.files[0];
+    setSelectedFile(selectedFile);
+    console.log('내가 선택한 파일',selectedFile); // 여기까지는 잘찍힘
     setSelectedFileIsFilled(true);
   }
 
-
   useEffect(() => {
-    const fetchProfileImage = async () => {
-      const imgRef = ref(storage,`profile/${userNickname}`);
-      const downloadURL = await getDownloadURL(imgRef);
-      setImgUrl(downloadURL);
-    }
-    fetchProfileImage();
-  },[]);
+    setSelectedFile(selectedFile);
+  },[selectedFile]); // ??
 
-  useEffect(() => {
-    setSelectedFile(null);
-  },[selectedFileIsFilled]);
 
-  const saveUpdatedProfile = async (e) => {
+  const saveUpdatedProfile = async(e) => {
     const imageRef = ref(storage, `profile/${userNickname}`);
-
     e.preventDefault();
     // validation check
     // 글자수 검사: 닉네임 10자
     //여기에 selectFile를 어떻게 넣지?
-    if (editedNickname === 0){
+    if (editedNickname.length === 0){
       alert("닉네임을 입력해주세요.");
       return;
-    } else if (editedNickname > 10){
+    } else if (editedNickname.length > 10){
       alert("닉네임을 10자 이내로 입력해주세요.");
       return;
     } else if (/^\s*$/.test(editedNickname)){
@@ -58,18 +49,16 @@ function MyPage() {
     } else {
       if(window.confirm("변경사항을 저장하시겠습니까?")){
         await uploadBytes(imageRef, selectedFile);
+        console.log('selectedFile!!',selectedFile); //null 이 나옴
         setSelectedFileIsFilled(true);
         setEditedNickname(editedNickname);
         alert("변경사항이 저장되었습니다.");
         setSelectedFileIsFilled(false);
         setIsEditing(false);
       } else {
-        return
+        return;
       }
     }
-    
-
-
     
     // image file URL save 
     const downloadURL = await getDownloadURL(imageRef);
@@ -91,16 +80,17 @@ function MyPage() {
         <Header />
           <StMyInformationContainer>
             <StProfilePicture src={imgUrl}/>
+            {console.log('imgUrl', imgUrl)}
             <StMyInformation>
                 <StMyInformationDetailsContainer>
-                  <StHiMyNickname>안녕하세요, {userNickname}님!</StHiMyNickname>
+                  <StHiMyNickname>안녕하세요, {editedNickname}님!</StHiMyNickname>
                   <StMyEmail>E-mail: {userInfo?.email}</StMyEmail>
                   {/* 닉네임: <StMyNickName>니크네임</StMyNickName> */}
                   {!isEditing && <>닉네임: <StMyNickName>{editedNickname}</StMyNickName></>}
-                  {isEditing && <form onSumit={saveUpdatedProfile}>
-                    닉네임: <input onChange={typeEditedNickname} value={editedNickname}/>
+                  {isEditing && <form onSubmit={saveUpdatedProfile}>
+                    닉네임: <input onChange={typeEditedNickname} value={editedNickname} />
                     <StImageInputAfterContainer>
-                      <StImageInput type="file" onChange={handleFileSelect}/>
+                      <StImageInput type="file" onChange={handleFileSelect} />
                     </StImageInputAfterContainer> 
                     
                   </form>}
