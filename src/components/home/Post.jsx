@@ -1,42 +1,28 @@
 import React from 'react';
 import ProfilePicture from '../../assets/Layout/Test-ProfilePicture.png';
-// import styled from 'styled-components';
+import styled from 'styled-components';
 
-function Post({ title, content, posts }) {
+function Post({ posts }) {
   const changedPost = () => {};
   const deletePost = () => {};
+
   return (
-    <StPost>
-      <StPostTop>
-        <img src={ProfilePicture} alt="ProfilePicture" />
-        <p>닉네임</p>
-      </StPostTop>
-      <StPostBottom>
-        <button>···</button>
-        <p>내용</p>
-      </StPostBottom>
-    </StPost>
-    // // <StPost>
-    // //   <StPostTop>
-    // <div>
-    //   {posts.map((post) => (
-    //     <div>
-    //       <img src={ProfilePicture} alt="ProfilePicture" />
-    //       {/* <p>{post.nickname}</p> */}
-    //       <p>{post.title}</p>
-    //       <p>{post.content}</p>
-    //     </div>
-    //   ))}
-    //   {/* <img src={ProfilePicture} alt="ProfilePicture" />
-    //     <p>아이디</p> */}
-    //   {/* </StPostTop> */}
-    //   {/*  <StPostBottom> */}
-    //   <button onClick={() => changedPost}>수정</button>
-    //   <button onClick={() => deletePost}>삭제</button>
-    //   <p>내용</p>
-    //   {/* </StPostBottom>
-    //  </StPost> */}
-    // </div>
+    <>
+      {posts.map((posts) => (
+        <StPost>
+          <StPostTop>
+            <img src={ProfilePicture} alt="ProfilePicture" />
+            <p>{posts.nickname}</p>
+            <p>{posts.title}</p>
+            <p>{posts.content}</p>
+          </StPostTop>
+          <StPostBottom>
+            <button>···</button>
+            <p>내용</p>
+          </StPostBottom>
+        </StPost>
+      ))}
+    </>
   );
 }
 
