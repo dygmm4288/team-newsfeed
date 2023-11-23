@@ -88,6 +88,7 @@ const StCategoryButton = styled.button`
 
   /* 아래쪽 테투리 채우기 트랜지션 */
   &::before {
+    display: ${(props) => (props.$selected ? 'none' : 'block')};
     content: '';
     position: absolute;
     bottom: 2px;
