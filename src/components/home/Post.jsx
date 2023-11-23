@@ -1,12 +1,9 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import ProfilePicture from '../../assets/Layout/Test-ProfilePicture.png';
 import styled from 'styled-components';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function Post({ posts, category, userInfo }) {
-  const changedPost = () => {};
-  const deletePost = () => {};
-
   const navigate = useNavigate();
 
   // 로그인 X alert
@@ -73,7 +70,7 @@ const StNoPosts = styled.p`
   margin-top: 40px;
 `;
 
-const StPost = styled.li`
+export const StPost = styled.li`
   width: 500px;
   min-height: 300px;
   margin-top: 20px;

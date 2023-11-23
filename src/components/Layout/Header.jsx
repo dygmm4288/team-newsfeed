@@ -2,6 +2,8 @@ import React, { useCallback } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAuth } from '../../contexts/auth.context';
+import SkeletonCircle from '../common/skeleton/SkeletonCircle';
+import SkeletonLine from '../common/skeleton/SkeletonLine';
 
 function Header() {
   const navigate = useNavigate();
@@ -28,7 +30,13 @@ function Header() {
           <button onClick={() => navigate('/')}>Go to home</button>
         ) : userInfo === null ? (
           // homepage - login X
-          <button onClick={handleNavigateToAuth}>Log in</button>
+          <>
+            <StSkeletonWrapper>
+              <SkeletonLine />
+              <SkeletonCircle />
+            </StSkeletonWrapper>
+            <button onClick={handleNavigateToAuth}>Log in</button>
+          </>
         ) : (
           // homepage - login O
           <StIdAndProfilePicture onClick={handleNavigateToMyPage}>
@@ -79,4 +87,11 @@ const StIdAndProfilePicture = styled.div`
     border-radius: 50%;
     cursor: pointer;
   }
+`;
+
+const StSkeletonWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
 `;
