@@ -4,6 +4,8 @@ import {
   deleteDoc,
   doc,
   getDocs,
+  orderBy,
+  query,
   updateDoc
 } from 'firebase/firestore';
 import { createContext, useContext, useEffect, useState } from 'react';
@@ -27,7 +29,9 @@ const PostProvider = ({ children }) => {
     getPost();
   }, []);
   const getPost = () => {
-    getDocs(collection(db, 'posts'))
+    const postsRef = collection(db, 'posts');
+    const q = query(postsRef, orderBy('createdAt', 'desc'));
+    getDocs(q)
       .then((querySnapshot) => {
         const fetchedPosts = [];
         querySnapshot.forEach((doc) => {
@@ -45,7 +49,7 @@ const PostProvider = ({ children }) => {
 
   // 밑에 들어가는 로직은 똑같은 입력이 주어지면 똑같은 출력(로직을 수행할 수 있어야 한다)을 할 수 있어야 한다.
   // C
-  const createPost = ({ title, content, category, userInfo }) => {
+  const createPost = async ({ title, content, category, userInfo }) => {
     // db에 document를 생성해서 추가를 해야한다.
     const newPost = {
       title,
@@ -57,15 +61,15 @@ const PostProvider = ({ children }) => {
     //Firestore에서 'posts'컬렉션에 대한 참조 생성하기
     const collectionRef = collection(db, 'posts');
     // 'posts' 컬렉션에 newPost 문서를 추가합니다.
-    addDoc(collectionRef, newPost)
-      .then((res) => {
+    try {
+      addDoc(collectionRef, newPost).then((res) => {
         console.log('add success');
         getPost();
-      })
-      .catch((e) => {
-        console.error('An Error occurred while adding posts');
-        console.error(e);
       });
+    } catch (error) {
+      console.error(error);
+      console.log(newPost);
+    }
   };
   // U
   const updatePost = ({ postId, data }) => {
