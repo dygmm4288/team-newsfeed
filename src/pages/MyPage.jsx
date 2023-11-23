@@ -8,7 +8,7 @@ import { useAuth } from '../contexts/auth.context';
 import { db, storage } from '../firebase/firebase.config';
 import { getDefaultProfileImgURL } from '../firebase/firebaseStorage';
 import { collection, getDocs } from 'firebase/firestore';
-// 테스트
+
 function MyPage() {
   const [isEditing, setIsEditing] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
