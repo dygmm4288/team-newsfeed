@@ -28,7 +28,10 @@ export const AuthProvider = ({ children }) => {
       .then((userCredentialImpl) => {
         setUser(userCredentialImpl.user);
       })
-      .catch((err) => setError(err));
+      .catch((err) => {
+        setError(err)
+        console.error(err);
+      });
   };
   const signOutUser = () => {
     signOut(auth);

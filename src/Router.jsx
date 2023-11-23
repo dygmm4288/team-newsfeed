@@ -9,7 +9,8 @@ export default function Router() {
     <Routes>
       <Route path="/" element={<Home />}></Route>
       <Route path="mypage" element={<MyPage />}></Route>
-      <Route path="auth" element={<Auth />} />
+      <Route path="auth" element={<Auth />} ></Route>
+      <Route path="signup" element={<SignUp />} ></Route>
     </Routes>
   );
 }
