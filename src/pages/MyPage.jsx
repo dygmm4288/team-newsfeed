@@ -10,8 +10,9 @@ import { useAuth } from '../contexts/auth.context';
 import { addDoc, collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebase/firebase.config';
 import ScrollToTopBtn from '../components/Layout/ScrollToTopBtn';
+import { getDefaultProfileImgURL } from '../firebase/firebaseStorage';
+import {getDownloadFileURL} from '../firebase/firebaseStorage';
 
-const userNickname = 'hamin';
 
 function MyPage() {
   const navigate = useNavigate();
@@ -19,12 +20,35 @@ function MyPage() {
   const [isEditing, setIsEditing] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedFileIsFilled, setSelectedFileIsFilled] = useState(false);
-  const [editedNickname, setEditedNickname] = useState(userNickname); // 초기값: user 정보에서 nickname 가져와야함
-  const {userInfo, signInWithEmail} = useAuth();
+  const {userInfo, signInWithEmail,setUserProfileImgUrl,setUserNickname} = useAuth();
+  const [editedNickname, setEditedNickname] = useState(userInfo?.nickname); // 초기값: user 정보에서 nickname 가져와야함
   const [myPosts, setMyPosts] = useState([]);
-
+  
   useEffect(() => {
     const fetchData = async () => {
+      // 첫번째로 이 컴포넌트가 랜더링을 한다면 사용자 정보를 가지고 오고 프로필을 보여줄 수 있어야 한다.
+      // 사용자 정보에는 프로필 이미지 url에 대한 내용이 들어있다.
+      // 만약에 어떠한 이유로 프로필 이미지 url이 안들어 있을 경우 default 이미지를 보여주고 싶다. (하고 싶은 것)
+
+      // const userImageURL = await getDownloadFileURL(`profile/${userNickname}`);
+      // const defaultUserImageURL = await getDefaultProfileImgURL(`profile/default-profile-img.png`);
+      if(!userInfo?.profileImgUrl){
+        // 이게 없다라는 것은 일단. storage에 파일이 없다라는 것을 의미하기 때문에 
+        // const userImageURL = await getDownloadFileURL(`profile/${userNickname}`); 이 로직은 storage에 파일이 있는 사람이 가져와야하는 로직이다.
+        /* const userImageURL = await getDownloadFileURL(`profile/${userNickname}`);
+        setSelectedFile(userImageURL);
+        setImgUrl(userImageURL); */
+        // 어떠한 이유로 프로필 이미지 url이 없는 사용자에 대해서  default 이미지를 보여주기 위해서 storage에 defeault 이미지를 가지고 온다.
+          const defaultUserImageURL = await getDefaultProfileImgURL(`profile/default-profile-img.png`);
+        // 가지고 온 url을 우리 페이지에서도 보여줘야하고, auth에도 해당 내용을 반영을 해야 한다.
+          await setUserProfileImgUrl(defaultUserImageURL);
+          setSelectedFile(defaultUserImageURL);
+          setImgUrl(defaultUserImageURL);
+      } else if(userInfo?.profileImgUrl) { // 반대로 오히려 있다면
+        // 해당 url을 기반으로 storage에 접근해서 image 파일을 가져와야 한다.
+        setSelectedFile(userInfo.profileImgUrl);
+        setImgUrl(userInfo.profileImgUrl);
+      }
       const querySnapshot = await getDocs(collection(db, 'posts'));
       const fetchedPosts = [];
       querySnapshot.forEach((doc) => {
@@ -36,6 +60,14 @@ function MyPage() {
     fetchData();
   }, []);
 
+    // 랜더링이 모두 끝난 후, 만약 프로필사진(selectedFile)이 null 이라면 기본 프로필 이미지 URL Set.
+  // useEffect(() => {
+  //   setSelectedFile(selectedFile);
+  //   if(!selectedFile){
+  //     getDefaultProfileImgURL().then((url)=> setImgUrl(url));
+  //   }
+  // },[selectedFile]);
+
   const handleFileSelect = (event) => {
     const selectedFile = event.target.files[0];
     setSelectedFile(selectedFile);
@@ -43,31 +75,25 @@ function MyPage() {
     setSelectedFileIsFilled(true);
   }
 
-  useEffect(() => {
-    setSelectedFile(selectedFile);
-  },[selectedFile]); // ??
 
 
   const saveUpdatedProfile = async(e) => {
-    const imageRef = ref(storage, `profile/${userNickname}`);
+    const imageRef = ref(storage, `profile/${userInfo.nickname}`);
     e.preventDefault();
     // validation check
-    // 글자수 검사: 닉네임 10자.
-    //여기에 selectFile를 어떻게 넣지?
-    if (editedNickname.length === 0){
+    if (userInfo?.nickname.length === 0){
       alert("닉네임을 입력해주세요.");
       return;
-    } else if (editedNickname.length > 10){
+    } else if (userInfo?.nickname.length > 10){
       alert("닉네임을 10자 이내로 입력해주세요.");
       return;
-    } else if (/^\s*$/.test(editedNickname)){
+    } else if (/^\s*$/.test(userInfo?.nickname)){
       alert("공백만 입력하셨습니다. 다시 입력해주세요.");
     } else {
       if(window.confirm("변경사항을 저장하시겠습니까?")){
         await uploadBytes(imageRef, selectedFile);
-        console.log('selectedFile!!',selectedFile); //null 이 나옴
         setSelectedFileIsFilled(true);
-        setEditedNickname(editedNickname);
+        setEditedNickname(userInfo?.nickname);
         alert("변경사항이 저장되었습니다.");
         setSelectedFileIsFilled(false);
         setIsEditing(false);
@@ -78,6 +104,7 @@ function MyPage() {
     
     // image file URL save 
     const downloadURL = await getDownloadURL(imageRef);
+    await setUserProfileImgUrl(downloadURL);
     console.log("downloadURL", downloadURL);
     setImgUrl(downloadURL);
   };
@@ -99,12 +126,12 @@ function MyPage() {
             {console.log('imgUrl', imgUrl)}
             <StMyInformation>
                 <StMyInformationDetailsContainer>
-                  <StHiMyNickname>안녕하세요, {editedNickname}님!</StHiMyNickname>
+                  <StHiMyNickname>안녕하세요, {userInfo?.nickname}님!</StHiMyNickname>
                   <StMyInformationDetailsSmallContainer>
                     <StMyEmail>E-mail: {userInfo?.email}</StMyEmail>
-                    {!isEditing && <><StMyNickName>Nickname: {editedNickname}</StMyNickName></>}
+                    {!isEditing && <><StMyNickName>Nickname: {userInfo?.nickname}</StMyNickName></>}
                     {isEditing && <EditForm onSubmit={saveUpdatedProfile}>
-                      닉네임: <NicknameEditInput onChange={typeEditedNickname} value={editedNickname} />
+                      닉네임: <NicknameEditInput onChange={typeEditedNickname} value={userInfo?.nickname} />
                       <StImageInputAfterContainer>
                         <StImageInput type="file" onChange={handleFileSelect} />
                       </StImageInputAfterContainer> 
