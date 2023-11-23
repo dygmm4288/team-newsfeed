@@ -102,7 +102,7 @@ function MyPage() {
                   <StHiMyNickname>안녕하세요, {editedNickname}님!</StHiMyNickname>
                   <StMyInformationDetailsSmallContainer>
                     <StMyEmail>E-mail: {userInfo?.email}</StMyEmail>
-                    {!isEditing && <><StMyNickName>nickname: {editedNickname}</StMyNickName></>}
+                    {!isEditing && <><StMyNickName>Nickname: {editedNickname}</StMyNickName></>}
                     {isEditing && <EditForm onSubmit={saveUpdatedProfile}>
                       닉네임: <NicknameEditInput onChange={typeEditedNickname} value={editedNickname} />
                       <StImageInputAfterContainer>
@@ -123,7 +123,7 @@ function MyPage() {
         <StMyPostContainer>
           <StMyPostTitle>My Post</StMyPostTitle>
           <StMyPostList>
-            {/* 닉네임으로 필터링하기 */}
+            {/* 닉네임으로 필터링하기 -> 조건부랜더링(리스트가 없을때, 있을 때->map) */}
             {myPosts.map((myPost)=>{
               return(
                 <StMyPost>
@@ -194,8 +194,9 @@ const StMyInformationDetailsSmallContainer = styled.div`
   border-radius: 5px;
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
-  padding: 8px;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 8px 8px 15px;
   min-height: 90px;
   width: 250px;
 `;
@@ -225,10 +226,11 @@ const EditForm = styled.form`
 `;
 
 const StButtonSmallContainer = styled.div`
-  border: 1px solid red;
+  /* border: 1px solid green; */
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
   width: 80%;
   gap: 10px;
 `;
@@ -252,6 +254,7 @@ const StHiMyNickname = styled.div`
   line-height: 2.0;
   width: 250px;
   font-weight: 600;
+  margin-left: 10px;
 `;
 
 const StButtonContainer = styled.div`
@@ -261,7 +264,7 @@ const StButtonContainer = styled.div`
   align-items: center;
   justify-content: center;
   width: 150px;
-  height: 150px;
+  height: 165px;
 `;
 
 const StButton = styled.button`
