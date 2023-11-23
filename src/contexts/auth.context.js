@@ -1,11 +1,14 @@
 import {
+  GithubAuthProvider,
   onAuthStateChanged,
   signInWithEmailAndPassword,
+  signInWithPopup,
   signOut,
   updateProfile
 } from 'firebase/auth';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { auth } from '../firebase/firebase.config';
+import { getDefaultProfileImgURL } from '../firebase/firebaseStorage';
 
 // initialState
 const initialState = {
@@ -14,6 +17,7 @@ const initialState = {
   signOutUser: () => {},
   setUserNickname: (nickname) => {},
   setUserProfileImgUrl: (profileImgUrl) => {},
+  signInWithGithub: () => {},
   error: null
 };
 // context 생성
@@ -22,25 +26,41 @@ export const AuthContext = createContext(initialState);
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(auth.currentUser);
   const [error, setError] = useState(null);
+  //! 현재는 테스트를 위해 로그인을 할 때 default 이미지를 넣지만 나중에는 회원가입을 할 때 해당 기능을 수행해야한다.
 
   const signInWithEmail = (email, password) => {
+    setError(null);
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredentialImpl) => {
         setUser(userCredentialImpl.user);
+        setDefaultProfileImgUrl(userCredentialImpl.user);
       })
       .catch((err) => setError(err));
   };
   const signOutUser = () => {
+    setError(null);
     signOut(auth);
+  };
+  const signInWithGithub = () => {
+    const provider = new GithubAuthProvider();
+    setError(null);
+    signInWithPopup(auth, provider)
+      .then(async (result) => {
+        setUser(result.user);
+        setDefaultProfileImgUrl(result.user);
+      })
+      .catch((err) => {
+        setError(err);
+        console.error(err);
+      });
   };
 
   const setUserNickname = (nickname) => {
-    updateProfileBy({ displayName: nickname });
+    return updateProfileBy({ displayName: nickname });
   };
   const setUserProfileImgUrl = (profileImgUrl) => {
-    updateProfile({ photoURL: profileImgUrl });
+    return updateProfileBy({ photoURL: profileImgUrl });
   };
-
   useEffect(() => {
     onAuthStateChanged(auth, (authUser) => {
       if (authUser) {
@@ -65,7 +85,8 @@ export const AuthProvider = ({ children }) => {
     error,
     signOutUser,
     setUserNickname,
-    setUserProfileImgUrl
+    setUserProfileImgUrl,
+    signInWithGithub
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
@@ -74,16 +95,36 @@ export const AuthProvider = ({ children }) => {
 export const useAuth = () => useContext(AuthContext);
 
 const updateProfileBy = (updatedValue) => {
-  if (!auth.currentUser) return;
+  if (!auth.currentUser)
+    return new Promise((_, rej) => {
+      rej(new Error('Not valid auth current user'));
+    });
   updateProfile(auth.currentUser, updatedValue)
     .then(() => {
-      console.log('update success');
+      console.log(
+        '[updateProfile] : Update Profile Success, update value is : ',
+        updatedValue
+      );
     })
     .catch((err) => {
-      console.error('update failed');
-      console.error(err);
+      console.error(
+        '[Error updateProfile] : Update Profile Fail, err is : ',
+        err
+      );
     })
     .finally(() => {
-      console.log('update logic progressed');
+      console.log('[updateProfile] : update Profile processed');
     });
 };
+
+async function setDefaultProfileImgUrl(user) {
+  if (user.photoURL) return;
+  try {
+    updateProfileBy({ photoURL: await getDefaultProfileImgURL() });
+  } catch (err) {
+    console.error(
+      'error occurred while getting the default profile image url.'
+    );
+    console.error(err);
+  }
+}

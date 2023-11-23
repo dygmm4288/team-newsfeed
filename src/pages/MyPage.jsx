@@ -5,7 +5,6 @@ function MyPage() {
   return (
     <StOuterFrame>
       <StMainContainer>
-        {/* Layout(Header) */}
         <div></div>
         <StMyInformationContainer>
           <StProfilePicture />

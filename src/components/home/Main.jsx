@@ -1,17 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+<<<<<<< HEAD
 import Post from './Post';
 import { addDoc, collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/firebase.config';
 import { v4 as uuidv4 } from 'uuid';
+=======
+import { usePost } from '../../contexts/post.context';
+import Post from './Posts';
+>>>>>>> 03a0b4c6ad04e0d7cbc0c9660122d72941dfb473
 
 function Main() {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [posts, setPosts] = useState([]);
-
   // const { category } = useParams();
   const [category, setCategory] = useState('전체보기');
+<<<<<<< HEAD
 
   // data get (가져오기)
   useEffect(() => {
@@ -27,11 +31,16 @@ function Main() {
     fetchData();
   }, []);
 
+=======
+  const { posts, createPost } = usePost();
+  console.log(posts);
+>>>>>>> 03a0b4c6ad04e0d7cbc0c9660122d72941dfb473
   // data get (추가하기)
   const handleAddPost = async (event) => {
     event.preventDefault();
 
     if (title.trim() && content.trim()) {
+<<<<<<< HEAD
       const newPost = {
         // nickname : 회원가입 후 작성한 닉네임 값
         //profileImg : 회원가입시 등록한 이미지 값
@@ -51,22 +60,16 @@ function Main() {
       // 'posts' 컬렉션에 newPost 문서를 추가
       await addDoc(collectionRef, newPost);
 
+=======
+      createPost({ title, content, category });
+>>>>>>> 03a0b4c6ad04e0d7cbc0c9660122d72941dfb473
       setTitle('');
       setContent('');
     } else {
       alert('제목과 내용 모두 입력해주세요💌');
     }
   };
-  // setPosts(() => {
-  //   return [newPost, ...posts];
-  // });
-
-  // useEffect(() => {
-  //   console.log(posts);
-  // }, [posts]);
-
   return (
-    //flex로 input 세로 배치 할 예정
     <StContainer>
       <form onSubmit={(event) => handleAddPost(event)}>
         <input
@@ -94,7 +97,6 @@ function Main() {
           placeholder="어떤 이야기를 나누고 싶나요?"
         />
         <select value={category} onChange={(e) => setCategory(e.target.value)}>
-          <option value={'전체보기'}>전체보기</option>
           <option value={'발라드'}>발라드</option>
           <option value={'힙합'}>힙합</option>
           <option value={'R&B'}>R&B</option>
@@ -105,12 +107,16 @@ function Main() {
         <button type="submit">추가</button>
       </form>
       <StPostBox>
+<<<<<<< HEAD
         <Post
           title={title}
           content={content}
           posts={posts}
           setPosts={setPosts}
         />
+=======
+        <Post />
+>>>>>>> 03a0b4c6ad04e0d7cbc0c9660122d72941dfb473
       </StPostBox>
     </StContainer>
   );
@@ -123,7 +129,8 @@ const StContainer = styled.div`
   flex-direction: column;
   align-items: center;
   width: 75%;
-  border: 2px solid black;
+  margin: 40px 0;
+  /* border: 2px solid black; */
 `;
 
 const StPostBox = styled.ul`
