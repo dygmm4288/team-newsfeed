@@ -33,14 +33,12 @@ const PostProvider = ({ children }) => {
         querySnapshot.forEach((doc) => {
           fetchedPosts.push({ id: doc.id, ...doc.data() });
         });
-        // setPosts((prev) => prev.concat(1));
         setPosts(fetchedPosts);
       })
       .catch((e) => {
         console.error('An Error occurred while fetching posts');
         console.error(e);
       });
-    // console.log(setPosts((prev) => prev.concat(1)));
   };
 
   // 밑에 들어가는 로직은 똑같은 입력이 주어지면 똑같은 출력(로직을 수행할 수 있어야 한다)을 할 수 있어야 한다.
@@ -70,7 +68,6 @@ const PostProvider = ({ children }) => {
   // U
   const updatePost = ({ postId, data }) => {
     const postRef = doc(db, 'posts', postId);
-    console.log({ data });
     updateDoc(postRef, data)
       .then((res) => {
         console.log('update success');
