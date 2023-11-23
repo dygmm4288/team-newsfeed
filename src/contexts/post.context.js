@@ -23,7 +23,6 @@ const PostContext = createContext(initialState);
 const PostProvider = ({ children }) => {
   // posts를 데이터베이스에서 요청을 해야 한다.
   const [posts, setPosts] = useState([]);
-
   useEffect(() => {
     getPost();
   }, []);
@@ -34,23 +33,26 @@ const PostProvider = ({ children }) => {
         querySnapshot.forEach((doc) => {
           fetchedPosts.push({ id: doc.id, ...doc.data() });
         });
+        // setPosts((prev) => prev.concat(1));
         setPosts(fetchedPosts);
       })
       .catch((e) => {
         console.error('An Error occurred while fetching posts');
         console.error(e);
       });
+    // console.log(setPosts((prev) => prev.concat(1)));
   };
 
   // 밑에 들어가는 로직은 똑같은 입력이 주어지면 똑같은 출력(로직을 수행할 수 있어야 한다)을 할 수 있어야 한다.
   // C
-  const createPost = ({ title, content, category }) => {
+  const createPost = ({ title, content, category, userInfo }) => {
     // db에 document를 생성해서 추가를 해야한다.
     const newPost = {
       title,
       content,
       createdAt: new Date().toLocaleString(),
-      category
+      category,
+      userInfo
     };
     //Firestore에서 'posts'컬렉션에 대한 참조 생성하기
     const collectionRef = collection(db, 'posts');
@@ -68,6 +70,7 @@ const PostProvider = ({ children }) => {
   // U
   const updatePost = ({ postId, data }) => {
     const postRef = doc(db, 'posts', postId);
+    console.log({ data });
     updateDoc(postRef, data)
       .then((res) => {
         console.log('update success');
