@@ -2,11 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import { StPost } from '../../home/Post';
 import { StTwinkleDiv } from './Skeleton.styles';
-import StSkeletonCircle from './SkeletonCicle';
+import SkeletonCircle from './SkeletonCircle';
 function SkeletonPost() {
   return (
     <StSkeletonPostWrapper>
-      <StSkeletonCircle />
+      <SkeletonCircle />
       <StSkeletonLine />
       <StSkeletonContent>
         <StSkeletonContentLine size={3} twinkleTime={0.6} />
@@ -31,7 +31,6 @@ const StSkeletonPostWrapper = styled(StPost)`
   padding: 1rem;
 `;
 const StSkeletonLine = styled(StTwinkleDiv)`
-  border-radius: 1rem;
   background-color: gray;
   grid-area: line;
   border-radius: 3rem;
