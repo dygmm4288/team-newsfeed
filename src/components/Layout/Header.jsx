@@ -31,10 +31,11 @@ function Header() {
         ) : userInfo === null ? (
           // homepage - login X
           <>
-            <StSkeletonWrapper>
+            {/* 어떻게 반영?? */}
+            {/* <StSkeletonWrapper>
               <SkeletonLine />
               <SkeletonCircle />
-            </StSkeletonWrapper>
+            </StSkeletonWrapper> */}
             <button onClick={handleNavigateToAuth}>Log in</button>
           </>
         ) : (
