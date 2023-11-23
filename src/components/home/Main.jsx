@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import Post from './Post';
 import { addDoc, collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/firebase.config';
+import { useAuth } from '../../contexts/auth.context';
+import { useNavigate } from 'react-router-dom';
 
 function Main() {
   const [title, setTitle] = useState('');
@@ -10,6 +12,14 @@ function Main() {
   const [posts, setPosts] = useState([]);
 
   const [selectedCategory, setSelectedCategory] = useState('전체보기');
+
+  const { userInfo } = useAuth();
+  const titleInputRef = useRef();
+  const contentInputRef = useRef();
+  const categorySelecte = useRef();
+  const sunmitBtn = useRef();
+
+  const navigate = useNavigate();
 
   // data get (가져오기)
   useEffect(() => {
@@ -54,19 +64,29 @@ function Main() {
       alert('제목과 내용 모두 입력해주세요💌');
     }
   };
-  // setPosts(() => {
-  //   return [newPost, ...posts];
-  // });
 
-  // useEffect(() => {
-  //   console.log(posts);
-  // }, [posts]);
+  // 로그인 X alert
+  const handleFocus = () => {
+    if (userInfo === null) {
+      if (
+        window.confirm('로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?')
+      ) {
+        navigate('/auth');
+      } else {
+        titleInputRef.current.blur();
+        contentInputRef.current.blur();
+        categorySelecte.current.blur();
+        sunmitBtn.current.blur();
+      }
+    }
+  };
 
   return (
     //flex로 input 세로 배치 할 예정
     <StContainer>
-      <form onSubmit={(event) => hanbleAddPost(event)}>
+      <form onSubmit={(event) => hanbleAddPost(event)} onFocus={handleFocus}>
         <input
+          ref={titleInputRef}
           type="text"
           value={title}
           onChange={(e) => {
@@ -79,6 +99,7 @@ function Main() {
           placeholder="제목을 입력해주세요"
         ></input>
         <input
+          ref={contentInputRef}
           type="textarea"
           value={content}
           onChange={(e) => {
@@ -91,6 +112,7 @@ function Main() {
           placeholder="어떤 이야기를 나누고 싶나요?"
         />
         <select
+          ref={categorySelecte}
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(e.target.value)}
         >
@@ -102,7 +124,9 @@ function Main() {
           <option value={'댄스'}>댄스</option>
           <option value={'연예인'}>연예인</option>
         </select>
-        <button type="submit">추가</button>
+        <button ref={sunmitBtn} type="submit">
+          추가
+        </button>
       </form>
       <StPostBox>
         <Post posts={posts} />

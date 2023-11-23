@@ -22,8 +22,6 @@ function Post({ posts }) {
 
   const category = searchParams.get('category');
 
-  console.log(posts.id);
-
   return (
     <>
       {posts.filter((posts) => {

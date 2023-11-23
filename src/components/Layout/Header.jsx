@@ -13,6 +13,10 @@ function Header() {
     navigate('/mypage');
   }, []);
 
+  const handleNavigateToAuth = useCallback(() => {
+    navigate('/auth');
+  }, []);
+
   return (
     <StHeader>
       <StWrapper>
@@ -24,7 +28,7 @@ function Header() {
           <button onClick={() => navigate('/')}>Go to home</button>
         ) : userInfo === null ? (
           // homepage - login X
-          <button onClick={handleNavigateToMyPage}>Log in</button>
+          <button onClick={handleNavigateToAuth}>Log in</button>
         ) : (
           // homepage - login O
           <StIdAndProfilePicture onClick={handleNavigateToMyPage}>
