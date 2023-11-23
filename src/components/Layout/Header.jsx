@@ -9,8 +9,6 @@ function Header() {
   const location = useLocation();
   const currentPath = location.pathname;
 
-  console.log(currentPath);
-
   const handleNavigateToMyPage = useCallback(() => {
     navigate('/mypage');
   }, []);

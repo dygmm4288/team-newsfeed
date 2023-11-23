@@ -22,30 +22,48 @@ function Post({ posts }) {
 
   const category = searchParams.get('category');
 
-  useEffect(() => {
-    console.log('현재 카테고리:', category);
-  }, [category]);
+  console.log(posts.id);
 
   return (
     <>
-      {posts.map((posts) => (
-        <StPost>
-          <StPostTop>
-            <img src={ProfilePicture} alt="ProfilePicture" />
-            <p>{posts.nickname}</p>
-            <p>{posts.title}</p>
-          </StPostTop>
-          <StPostBottom>
-            <button>···</button>
-            <p>{posts.content}</p>
-          </StPostBottom>
-        </StPost>
-      ))}
+      {posts.filter((posts) => {
+        return category === null ? true : posts.category === category;
+      }).length === 0 ? (
+        <StNoPosts>
+          등록되어 있는 포스트가 없습니다.
+          <br />첫 포스트를 등록해 보세요~! 😀
+        </StNoPosts>
+      ) : (
+        posts
+          .filter((posts) => {
+            return category === null ? true : posts.category === category;
+          })
+          .map((posts) => (
+            // key값 부여해야하는 id값이 없음...!
+            <StPost key={posts.id}>
+              <StPostTop>
+                <img src={ProfilePicture} alt="ProfilePicture" />
+                <p>{posts.nickname}</p>
+                <p>{posts.title}</p>
+              </StPostTop>
+              <StPostBottom>
+                <button>···</button>
+                <p>{posts.content}</p>
+              </StPostBottom>
+            </StPost>
+          ))
+      )}
     </>
   );
 }
 
 export default Post;
+
+const StNoPosts = styled.p`
+  text-align: center;
+  line-height: 1.5;
+  margin-top: 40px;
+`;
 
 const StPost = styled.li`
   width: 500px;
