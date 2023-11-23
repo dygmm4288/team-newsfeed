@@ -50,6 +50,7 @@ const GlobalStyle = createGlobalStyle`
 
   :root {
     --box-shadow: 1px 1px 6px #3a3a3a;
+    --img-size: 40px;
   }
   html {
     scroll-behavior: smooth;

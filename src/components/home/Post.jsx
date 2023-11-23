@@ -1,6 +1,6 @@
 import React from 'react';
-import ProfilePicture from '../../assets/Layout/Test-ProfilePicture.png';
 import styled from 'styled-components';
+import ProfilePicture from '../../assets/Layout/Test-ProfilePicture.png';
 
 function Post({ posts }) {
   const changedPost = () => {};
@@ -27,7 +27,7 @@ function Post({ posts }) {
 
 export default Post;
 
-const StPost = styled.li`
+export const StPost = styled.li`
   width: 500px;
   min-height: 300px;
   margin-top: 20px;
