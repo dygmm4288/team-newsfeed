@@ -1,7 +1,5 @@
 import React, { useEffect,useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import React, { useEffect,useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 // import FileUpload from '../components/FileUpload';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
@@ -80,7 +78,7 @@ function MyPage() {
     <StOuterFrame>
       <StMainContainer>
         <Header />
-          <StMyInformationContainer>
+        <StMyInformationContainer>
             <StProfilePicture src={imgUrl}/>
             {console.log('imgUrl', imgUrl)}
             <StMyInformation>
@@ -105,34 +103,7 @@ function MyPage() {
                 </StButtonSmallContainer>)}
                 </StButtonContainer>
             </StMyInformation>
-          </StMyInformationContainer>
-        <Header />
-          <StMyInformationContainer>
-            <StProfilePicture src={imgUrl}/>
-            {console.log('imgUrl', imgUrl)}
-            <StMyInformation>
-                <StMyInformationDetailsContainer>
-                  <StHiMyNickname>안녕하세요, {editedNickname}님!</StHiMyNickname>
-                  <StMyEmail>E-mail: {userInfo?.email}</StMyEmail>
-                  {/* 닉네임: <StMyNickName>니크네임</StMyNickName> */}
-                  {!isEditing && <>닉네임: <StMyNickName>{editedNickname}</StMyNickName></>}
-                  {isEditing && <form onSubmit={saveUpdatedProfile}>
-                    닉네임: <input onChange={typeEditedNickname} value={editedNickname} />
-                    <StImageInputAfterContainer>
-                      <StImageInput type="file" onChange={handleFileSelect} />
-                    </StImageInputAfterContainer> 
-                    
-                  </form>}
-                </StMyInformationDetailsContainer>
-                <StButtonContainer>
-                  {!isEditing && (<StProfileEditButton onClick={goEditMode}>프로필 수정하기</StProfileEditButton>)}
-                  {isEditing && (<StButtonSmallContainer>
-                  <StButton onClick={()=>setIsEditing(false)}>취소하기</StButton>
-                  <StButton onClick={saveUpdatedProfile}>변경사항 저장</StButton>
-                </StButtonSmallContainer>)}
-                </StButtonContainer>
-            </StMyInformation>
-          </StMyInformationContainer>
+        </StMyInformationContainer>
         <StMyPostContainer>
           <StMyPostTitle>My Post</StMyPostTitle>
           <StMyPostTitle>My Post</StMyPostTitle>
