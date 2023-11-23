@@ -1,11 +1,15 @@
 import React, { useCallback } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAuth } from '../../contexts/auth.context';
 
 function Header() {
   const navigate = useNavigate();
   const { userInfo } = useAuth();
+  const location = useLocation();
+  const currentPath = location.pathname;
+
+  console.log(currentPath);
 
   const handleNavigateToMyPage = useCallback(() => {
     navigate('/mypage');
@@ -17,10 +21,19 @@ function Header() {
         <Link to="/">
           <h1>Beat Bridge</h1>
         </Link>
-        <StIdAndProfilePicture onClick={handleNavigateToMyPage}>
-          <p>{userInfo?.email}</p>
-          <img src={userInfo?.profileImgUrl} alt="profile avatar" />
-        </StIdAndProfilePicture>
+        {/* mypage */}
+        {currentPath === '/mypage' ? (
+          <button onClick={() => navigate('/')}>Go to home</button>
+        ) : userInfo === null ? (
+          // homepage - login X
+          <button onClick={handleNavigateToMyPage}>Log in</button>
+        ) : (
+          // homepage - login O
+          <StIdAndProfilePicture onClick={handleNavigateToMyPage}>
+            <p>{userInfo?.email}</p>
+            <img src={userInfo?.profileImgUrl} alt="profile avatar" />
+          </StIdAndProfilePicture>
+        )}
       </StWrapper>
     </StHeader>
   );
