@@ -7,6 +7,9 @@ import {storage} from '../firebase/firebase.config';
 import Header from '../components/Layout/Header';
 // import SettingButton from '../components/SettingButton';
 import { useAuth } from '../contexts/auth.context';
+import { addDoc, collection, getDocs } from 'firebase/firestore';
+import { db } from '../firebase/firebase.config';
+import ScrollToTopBtn from '../components/Layout/ScrollToTopBtn';
 
 const userNickname = 'hamin';
 
@@ -18,7 +21,20 @@ function MyPage() {
   const [selectedFileIsFilled, setSelectedFileIsFilled] = useState(false);
   const [editedNickname, setEditedNickname] = useState(userNickname); // 초기값: user 정보에서 nickname 가져와야함
   const {userInfo, signInWithEmail} = useAuth();
+  const [myPosts, setMyPosts] = useState([]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const querySnapshot = await getDocs(collection(db, 'posts'));
+      const fetchedPosts = [];
+      querySnapshot.forEach((doc) => {
+        console.log(doc.data());
+        fetchedPosts.push(doc.data());
+      });
+      setMyPosts(fetchedPosts);
+    };
+    fetchData();
+  }, []);
 
   const handleFileSelect = (event) => {
     const selectedFile = event.target.files[0];
@@ -84,16 +100,16 @@ function MyPage() {
             <StMyInformation>
                 <StMyInformationDetailsContainer>
                   <StHiMyNickname>안녕하세요, {editedNickname}님!</StHiMyNickname>
-                  <StMyEmail>E-mail: {userInfo?.email}</StMyEmail>
-                  {/* 닉네임: <StMyNickName>니크네임</StMyNickName> */}
-                  {!isEditing && <>닉네임: <StMyNickName>{editedNickname}</StMyNickName></>}
-                  {isEditing && <form onSubmit={saveUpdatedProfile}>
-                    닉네임: <input onChange={typeEditedNickname} value={editedNickname} />
-                    <StImageInputAfterContainer>
-                      <StImageInput type="file" onChange={handleFileSelect} />
-                    </StImageInputAfterContainer> 
-                    
-                  </form>}
+                  <StMyInformationDetailsSmallContainer>
+                    <StMyEmail>E-mail: {userInfo?.email}</StMyEmail>
+                    {!isEditing && <><StMyNickName>nickname: {editedNickname}</StMyNickName></>}
+                    {isEditing && <EditForm onSubmit={saveUpdatedProfile}>
+                      닉네임: <NicknameEditInput onChange={typeEditedNickname} value={editedNickname} />
+                      <StImageInputAfterContainer>
+                        <StImageInput type="file" onChange={handleFileSelect} />
+                      </StImageInputAfterContainer> 
+                    </EditForm>}
+                  </StMyInformationDetailsSmallContainer>
                 </StMyInformationDetailsContainer>
                 <StButtonContainer>
                   {!isEditing && (<StProfileEditButton onClick={goEditMode}>프로필 수정하기</StProfileEditButton>)}
@@ -106,15 +122,22 @@ function MyPage() {
         </StMyInformationContainer>
         <StMyPostContainer>
           <StMyPostTitle>My Post</StMyPostTitle>
-          <StMyPostTitle>My Post</StMyPostTitle>
           <StMyPostList>
-            <StMyPost>포스트 1</StMyPost>
-            <StMyPost>포스트 2</StMyPost>
-            <StMyPost>포스트 3</StMyPost>
-            <StMyPost>포스트 4</StMyPost>
+            {/* 닉네임으로 필터링하기 */}
+            {myPosts.map((myPost)=>{
+              return(
+                <StMyPost>
+                  <p>{myPost.email}</p>
+                  <p>{myPost.nickname}</p>
+                  <p>{myPost.title}</p>
+                  <p>{myPost.content}</p>
+                </StMyPost>
+              );
+            })}
           </StMyPostList>
         </StMyPostContainer>
       </StMainContainer>
+      <ScrollToTopBtn />
     </StOuterFrame>
   );
 }
@@ -122,7 +145,7 @@ function MyPage() {
 export default MyPage;
 
 const StOuterFrame = styled.div`
-  border: 1px solid red;
+  /* border: 1px solid red; */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -130,13 +153,14 @@ const StOuterFrame = styled.div`
 `;
 
 const StMainContainer = styled.div`
-  border: 1px solid red;
+  /* border: 1px solid red; */
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 50px;
   min-height: 100vh;
   width: 960px;
+  margin: 0 0 100px 0;
 `;
 
 const StMyInformationContainer = styled.div`
@@ -148,6 +172,7 @@ const StMyInformationContainer = styled.div`
   gap: 80px;
   height: 200px;
   width: 800px;
+  margin-top: 120px;
 `;
 
 const StMyInformation = styled.div`
@@ -160,14 +185,43 @@ const StMyInformationDetailsContainer = styled.div`
   display: flex;
   flex-direction: column;
   border: 1px solid orange;
+  padding: 20px;
+  min-width: 300px;
+`;
+
+const StMyInformationDetailsSmallContainer = styled.div`
+  background-color: #f2f2f2;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding: 8px;
+  min-height: 90px;
+  width: 250px;
 `;
 
 const StMyEmail = styled.p`
-  color: purple;
+  margin: 5px 0 0 0;
+  color: #929292;
+  font-size: 0.95rem;
 `;
 
 const StMyNickName = styled.p`
-   color: green;
+   margin: 0 0 5px 0;
+   font-size: 0.95rem;
+   color: #929292;
+`;
+
+const NicknameEditInput = styled.input`
+  color: #929292;
+  border: 0.5px solid #c8c8c8;
+  width: 120px;
+  padding-left: 3px;
+`;
+
+const EditForm = styled.form`
+  color: #929292;
+  font-size: 0.95rem;
 `;
 
 const StButtonSmallContainer = styled.div`
@@ -187,18 +241,17 @@ const StProfilePicture = styled.img`
   background-color: #d9d9d9;
   object-fit: cover;
   border-radius: 50%;
-  background-color: #d9d9d9;
 `;
 
 const StHiMyNickname = styled.div`
-  border: 1px solid black;
+  /* border: 1px solid black; */
   display: flex;
   flex-direction: row;
   align-items: center;
   line-height: 2.0;
   line-height: 2.0;
   width: 250px;
-  padding: 10px;
+  font-weight: 600;
 `;
 
 const StButtonContainer = styled.div`
@@ -219,16 +272,18 @@ const StButton = styled.button`
 
 
 const StMyPostContainer = styled.div`
-  border: 1px solid blue;
+  border: 1px solid black;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   width: 800px;
+  min-height: 800px;
 `;
 
 const StMyPostTitle = styled.h3`
   align-self: flex-start;
-  margin: 10px 10px 0 30px;
+  margin: 10px 10px 0 40px;
   font-size: 1.3rem;
   font-weight: 700;
 `;
@@ -242,9 +297,11 @@ const StMyPostList = styled.div`
   justify-content: flex-start;
   gap: 20px;
   width: 750px;
-  height: 450px;
+  height: 650px;
   overflow-y: scroll;
+  overflow-x: hidden;
   margin: 15px;
+  padding: 20px;
 `;
 
 const StMyPost = styled.div`
@@ -253,6 +310,7 @@ const StMyPost = styled.div`
   flex-basis: 350px;
   width: 700px;
   min-height: 150px;
+  padding: 20px;
 `;
 
 const StImageInputAfterContainer = styled.div`
@@ -262,7 +320,8 @@ const StImageInputAfterContainer = styled.div`
   align-items: center;
   width: 100%;
   gap: 10px;
-  border: 5px solid pink;
+  margin-top: 5px;
+  color: gray;
 `;
 
 const StImageInput = styled.input`
