@@ -1,12 +1,24 @@
 import React, { useEffect } from 'react';
 import ProfilePicture from '../../assets/Layout/Test-ProfilePicture.png';
 import styled from 'styled-components';
-import { useLocation } from 'react-router-dom';
-import { useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-function Post({ posts }) {
+function Post({ posts, category, userInfo }) {
   const changedPost = () => {};
   const deletePost = () => {};
+
+  const navigate = useNavigate();
+
+  // 로그인 X alert
+  const handleClick = () => {
+    if (userInfo === null) {
+      if (
+        window.confirm('로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?')
+      ) {
+        navigate('/auth');
+      }
+    }
+  };
 
   // location 이용
   // const location = useLocation();
@@ -18,9 +30,7 @@ function Post({ posts }) {
   // }, [queryString]);
 
   // useSearchParams 이용
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const category = searchParams.get('category');
+  // Main.jsx로 로직 이동
 
   return (
     <>
@@ -41,12 +51,12 @@ function Post({ posts }) {
             <StPost key={posts.id}>
               <StPostTop>
                 <img src={ProfilePicture} alt="ProfilePicture" />
-                <p>{posts.nickname}</p>
-                <p>{posts.title}</p>
+                <p>nickname : {posts.nickname}</p>
               </StPostTop>
               <StPostBottom>
-                <button>···</button>
-                <p>{posts.content}</p>
+                <button onClick={handleClick}>···</button>
+                <p className="title">title : {posts.title}</p>
+                <p className="content">content : {posts.content}</p>
               </StPostBottom>
             </StPost>
           ))
@@ -85,10 +95,18 @@ const StPostTop = styled.div`
 
 const StPostBottom = styled.div`
   position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
   height: 80%;
   padding: 15px;
   border: 2px solid blue;
   border-radius: 20px;
+
+  .title {
+    height: 15%;
+  }
 
   button {
     position: absolute;

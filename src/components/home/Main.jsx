@@ -5,13 +5,14 @@ import { addDoc, collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/firebase.config';
 import { useAuth } from '../../contexts/auth.context';
 import { useNavigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 function Main() {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [posts, setPosts] = useState([]);
 
-  const [selectedCategory, setSelectedCategory] = useState('전체보기');
+  const [selectedCategory, setSelectedCategory] = useState('발라드');
 
   const { userInfo } = useAuth();
   const titleInputRef = useRef();
@@ -65,6 +66,10 @@ function Main() {
     }
   };
 
+  // 주소에서 category 가져오기
+  const [searchParams, setSearchParams] = useSearchParams();
+  const category = searchParams.get('category');
+
   // 로그인 X alert
   const handleFocus = () => {
     if (userInfo === null) {
@@ -111,25 +116,28 @@ function Main() {
           }}
           placeholder="어떤 이야기를 나누고 싶나요?"
         />
-        <select
-          ref={categorySelecte}
-          value={selectedCategory}
-          onChange={(e) => setSelectedCategory(e.target.value)}
-        >
-          <option value={'전체보기'}>전체보기</option>
-          <option value={'발라드'}>발라드</option>
-          <option value={'힙합'}>힙합</option>
-          <option value={'R&B'}>R&B</option>
-          <option value={'락'}>락</option>
-          <option value={'댄스'}>댄스</option>
-          <option value={'연예인'}>연예인</option>
-        </select>
+        {category === null ? (
+          <select
+            ref={categorySelecte}
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+          >
+            <option value={'발라드'}>발라드</option>
+            <option value={'힙합'}>힙합</option>
+            <option value={'R&B'}>R&B</option>
+            <option value={'락'}>락</option>
+            <option value={'댄스'}>댄스</option>
+            <option value={'연예인'}>연예인</option>
+          </select>
+        ) : (
+          <p>{category}</p>
+        )}
         <button ref={sunmitBtn} type="submit">
           추가
         </button>
       </form>
       <StPostBox>
-        <Post posts={posts} />
+        <Post posts={posts} category={category} userInfo={userInfo} />
       </StPostBox>
     </StContainer>
   );
@@ -143,7 +151,13 @@ const StContainer = styled.div`
   align-items: center;
   width: 75%;
   margin: 40px 0;
-  /* border: 2px solid black; */
+
+  form {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+  }
 `;
 
 const StPostBox = styled.ul`
