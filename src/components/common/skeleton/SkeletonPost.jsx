@@ -1,6 +1,8 @@
 import React from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import { StPost } from '../../home/Post';
+import { StTwinkleDiv } from './Skeleton.styles';
+import StSkeletonCircle from './SkeletonCicle';
 function SkeletonPost() {
   return (
     <StSkeletonPostWrapper>
@@ -17,21 +19,6 @@ function SkeletonPost() {
 
 export default SkeletonPost;
 
-const twinkle = keyframes`
-  0% {
-    opacity: 0.5;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0.5;
-  }
-`;
-const StTwinkleDiv = styled.div`
-  animation: ${twinkle} ${(props) => props.twinkleTime || 1}s infinite
-    ease-in-out;
-`;
 const StSkeletonPostWrapper = styled(StPost)`
   display: grid;
   grid-template-columns: var(--img-size) 1fr;
@@ -42,14 +29,6 @@ const StSkeletonPostWrapper = styled(StPost)`
     'content content';
   gap: 0.5rem;
   padding: 1rem;
-`;
-const StSkeletonCircle = styled(StTwinkleDiv)`
-  width: var(--img-size);
-  height: var(--img-size);
-  background-color: gray;
-
-  grid-area: img;
-  border-radius: 50%;
 `;
 const StSkeletonLine = styled(StTwinkleDiv)`
   border-radius: 1rem;
