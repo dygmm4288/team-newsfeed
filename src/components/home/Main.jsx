@@ -104,7 +104,16 @@ function Main() {
         </button>
       </form>
       <StPostBox>
-        <Post posts={posts} />
+        {postsFilteredByCategory.length === 0 ? (
+          <StNoPosts>
+            등록되어 있는 포스트가 없습니다.
+            <br />첫 포스트를 등록해 보세요~! 😀
+          </StNoPosts>
+        ) : (
+          postsFilteredByCategory.map((post) => (
+            <Post key={post.id} post={post} />
+          ))
+        )}
       </StPostBox>
     </StContainer>
   );

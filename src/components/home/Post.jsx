@@ -42,7 +42,7 @@ export default function Post({ post }) {
   };
 
   return (
-    <StPost key={post.id}>
+    <StPost>
       <StPostTop>
         <img src={ProfilePicture} alt="ProfilePicture" />
         <p>nickname : {post.nickname}</p>
