@@ -53,7 +53,7 @@ const StIdAndProfilePicture = styled.div`
   display: flex;
   align-items: center;
   cursor: pointer;
-  
+
   img {
     /* width: 100px;
     height: 100px; */
