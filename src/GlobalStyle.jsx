@@ -50,7 +50,9 @@ const GlobalStyle = createGlobalStyle`
 
   :root {
     --box-shadow: 1px 1px 6px #3a3a3a;
-  }
+    --img-size: 40px;
+    --twinkle-color: #565656; 
+    }
   html {
     scroll-behavior: smooth;
     height: 100vh;

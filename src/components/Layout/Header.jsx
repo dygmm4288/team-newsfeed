@@ -2,6 +2,8 @@ import React, { useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAuth } from '../../contexts/auth.context';
+import SkeletonCircle from '../common/skeleton/SkeletonCircle';
+import SkeletonLine from '../common/skeleton/SkeletonLine';
 
 function Header() {
   const navigate = useNavigate();
@@ -17,10 +19,17 @@ function Header() {
         <Link to="/">
           <h1>Beat Bridge</h1>
         </Link>
-        <StIdAndProfilePicture onClick={handleNavigateToMyPage}>
-          <p>{userInfo?.email}</p>
-          <img src={userInfo?.profileImgUrl} alt="profile avatar" />
-        </StIdAndProfilePicture>
+        {userInfo ? (
+          <StIdAndProfilePicture onClick={handleNavigateToMyPage}>
+            <p>{userInfo?.email}</p>
+            <img src={userInfo?.profileImgUrl} alt="profile avatar" />
+          </StIdAndProfilePicture>
+        ) : (
+          <StSkeletonWrapper>
+            <SkeletonLine />
+            <SkeletonCircle />
+          </StSkeletonWrapper>
+        )}
       </StWrapper>
     </StHeader>
   );
@@ -64,4 +73,11 @@ const StIdAndProfilePicture = styled.div`
     border-radius: 50%;
     cursor: pointer;
   }
+`;
+
+const StSkeletonWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
 `;
