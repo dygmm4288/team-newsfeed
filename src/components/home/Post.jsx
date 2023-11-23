@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import ProfilePicture from '../../assets/Layout/Test-ProfilePicture.png';
+import DefaultProfileImg from '../../assets/Layout/Test-ProfilePicture.png';
 import { useAuth } from '../../contexts/auth.context';
 import { usePost } from '../../contexts/post.context';
 export default function Post({ post }) {
@@ -44,7 +44,10 @@ export default function Post({ post }) {
   return (
     <StPost>
       <StPostTop>
-        <img src={ProfilePicture} alt="ProfilePicture" />
+        <img
+          src={post.userInfo?.profileImgUrl || DefaultProfileImg}
+          alt="ProfilePicture"
+        />
         <p>nickname : {post.nickname}</p>
       </StPostTop>
       <StPostBottom>

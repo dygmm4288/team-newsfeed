@@ -65,10 +65,16 @@ export const AuthProvider = ({ children }) => {
   };
 
   const setUserNickname = (nickname) => {
-    return updateProfileBy({ displayName: nickname });
+    setIsLoading(true);
+    return updateProfileBy({ displayName: nickname }).finally(() =>
+      setIsLoading(false)
+    );
   };
   const setUserProfileImgUrl = (profileImgUrl) => {
-    return updateProfileBy({ photoURL: profileImgUrl });
+    setIsLoading(true);
+    return updateProfileBy({ photoURL: profileImgUrl }).finally(() => {
+      setIsLoading(false);
+    });
   };
   useEffect(() => {
     onAuthStateChanged(auth, (authUser) => {
