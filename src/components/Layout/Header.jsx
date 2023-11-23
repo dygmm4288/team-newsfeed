@@ -2,28 +2,44 @@ import React, { useCallback } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAuth } from '../../contexts/auth.context';
+import SkeletonCircle from '../common/skeleton/SkeletonCircle';
+import SkeletonLine from '../common/skeleton/SkeletonLine';
+
 function Header() {
   const navigate = useNavigate();
   const { userInfo } = useAuth();
   const location = useLocation();
   const currentPath = location.pathname;
-  console.log(currentPath);
+
   const handleNavigateToMyPage = useCallback(() => {
     navigate('/mypage');
   }, []);
+
+  const handleNavigateToAuth = useCallback(() => {
+    navigate('/auth');
+  }, []);
+
   return (
     <StHeader>
       <StWrapper>
         <Link to="/">
           <h1>Beat Bridge</h1>
         </Link>
+        {/* mypage */}
         {currentPath === '/mypage' ? (
           <button onClick={() => navigate('/')}>Go to home</button>
         ) : userInfo === null ? (
-          <StIdAndProfilePicture onClick={handleNavigateToMyPage}>
-            <button>Log in</button>
-          </StIdAndProfilePicture>
+          // homepage - login X
+          <>
+            {/* 어떻게 반영?? */}
+            {/* <StSkeletonWrapper>
+              <SkeletonLine />
+              <SkeletonCircle />
+            </StSkeletonWrapper> */}
+            <button onClick={handleNavigateToAuth}>Log in</button>
+          </>
         ) : (
+          // homepage - login O
           <StIdAndProfilePicture onClick={handleNavigateToMyPage}>
             <p>{userInfo?.email}</p>
             <img src={userInfo?.profileImgUrl} alt="profile avatar" />
@@ -67,4 +83,11 @@ const StIdAndProfilePicture = styled.div`
     border-radius: 50%;
     cursor: pointer;
   }
+`;
+
+const StSkeletonWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
 `;
