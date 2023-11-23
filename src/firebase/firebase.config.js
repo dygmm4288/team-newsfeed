@@ -2,7 +2,7 @@
 
 // Import the functions you need from the SDKs you need
 import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
+import { getFirestore, getDocs, collection } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -17,6 +17,14 @@ const firebaseConfig = {
   appId: process.env.REACT_APP_APP_ID
 };
 
+export const getPosts = async () => {
+  const querySnapshot = await getDocs(collection(db, 'posts'));
+  const fetchedPosts = [];
+  querySnapshot.forEach((doc) => {
+    fetchedPosts.push(doc.data());
+  });
+  return fetchedPosts;
+};
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);

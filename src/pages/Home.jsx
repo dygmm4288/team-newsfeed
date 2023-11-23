@@ -3,7 +3,6 @@ import Header from '../components/Layout/Header';
 import styled from 'styled-components';
 import Category from '../components/home/Category';
 import Main from '../components/home/Main';
-import { memoryEagerGarbageCollector } from 'firebase/firestore';
 
 // Data 임시 기록
 // PostInfo(Document)

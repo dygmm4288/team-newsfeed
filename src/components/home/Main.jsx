@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import Post from './Post';
 import { addDoc, collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/firebase.config';
-import { useParams } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
 
 function Main() {
   const [title, setTitle] = useState('');
@@ -19,8 +19,8 @@ function Main() {
       const querySnapshot = await getDocs(collection(db, 'posts'));
       const fetchedPosts = [];
       querySnapshot.forEach((doc) => {
-        console.log(doc.data());
-        fetchedPosts.push(doc.data());
+        fetchedPosts.push({ id: doc.id, ...doc.data() });
+        console.log(fetchedPosts);
       });
       setPosts(fetchedPosts);
     };
@@ -28,14 +28,14 @@ function Main() {
   }, []);
 
   // data get (추가하기)
-  const hanbleAddPost = async (event) => {
+  const handleAddPost = async (event) => {
     event.preventDefault();
 
     if (title.trim() && content.trim()) {
       const newPost = {
-        // userId: 'test', 게시물 고유 아이디 - 필요한 이유?? 삭제 수정하려고
         // nickname : 회원가입 후 작성한 닉네임 값
         //profileImg : 회원가입시 등록한 이미지 값
+        // id: uuidv4(),
         title: title,
         content: content,
         createdAt: new Date().toLocaleString(),
@@ -48,7 +48,7 @@ function Main() {
 
       //Firestore에서 'posts'컬렉션에 대한 참조 생성하기
       const collectionRef = collection(db, 'posts');
-      // 'posts' 컬렉션에 newPost 문서를 추가합니다.
+      // 'posts' 컬렉션에 newPost 문서를 추가
       await addDoc(collectionRef, newPost);
 
       setTitle('');
@@ -68,7 +68,7 @@ function Main() {
   return (
     //flex로 input 세로 배치 할 예정
     <StContainer>
-      <form onSubmit={(event) => hanbleAddPost(event)}>
+      <form onSubmit={(event) => handleAddPost(event)}>
         <input
           type="text"
           value={title}
@@ -105,7 +105,12 @@ function Main() {
         <button type="submit">추가</button>
       </form>
       <StPostBox>
-        <Post title={title} content={content} posts={posts} />
+        <Post
+          title={title}
+          content={content}
+          posts={posts}
+          setPosts={setPosts}
+        />
       </StPostBox>
     </StContainer>
   );

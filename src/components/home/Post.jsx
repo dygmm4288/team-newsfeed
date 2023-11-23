@@ -1,36 +1,104 @@
 import React, { useState } from 'react';
 import ProfilePicture from '../../assets/Layout/Test-ProfilePicture.png';
 import styled from 'styled-components';
+import { db } from '../../firebase/firebase.config';
+import { doc, deleteDoc, updateDoc } from 'firebase/firestore';
+import { getPosts } from '../../firebase/firebase.config';
 
 function Post({ posts, setPosts }) {
-  const [isEditing, setIsEditing] = useState(false);
-  const [editedContent, setEditidContent] = useState('');
-  const changedPost = () => {};
-  const deletePost = () => {
+  const [editedContent, setEditedContent] = useState('');
+
+  const editPost = (postId, content) => {
+    const updatedPosts = posts.map((post) =>
+      post.id === postId ? { ...post, isEditing: true } : post
+    );
+    setPosts(updatedPosts);
+    setEditedContent(content);
+  };
+
+  const saveEditedPost = async (postId) => {
+    try {
+      const postRef = doc(db, 'posts', postId);
+      await updateDoc(postRef, {
+        content: editedContent
+      });
+      const updatedPosts = await getPosts();
+      setPosts(updatedPosts);
+      setEditedContent('');
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const cancleEdit = (postId) => {
+    const updatedPosts = posts.map((post) =>
+      post.id === postId ? { ...post, isEditing: false } : post
+    );
+    setPosts(updatedPosts);
+    setEditedContent('');
+  };
+
+  const deletePost = async (postId) => {
+    console.log('postId', postId);
     const confirmDelete = window.confirm('정말로 삭제하시겠습니까?');
+    console.log(confirmDelete);
 
     if (confirmDelete) {
-      // const updatedPost = posts.filter((post)=> post.?? != ??)
-      // setPosts(updatedPost);
+      try {
+        // await db.collection('posts').doc(postId).delete();
+        const postRef = doc(db, 'posts', postId);
+        await deleteDoc(postRef);
+        const updatedPost = posts.filter((post) => post.id !== postId);
+        console.log('updatedPost', updatedPost);
+        setPosts(updatedPost);
+      } catch (error) {
+        console.log('error', error);
+      }
     }
   };
 
   return (
     <>
-      {posts.map((posts) => (
-        <StPost>
-          <StPostTop>
+      {posts.map((post) => (
+        <StPost key={post.id}>
+          <StPostTop key={post.id}>
             <img src={ProfilePicture} alt="ProfilePicture" />
-            <p>{posts.nickname}</p>
-            <p>{posts.title}</p>
-            <p>{posts.createdAt}</p>
+            <p>{post.nickname}</p>
+            <p>{post.title}</p>
+            <p>{post.createdAt}</p>
           </StPostTop>
-          <StPostBottom>
+          <StPostBottom key={post.id}>
+            {post.isEditing ? (
+              <>
+                <textarea
+                  value={editedContent}
+                  onchange={(e) => setEditedContent(e.target.value)}
+                />
+                <div>
+                  <button onClick={() => saveEditedPost(post.id)}>
+                    수정 완료
+                  </button>
+                  <button onClick={() => cancleEdit(post.id)}>취소</button>
+                </div>
+              </>
+            ) : (
+              <>
+                <p>{post.content}</p>
+                <div>
+                  <button onClick={() => editPost(post.id, post.content)}>
+                    수정
+                  </button>
+                  <button onClick={() => deletePost(post.id)}>삭제</button>
+                </div>
+              </>
+            )}
             <div>
-              <button onClick={() => changedPost}>수정</button>
-              <button onClick={() => deletePost}>삭제</button>
+              <button onClick={() => editPost(post.id, post.content)}>
+                수정
+              </button>
+              <button onClick={() => deletePost(post.id)}>삭제</button>
             </div>
-            <p>{posts.content}</p>
+            <p>{post.content}</p>
           </StPostBottom>
         </StPost>
       ))}
