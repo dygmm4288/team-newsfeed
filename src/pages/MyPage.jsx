@@ -1,4 +1,3 @@
-import { collection, getDocs } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -6,8 +5,8 @@ import styled from 'styled-components';
 import Header from '../components/Layout/Header';
 import ScrollToTopBtn from '../components/Layout/ScrollToTopBtn';
 import { useAuth } from '../contexts/auth.context';
-import { db, storage } from '../firebase/firebase.config';
-import { getDefaultProfileImgURL } from '../firebase/firebaseStorage';
+import { usePost } from '../contexts/post.context';
+import { storage } from '../firebase/firebase.config';
 
 function MyPage() {
   const [isEditing, setIsEditing] = useState(false);
@@ -18,37 +17,21 @@ function MyPage() {
 
   const [editedNickname, setEditedNickname] = useState(userInfo?.nickname);
   const [imgUrl, setImgUrl] = useState(userInfo?.profileImgUrl || '');
-  const [myPosts, setMyPosts] = useState([]);
+  const { posts } = usePost();
+  const myPosts = posts.filter(
+    (post) => post.userInfo.email === userInfo?.email
+  );
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchData = async () => {
-      // 유저정보가 없을 때
-      if (!userInfo) {
-        console.error('not user');
-        return;
-      }
-      // 유저정보가 있는데 그 중 이미지 데이터가 없을 때, 기본 디폴트 이미지로 세팅
-      if (!userInfo.profileImgUrl) {
-        console.log('user in');
-        const defaultUserImageURL = await getDefaultProfileImgURL(
-          `profile/default-profile-img.png`
-        );
-        await setUserProfileImgUrl(defaultUserImageURL);
-        setImgUrl(defaultUserImageURL);
-      }
-
-      // 게시물 불러오기
-      const querySnapshot = await getDocs(collection(db, 'posts'));
-      const fetchedPosts = [];
-      querySnapshot.forEach((doc) => {
-        console.log(doc.data());
-        fetchedPosts.push(doc.data());
-      });
-      setMyPosts(fetchedPosts);
-    };
-    fetchData();
-  }, [userInfo]);
+    // 유저정보가 없을 때
+    if (!userInfo) {
+      console.error('not user');
+      alert('잘못된 접근입니다.');
+      navigate('/');
+      return;
+    }
+  }, []);
 
   const handleFileSelect = (event) => {
     const selectedFile = event.target.files[0];
@@ -132,7 +115,7 @@ function MyPage() {
         <Header />
         <StMyInformationContainer>
           <StProfilePicture src={imgUrl} />
-          {console.log('imgUrl', imgUrl)}
+
           <StMyInformation>
             <StMyInformationDetailsContainer>
               <StHiMyNickname>
@@ -184,7 +167,7 @@ function MyPage() {
             {/* 닉네임으로 필터링하기 -> 조건부랜더링(리스트가 없을때, 있을 때->map) */}
             {myPosts.map((myPost) => {
               return (
-                <StMyPost>
+                <StMyPost key={myPost.id}>
                   <p>{myPost.email}</p>
                   <p>{myPost.nickname}</p>
                   <p>{myPost.title}</p>

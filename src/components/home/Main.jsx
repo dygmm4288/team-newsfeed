@@ -27,7 +27,11 @@ function Main() {
   const handleCreatePost = async (event) => {
     event.preventDefault();
     if (title.trim() && content.trim()) {
-      createPost({ title, content, category, userInfo });
+      if (selectedCategory) {
+        createPost({ title, content, category: selectedCategory, userInfo });
+      } else {
+        createPost({ title, content, category, userInfo });
+      }
       setTitle('');
       setContent('');
     } else {
