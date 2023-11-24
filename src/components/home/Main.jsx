@@ -99,7 +99,9 @@ function Main() {
         </button>
       </form>
       <StPostBox>
-        <Post posts={posts} category={category} userInfo={userInfo} />
+        {posts.map((post) => (
+          <Post post={post} />
+        ))}
       </StPostBox>
     </StContainer>
   );
