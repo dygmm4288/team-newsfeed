@@ -1,70 +1,44 @@
-# Getting Started with Create React App
+# NewsPeed Website
+React를 활용하여 음악 취미를 공유하는 사람들끼리 다양한 소식을 공유하는 사이트 제작
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Project Type
+팀 프로젝트
 
-## Available Scripts
+##  Duration
+21/11/2023 - 27/11/2023
 
-In the project directory, you can run:
+## Development Environment
+1. React(Redux/context/useState)
+2. JavaScript
+3. HTML
+4. CSS
+5. firebase
+6. Styled-Components (CSS)
+7. React Router Dom (Multiple Pages Building)
 
-### `yarn start`
+## Data Manamgement
+Redux로 전역 State 관리
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Features
+1. Build UI
+2. view only my posts
+3. Move to the my page
+4. Login
+5. Sign up
+6. edit Profile
+7. Displaying posts by category
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Service Overview
+![fan-letter-video-gif](https://github.com/dancinncoder/fanletter/assets/127386988/94d7afe4-443a-43fc-86fc-4573c044d67c)
 
-### `yarn test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Deployment
 
-### `yarn build`
+Copy and paste on the web browser to check the deployment result.
+```
+https://fanletter.vercel.app/
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Built With
+* Letter icon : Icons8
+* Deployment Host : Vercel (https://vercel.com/)
