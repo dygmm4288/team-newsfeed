@@ -14,7 +14,7 @@ function Post({ post }) {
   const navigate = useNavigate();
 
   const handleToggleEditMode = () => {
-    setIsEditing(!isEditing);
+    setIsEditing((prev) => !prev);
   };
 
   const handleClick = () => {
@@ -37,8 +37,7 @@ function Post({ post }) {
     }
   };
   const handleUpdatePost = async () => {
-    updatePost({ postId: post.id, content: editedContent });
-    setIsEditing(false);
+    updatePost({ postId: post.id, data: { content: editedContent } });
   };
 
   return (
@@ -51,39 +50,37 @@ function Post({ post }) {
         </StPostTop>
         <StPostBottom>
           <button onClick={handleClick}>···</button>
-          <p className="title">title : {post.title}</p>
-          <p className="content">content : {post.content}</p>
-          <StPostBottom>
-            {isEditing ? (
-              <>
-                <textarea
-                  value={editedContent}
-                  onChange={(e) => {
-                    setEditedContent(e.target.value);
+          {isEditing ? (
+            <>
+              <textarea
+                value={editedContent}
+                onChange={(e) => {
+                  setEditedContent(e.target.value);
+                }}
+              ></textarea>
+              <div>
+                <button
+                  onClick={() => {
+                    handleUpdatePost();
+                    handleToggleEditMode();
                   }}
-                ></textarea>
-                <div>
-                  <button
-                    onClick={() => {
-                      handleUpdatePost();
-                      handleToggleEditMode();
-                    }}
-                  >
-                    수정 완료
-                  </button>
-                  <button
-                    onClick={() => {
-                      setEditedContent(post.content);
-                      handleToggleEditMode();
-                    }}
-                  >
-                    취소
-                  </button>
-                </div>
-              </>
-            ) : (
-              <>
-                <p>{post.content}</p>
+                >
+                  수정 완료
+                </button>
+                <button
+                  onClick={() => {
+                    setEditedContent(post.content);
+                    handleToggleEditMode();
+                  }}
+                >
+                  취소
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              <p>{post.content}</p>
+              <StButtonContainer>
                 <button
                   onClick={() => {
                     handleToggleEditMode();
@@ -98,9 +95,9 @@ function Post({ post }) {
                 >
                   삭제
                 </button>
-              </>
-            )}
-          </StPostBottom>
+              </StButtonContainer>
+            </>
+          )}
         </StPostBottom>
       </StPost>
       )
@@ -143,10 +140,7 @@ const StPostBottom = styled.div`
   padding: 15px;
   border: 2px solid blue;
   border-radius: 20px;
-  button {
-    position: absolute;
-    right: 4%;
-  }
+
   .title {
     height: 15%;
   }
@@ -155,4 +149,8 @@ const StPostBottom = styled.div`
     height: 100%;
     padding-bottom: 20px;
   }
+`;
+const StButtonContainer = styled.div`
+  display: flex;
+  flex-direction: row;
 `;
