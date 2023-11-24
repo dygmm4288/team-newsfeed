@@ -7,9 +7,10 @@ export default function SignUp() {
   const [formState, setFormState] = useState({
     nickname: '',
     password: '',
+    confirmPassword: '',
     email: ''
   });
-  const { email, password, nickname } = formState;
+  const { email, password, nickname, confirmPassword } = formState;
   const navigate = useNavigate();
   const { signUpByEmail } = useAuth();
 
@@ -22,6 +23,10 @@ export default function SignUp() {
 
   const signUp = (event) => {
     event.preventDefault();
+    if (confirmPassword !== password) {
+      alert('비밀번호가 일치하지 않습니다.');
+      return;
+    }
     signUpByEmail(email, password, nickname)
       .then(() => {
         alert('회원가입에 성공했습니다.');
@@ -72,7 +77,14 @@ export default function SignUp() {
                 required
               ></input>
               <br />
-              Repeat Pwd : <input type="password"></input>
+              Repeat Pwd :{' '}
+              <input
+                type="password"
+                value={confirmPassword}
+                name="confirmPassword"
+                onChange={onChange}
+                required
+              ></input>
               <br />
               NickName :{' '}
               <input
