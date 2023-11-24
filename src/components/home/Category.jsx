@@ -61,7 +61,7 @@ const StCategoryBox = styled.div`
   border: 2px solid black;
   border-radius: 20px;
   box-shadow: 0 1px 5px #464646;
-  background-color: #ffffff; //클릭되면 색변화
+  background-color: #2c2c2c;
 `;
 const StCategoryButton = styled.button`
   display: flex;
@@ -70,12 +70,13 @@ const StCategoryButton = styled.button`
   position: relative;
   width: 100%;
   height: 100%;
-  background: ${(props) => (props.$selected ? '#007bff' : 'transparent')};
+  background: ${(props) => (props.$selected ? '#FF5B22' : 'transparent')};
   border: none;
   cursor: pointer;
+  font-size: 15px;
 
   border-radius: 0.5rem;
-  color: ${(props) => (props.$selected ? '#ffffff' : '#000000')};
+  color: ${(props) => (props.$selected ? '#000000' : '#ffffff')};
   transition: 0.2s ease-in-out;
 
   /* 백그라운드 채우기 트랜지션 */
@@ -95,7 +96,7 @@ const StCategoryButton = styled.button`
     left: 5px;
     width: 0px; /* 초기에는 가로 길이 0으로 설정 */
     height: 2px; /* 테두리 높이 */
-    background-color: #3498db; /* 테두리 색상 */
+    background-color: #ff5b22; /* 테두리 색상 */
     transition: width 0.3s ease; /* 트랜지션 속성 적용 */
     border-radius: 0.5rem;
   }

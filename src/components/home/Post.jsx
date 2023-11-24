@@ -51,7 +51,6 @@ export default function Post({ post }) {
         <p>nickname : {post.nickname}</p>
       </StPostTop>
       <StPostBottom>
-        <button onClick={handleClick}>···</button>
         {isEditing ? (
           <>
             <textarea
@@ -81,6 +80,7 @@ export default function Post({ post }) {
           </>
         ) : (
           <>
+            <h1>{post.title}</h1>
             <p>{post.content}</p>
             <StButtonContainer>
               <button
@@ -106,9 +106,8 @@ export default function Post({ post }) {
 }
 
 const StPost = styled.li`
-  width: 500px;
-  min-height: 300px;
-  border: 2px solid black;
+  width: 580px;
+  min-height: 250px;
 `;
 const StPostTop = styled.div`
   display: flex;
@@ -144,4 +143,7 @@ const StPostBottom = styled.div`
 const StButtonContainer = styled.div`
   display: flex;
   flex-direction: row;
+  position: absolute;
+  right: 13px;
+  bottom: 13px;
 `;
