@@ -49,9 +49,7 @@ function Header() {
     </StHeader>
   );
 }
-
 export default Header;
-
 const StHeader = styled.div`
   display: flex;
   justify-content: center;
@@ -59,10 +57,9 @@ const StHeader = styled.div`
   z-index: 1000;
   width: 100%;
   height: 70px;
-  background-color: #ffffff;
+  background-color: #FFFFFF;
   box-shadow: var(--box-shadow);
 `;
-
 const StWrapper = styled.div`
   display: flex;
   flex-direction: row;
@@ -74,13 +71,11 @@ const StWrapper = styled.div`
     cursor: pointer;
   }
 `;
-
 const StIdAndProfilePicture = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
   cursor: pointer;
-
   img {
     width: 64px;
     height: 64px;
