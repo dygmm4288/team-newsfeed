@@ -23,9 +23,6 @@ function Header() {
         <Link to="/">
           <h1>Beat Bridge</h1>
         </Link>
-        <Link to="auth">
-          <button>로그인</button>
-        </Link>
         {/* mypage */}
         {currentPath === '/mypage' ? (
           <button onClick={() => navigate('/')}>Go to home</button>

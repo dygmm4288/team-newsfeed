@@ -1,5 +1,6 @@
 import {
   GithubAuthProvider,
+  createUserWithEmailAndPassword,
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signInWithPopup,
@@ -18,6 +19,7 @@ const initialState = {
   setUserNickname: (nickname) => {},
   setUserProfileImgUrl: (profileImgUrl) => {},
   signInWithGithub: () => {},
+  signUpByEmail: (email, password, nickname) => {},
   error: null
 };
 // context 생성
@@ -69,6 +71,31 @@ export const AuthProvider = ({ children }) => {
     await updateProfileBy({ photoURL: profileImgUrl });
     setIsLoading(false);
   };
+  const signUpByEmail = async (email, password, nickname) => {
+    setIsLoading(true);
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential.user;
+      let profileImgUrl = user.photoURL;
+      if (!profileImgUrl) profileImgUrl = await getDefaultProfileImgURL();
+
+      await updateProfile(user, {
+        displayName: nickname,
+        photoURL: profileImgUrl
+      });
+      return true;
+    } catch (e) {
+      console.error(e);
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     onAuthStateChanged(auth, (authUser) => {
       if (authUser) {
@@ -78,7 +105,7 @@ export const AuthProvider = ({ children }) => {
       }
     });
   }, []);
-  console.log('loading is : ', isLoading);
+
   const userInfo = user
     ? {
         nickname: user.displayName,
@@ -94,7 +121,8 @@ export const AuthProvider = ({ children }) => {
     signOutUser,
     setUserNickname,
     setUserProfileImgUrl,
-    signInWithGithub
+    signInWithGithub,
+    signUpByEmail
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
