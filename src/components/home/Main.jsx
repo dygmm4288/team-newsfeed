@@ -1,117 +1,28 @@
-import React, { useRef, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import React from 'react';
+import { useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { useAuth } from '../../contexts/auth.context';
 import { usePost } from '../../contexts/post.context';
 import Post from './Post';
+import PostForm from './PostForm';
 
 function Main() {
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
-
   const [searchParams] = useSearchParams();
-  const selectedCategory = searchParams.get('category');
+  const paramCategory = searchParams.get('category');
 
-  const [category, setCategory] = useState(selectedCategory || '발라드');
+  const { posts } = usePost();
 
-  const titleInputRef = useRef();
-  const contentInputRef = useRef();
-  const categorySelected = useRef();
-  const submitBtn = useRef();
-
-  const { userInfo } = useAuth();
-  const { createPost, posts } = usePost();
-
-  const navigate = useNavigate();
-
-  const handleCreatePost = async (event) => {
-    event.preventDefault();
-    if (title.trim() && content.trim()) {
-      if (selectedCategory) {
-        createPost({ title, content, category: selectedCategory, userInfo });
-      } else {
-        createPost({ title, content, category, userInfo });
-      }
-      setTitle('');
-      setContent('');
-    } else {
-      alert('제목과 내용 모두 입력해주세요💌');
-    }
-  };
-  // 로그인 X alert
-  const handleFocus = () => {
-    if (userInfo === null) {
-      if (
-        window.confirm('로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?')
-      ) {
-        navigate('/auth');
-      } else {
-        titleInputRef.current.blur();
-        contentInputRef.current.blur();
-        categorySelected.current.blur();
-        submitBtn.current.blur();
-      }
-    }
-  };
-
+  // 현재 카테고리를 기준으로 필터링한 포스트들
   const postsFilteredByCategory = posts.filter(
-    (post) => !selectedCategory || post.category === selectedCategory
+    (post) => !paramCategory || post.category === paramCategory
   );
-
   return (
     <StContainer>
-      <form onSubmit={(event) => handleCreatePost(event)} onFocus={handleFocus}>
-        <input
-          ref={titleInputRef}
-          type="text"
-          value={title}
-          onChange={(e) => {
-            if (e.target.value.length <= 15) {
-              setTitle(e.target.value);
-            } else {
-              alert('제목이 너무 깁니다!');
-            }
-          }}
-          placeholder="제목을 입력해주세요"
-        />
-        <input
-          type="text"
-          ref={contentInputRef}
-          value={content}
-          onChange={(e) => {
-            if (e.target.value.length <= 100) {
-              setContent(e.target.value);
-            } else {
-              alert('내용이 너무 깁니다!');
-            }
-          }}
-          placeholder="어떤 이야기를 나누고 싶나요?"
-        />
-        {!selectedCategory ? (
-          <select
-            ref={categorySelected}
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-          >
-            <option value={'발라드'}>발라드</option>
-            <option value={'힙합'}>힙합</option>
-            <option value={'R&B'}>R&B</option>
-            <option value={'락'}>락</option>
-            <option value={'댄스'}>댄스</option>
-            <option value={'연예인'}>연예인</option>
-          </select>
-        ) : (
-          <p>{selectedCategory}</p>
-        )}
-        <button ref={submitBtn} type="submit">
-          추가
-        </button>
-      </form>
+      <PostForm paramCategory={paramCategory} />
       <StPostBox>
-        {postsFilteredByCategory.length === 0 ? (
+        {checkEmpty(postsFilteredByCategory) ? (
           <StNoPosts>
-            등록되어 있는 포스트가 없습니다.
-            <br />첫 포스트를 등록해 보세요~! 😀
+            <p>등록되어 있는 포스트가 없습니다.</p>
+            <p>첫 포스트를 등록해 보세요~! 😀</p>
           </StNoPosts>
         ) : (
           postsFilteredByCategory.map((post) => (
@@ -121,6 +32,10 @@ function Main() {
       </StPostBox>
     </StContainer>
   );
+}
+
+function checkEmpty(value) {
+  return !value.length;
 }
 
 export default Main;

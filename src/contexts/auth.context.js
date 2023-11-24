@@ -1,5 +1,6 @@
 import {
   GithubAuthProvider,
+  createUserWithEmailAndPassword,
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signInWithPopup,
@@ -18,8 +19,8 @@ const initialState = {
   setUserNickname: (nickname) => {},
   setUserProfileImgUrl: (profileImgUrl) => {},
   signInWithGithub: () => {},
-  error: null,
-  isLoading: false
+  signUpByEmail: (email, password, nickname) => {},
+  error: null
 };
 // context 생성
 export const AuthContext = createContext(initialState);
@@ -30,26 +31,30 @@ export const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null);
   //! 현재는 테스트를 위해 로그인을 할 때 default 이미지를 넣지만 나중에는 회원가입을 할 때 해당 기능을 수행해야한다.
 
-  const signInWithEmail = (email, password) => {
+  const signInWithEmail = async (email, password) => {
     setIsLoading(true);
     setError(null);
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredentialImpl) => {
-        setUser(userCredentialImpl.user);
-        setDefaultProfileImgUrl(userCredentialImpl.user);
-      })
-      .catch((err) => setError(err))
-      .finally(() => setIsLoading(false));
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      setUser(userCredential.user);
+    } catch (err) {
+      setError(err);
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
   };
   const signOutUser = () => {
     setError(null);
-    setIsLoading(true);
-    signOut(auth).finally(() => setIsLoading(false));
+    signOut(auth);
   };
   const signInWithGithub = () => {
     const provider = new GithubAuthProvider();
     setError(null);
-    setIsLoading(true);
     signInWithPopup(auth, provider)
       .then(async (result) => {
         setUser(result.user);
@@ -58,24 +63,44 @@ export const AuthProvider = ({ children }) => {
       .catch((err) => {
         setError(err);
         console.error(err);
-      })
-      .finally(() => {
-        setIsLoading(false);
       });
   };
 
-  const setUserNickname = (nickname) => {
+  const setUserNickname = async (nickname) => {
     setIsLoading(true);
-    return updateProfileBy({ displayName: nickname }).finally(() =>
-      setIsLoading(false)
-    );
+    await updateProfileBy({ displayName: nickname });
+    setIsLoading(false);
   };
-  const setUserProfileImgUrl = (profileImgUrl) => {
+  const setUserProfileImgUrl = async (profileImgUrl) => {
     setIsLoading(true);
-    return updateProfileBy({ photoURL: profileImgUrl }).finally(() => {
+    await updateProfileBy({ photoURL: profileImgUrl });
+    setIsLoading(false);
+  };
+  const signUpByEmail = async (email, password, nickname) => {
+    setIsLoading(true);
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential.user;
+      let profileImgUrl = user.photoURL;
+      if (!profileImgUrl) profileImgUrl = await getDefaultProfileImgURL();
+
+      await updateProfile(user, {
+        displayName: nickname,
+        photoURL: profileImgUrl
+      });
+      return true;
+    } catch (e) {
+      console.error(e);
+      throw new Error(e);
+    } finally {
       setIsLoading(false);
-    });
+    }
   };
+
   useEffect(() => {
     onAuthStateChanged(auth, (authUser) => {
       if (authUser) {
@@ -101,7 +126,8 @@ export const AuthProvider = ({ children }) => {
     signOutUser,
     setUserNickname,
     setUserProfileImgUrl,
-    signInWithGithub
+    signInWithGithub,
+    signUpByEmail
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
@@ -135,7 +161,7 @@ const updateProfileBy = (updatedValue) => {
 async function setDefaultProfileImgUrl(user) {
   if (user.photoURL) return;
   try {
-    return updateProfileBy({ photoURL: await getDefaultProfileImgURL() });
+    updateProfileBy({ photoURL: await getDefaultProfileImgURL() });
   } catch (err) {
     console.error(
       'error occurred while getting the default profile image url.'
