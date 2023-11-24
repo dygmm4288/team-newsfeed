@@ -24,22 +24,22 @@ export default function MyInformationWrapper() {
     <StMyInformationContainer>
       <StProfilePicture src={profileImgUrl} />
       <StMyInformation>
-        <StMyInformationDetailsContainer>
-          <StHiMyNickname>안녕하세요, {nickname}님!</StHiMyNickname>
-          <StMyInformationDetailsSmallContainer>
-            <StMyEmail>E-mail: {email}</StMyEmail>
+        <StHiMyNickname>안녕하세요, {nickname} 님!</StHiMyNickname>
             {!isEditing ? (
-              <>
-                <StMyNickName>닉네임: {nickname}</StMyNickName>
-                <StButtonSmallContainer>
-                  <StProfileEditButton onClick={handleSignOut}>
-                    로그아웃하기
-                  </StProfileEditButton>
-                  <StProfileEditButton onClick={handleToggleEditMode}>
-                    프로필 수정하기
-                  </StProfileEditButton>
-                </StButtonSmallContainer>
-              </>
+                <StMyInformationDetailsContainer>
+                  <StMyInformationDetailsSmallContainer>
+                    <StMyEmail>E-mail:&nbsp;{email}</StMyEmail>
+                    <StMyNickName>닉네임:&nbsp;{nickname}</StMyNickName>
+                  </StMyInformationDetailsSmallContainer>
+                  <StButtonSmallContainer>
+                    <StProfileEditButton onClick={handleSignOut}>
+                      로그아웃
+                    </StProfileEditButton>
+                    <StProfileEditButton onClick={handleToggleEditMode}>
+                      프로필 수정
+                    </StProfileEditButton>
+                  </StButtonSmallContainer>
+                </StMyInformationDetailsContainer>
             ) : (
               <MyPageEditForm
                 nickname={nickname}
@@ -52,37 +52,44 @@ export default function MyInformationWrapper() {
                 </StButtonSmallContainer>
               </MyPageEditForm>
             )}
-          </StMyInformationDetailsSmallContainer>
-        </StMyInformationDetailsContainer>
       </StMyInformation>
     </StMyInformationContainer>
   );
 }
 
 const StMyInformationContainer = styled.div`
-  border: 1px solid black;
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
-  gap: 80px;
+  gap: 0px;
   height: 200px;
   width: 800px;
-  margin-top: 120px;
+  margin-top: 50px;
+  padding-left: 30px;
+  padding-right: 40px;
+  background-color: #F2F2F2;
+  border-radius: 5px;
 `;
 
 const StMyInformation = styled.div`
-  border: 1px solid blue;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  justify-content: center;
+  background-color: #ffffff;
+  height: 165px;
+  width: 452px;
 `;
 
 const StMyInformationDetailsContainer = styled.div`
   display: flex;
-  flex-direction: column;
-  border: 1px solid orange;
-  padding: 20px;
-  min-width: 300px;
+  flex-direction: row;
+  padding: 10px 20px 20px 20px;
+  min-width: 452px;
+  height: 120px;
+  background-color: #ffffff;
+  justify-content: center;
+  align-items: center;
 `;
 
 const StMyInformationDetailsSmallContainer = styled.div`
@@ -94,19 +101,19 @@ const StMyInformationDetailsSmallContainer = styled.div`
   gap: 8px;
   padding: 8px 8px 8px 15px;
   min-height: 90px;
-  width: 250px;
+  width: 270px;
 `;
 
 const StMyEmail = styled.p`
   margin: 5px 0 0 0;
-  color: #929292;
-  font-size: 0.95rem;
+  color: #2C2C2C;
+  font-size: 0.85rem;
 `;
 
 const StMyNickName = styled.p`
   margin: 0 0 5px 0;
-  font-size: 0.95rem;
-  color: #929292;
+  color: #2C2C2C;
+  font-size: 0.85rem;
 `;
 
 const StButtonSmallContainer = styled.div`
@@ -114,9 +121,9 @@ const StButtonSmallContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
-  width: 80%;
-  gap: 10px;
+  align-items: flex-end;
+  width: 130px;
+  gap: 1px;
 `;
 
 const StProfilePicture = styled.img`
@@ -124,7 +131,7 @@ const StProfilePicture = styled.img`
   height: 150px;
   object-fit: cover;
   border-radius: 50%;
-  background-color: #d9d9d9;
+  background-color: #ffffff;
   object-fit: cover;
   border-radius: 50%;
 `;
@@ -133,12 +140,13 @@ const StHiMyNickname = styled.div`
   /* border: 1px solid black; */
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: flex-end;
   line-height: 2;
   line-height: 2;
   width: 250px;
   font-weight: 600;
-  margin-left: 10px;
+  margin-left: 30px;
+  height: 80px;
 `;
 
 const StButtonContainer = styled.div`
@@ -152,12 +160,33 @@ const StButtonContainer = styled.div`
 `;
 
 const StButton = styled.button`
-  width: 80%;
+  width: 100px;
+  height: 25px;
   cursor: pointer;
   margin: 10px 0 10px 0;
+  font-size: 0.75rem;
+  background-color: #2C2C2C;
+  color: white;
+  border: none;
+  transition: 0.2s ease;
+  &:hover {
+    background-color: #FF5B22;
+    transform: scale(1.02);
+  }
 `;
 
 const StProfileEditButton = styled.button`
-  margin-top: 10px;
-  margin-bottom: 10px;
+  width: 100px;
+  height: 25px;
+  cursor: pointer;
+  margin: 10px 0 10px 0;
+  font-size: 0.75rem;
+  background-color: #2C2C2C;
+  border: none;
+  color: white;
+    transition: 0.2s ease;
+  &:hover {
+    background-color: #FF5B22;
+    transform: scale(1.02);
+  }
 `;
