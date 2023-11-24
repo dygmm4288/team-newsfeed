@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import styled from 'styled-components';
 import { useAuth } from '../../contexts/auth.context';
 import { usePost } from '../../contexts/post.context';
 import { categories } from '../../data/categories';
-import styled from 'styled-components';
 
-export default function PostForm({ paramCategory }) {
+export default function PostForm() {
+  const [searchParams] = useSearchParams();
+  const paramCategory = searchParams.get('category');
   const [category, setCategory] = useState(paramCategory || '발라드');
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -23,7 +25,11 @@ export default function PostForm({ paramCategory }) {
       alert('제목과 내용 모두 입력해주세요💌');
       return;
     }
-    if (!window.confirm(`포스트를 ${category} 카테고리에 등록하시겠습니까?`))
+    if (
+      !window.confirm(
+        `포스트를 ${paramCategory || category} 카테고리에 등록하시겠습니까?`
+      )
+    )
       return;
 
     createPost({
@@ -46,17 +52,11 @@ export default function PostForm({ paramCategory }) {
     ) {
       navigate('/auth');
     }
-    event.currentTarget.blur();
+    event.target.blur();
   };
-
-  const checkValidTitle = (value) => {
-    if (value.length <= 15) return true;
-    alert('제목이 너무 깁니다!');
-    return false;
-  };
-  const checkValidContent = (value) => {
-    if (value.length <= 100) return true;
-    alert('내용이 너무 깁니다!');
+  const checkValidation = (validate, alertMsg) => (value) => {
+    if (validate(value)) return true;
+    alert(alertMsg);
     return false;
   };
 
@@ -71,13 +71,19 @@ export default function PostForm({ paramCategory }) {
       <StTitleInput
         type="text"
         value={title}
-        onChange={handleChangeValue(checkValidTitle, setTitle)}
+        onChange={handleChangeValue(
+          checkValidation(checkValidateTitle, '제목이 너무 깁니다.'),
+          setTitle
+        )}
         placeholder="제목을 입력해주세요."
       />
       <StContentInput
         type="text"
         value={content}
-        onChange={handleChangeValue(checkValidContent, setContent)}
+        onChange={handleChangeValue(
+          checkValidation(checkValidateContent, '내용이 너무 깁니다.'),
+          setContent
+        )}
         placeholder="어떤 이야기를 나누고 싶나요?"
       />
       <StBeatUpBox>
@@ -99,6 +105,13 @@ export default function PostForm({ paramCategory }) {
       </StBeatUpBox>
     </StPostFormBox>
   );
+}
+
+function checkValidateTitle(title) {
+  return title.length <= 15;
+}
+function checkValidateContent(content) {
+  return content.length <= 100;
 }
 
 const StPostFormBox = styled.form`

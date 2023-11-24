@@ -15,7 +15,8 @@ const initialState = {
   posts: [],
   createPost: ({ title, content, category }) => {},
   updatePost: ({ postId, data }) => {},
-  deletePost: ({ postId }) => {}
+  deletePost: ({ postId }) => {},
+  updatePosts: ({ userInfo }) => Promise.all([])
 };
 
 // context 생성
@@ -85,6 +86,19 @@ const PostProvider = ({ children }) => {
         console.error(e);
       });
   };
+  const updatePosts = ({ userInfo }) => {
+    return Promise.all([
+      posts
+        .filter((post) => post.userInfo.email === userInfo.email)
+        .map((post) => {
+          return updatePost({ postId: post.id, data: { userInfo: userInfo } });
+        })
+    ]).catch((e) => {
+      console.error('An occurred while updating posts');
+      console.error(e);
+    });
+  };
+
   // D
   const deletePost = ({ postId }) => {
     const postRef = doc(db, 'posts', postId);
@@ -99,7 +113,7 @@ const PostProvider = ({ children }) => {
       });
   };
 
-  const value = { posts, createPost, updatePost, deletePost };
+  const value = { posts, createPost, updatePost, deletePost, updatePosts };
 
   return <PostContext.Provider value={value}>{children}</PostContext.Provider>;
 };

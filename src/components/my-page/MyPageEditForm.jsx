@@ -2,6 +2,7 @@ import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useAuth } from '../../contexts/auth.context';
+import { usePost } from '../../contexts/post.context';
 import { storage } from '../../firebase/firebase.config';
 
 export default function MyPageEditForm({
@@ -13,7 +14,8 @@ export default function MyPageEditForm({
   const [imgInputValue, setImgInputValue] = useState(null);
   const [editedNickname, setEditedNickname] = useState(nickname || '');
 
-  const { setUserProfileImgUrl, setUserNickname } = useAuth();
+  const { setUserProfileImgUrl, setUserNickname, userInfo } = useAuth();
+  const { updatePosts } = usePost();
   const handleFileSelect = (e) => {
     setImgInputValue(e.target.files[0]);
   };
@@ -24,7 +26,9 @@ export default function MyPageEditForm({
   const handleSaveUpdatedProfile = async (e) => {
     e.preventDefault();
     if (!checkValidation(editedNickname)) return;
-
+    const newUserInfo = {
+      ...userInfo
+    };
     if (imgInputValue) {
       const imageRef = ref(storage, `profile/${email}`);
       try {
@@ -34,11 +38,11 @@ export default function MyPageEditForm({
         alert('이미지를 업로드하는데 실패했습니다.');
         return;
       }
-
       try {
         const downloadURL = await getDownloadURL(imageRef);
         await setUserProfileImgUrl(downloadURL);
-      } catch {
+        newUserInfo.profileImgUrl = downloadURL;
+      } catch (e) {
         console.error(
           'error occurred while downloading image from storage or setting user profile image url',
           e
@@ -47,15 +51,19 @@ export default function MyPageEditForm({
         return;
       }
     }
-    try {
-      await setUserNickname(editedNickname);
-      setIsEditing(false);
-      alert('성공적으로 변경되었습니다.');
-      return;
-    } catch (e) {
-      console.error('error occurred while setting user nickname', e);
-      alert('사용자 닉네임을 변경하는데 실패했습니다.');
+    if (userInfo.nickname !== editedNickname) {
+      try {
+        setUserNickname(editedNickname);
+        setIsEditing(false);
+        alert('성공적으로 변경되었습니다.');
+        newUserInfo.nickname = editedNickname;
+      } catch (e) {
+        console.error('error occurred while setting user nickname', e);
+        alert('사용자 닉네임을 변경하는데 실패했습니다.');
+      }
     }
+
+    updatePosts({ userInfo: newUserInfo });
   };
 
   const checkValidation = (nickname) => {

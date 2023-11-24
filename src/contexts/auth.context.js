@@ -29,7 +29,6 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(auth.currentUser);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  //! 현재는 테스트를 위해 로그인을 할 때 default 이미지를 넣지만 나중에는 회원가입을 할 때 해당 기능을 수행해야한다.
 
   const signInWithEmail = async (email, password) => {
     setIsLoading(true);
@@ -44,6 +43,7 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       setError(err);
       console.error(err);
+      throw new Error(err);
     } finally {
       setIsLoading(false);
     }

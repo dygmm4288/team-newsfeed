@@ -19,7 +19,6 @@ export default function MyInformationWrapper() {
   const handleToggleEditMode = () => {
     setIsEditing((prevIsEditing) => !prevIsEditing);
   };
-  console.log(isEditing);
   return (
     <StMyInformationContainer>
       <StProfilePicture src={profileImgUrl} />
