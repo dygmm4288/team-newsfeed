@@ -1,42 +1,30 @@
-import React, { useEffect, useState } from 'react';
-import { useAuth } from '../contexts/auth.context';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../firebase/firebase.config';
+import { useAuth } from '../contexts/auth.context';
 
 export default function Auth() {
   //이메일, 비밀번호
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const { userInfo, signInWithEmail, signInWithGithub, signOutUser } =
-    useAuth();
+  const navigate = useNavigate();
+  const { signInWithEmail } = useAuth();
 
   const signIn = async (event) => {
     event.preventDefault();
-    try {
-      //로그인 성공 시
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      console.log(userCredential);
-      window.location = '/';
-    } catch (error) {
-      //로그인실패시
-      console.log(error);
-      alert('로그인실패');
-      window.location = '/';
-    }
+
+    signInWithEmail(email, password).then(() => {
+      alert('로그인에 성공했습니다.');
+      navigate('/');
+    });
   };
   return (
     <>
       <StContainer>
         <StSignUpWrapper>
           <StSignUpLeft>
-            <img src=""></img>
+            <img src="" alt="기타 그림"></img>
           </StSignUpLeft>
           <StSignUpRight>
             <Logo>
@@ -59,10 +47,12 @@ export default function Auth() {
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </Input>
+              <BtnWrapper>
+                <button type="submit" onClick={signIn}>
+                  Login
+                </button>
+              </BtnWrapper>
             </Form>
-            <BtnWrapper>
-              <button onClick={signIn}>Login</button>
-            </BtnWrapper>
             <Link to="/signup">
               <p>회원가입</p>
             </Link>
