@@ -103,9 +103,9 @@ export default function Post({ post }) {
 }
 
 const StPost = styled.li`
-  width: 500px;
+  width: 580px;
   min-height: 300px;
-  border: 2px solid black;
+  /* border: 2px solid black; */
 `;
 const StPostTop = styled.div`
   display: flex;
