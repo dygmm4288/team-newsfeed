@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import React, { useRef, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
+import { useAuth } from '../../contexts/auth.context';
 import { usePost } from '../../contexts/post.context';
 import Post from './Post';
 
@@ -12,9 +13,15 @@ function Main() {
   const selectedCategory = searchParams.get('category');
 
   const [category, setCategory] = useState(selectedCategory || '발라드');
+  const titleInputRef = useRef();
+  const contentInputRef = useRef();
+  const categorySelected = useRef();
+  const submitBtn = useRef();
 
-  console.log(category);
+  const { userInfo } = useAuth();
   const { createPost, posts } = usePost();
+
+  const navigate = useNavigate();
 
   const handleCreatePost = async (event) => {
     event.preventDefault();
@@ -26,11 +33,27 @@ function Main() {
       alert('제목과 내용 모두 입력해주세요💌');
     }
   };
+  // 로그인 X alert
+  const handleFocus = () => {
+    if (userInfo === null) {
+      if (
+        window.confirm('로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?')
+      ) {
+        navigate('/auth');
+      } else {
+        titleInputRef.current.blur();
+        contentInputRef.current.blur();
+        categorySelected.current.blur();
+        submitBtn.current.blur();
+      }
+    }
+  };
 
   return (
     <StContainer>
-      <form onSubmit={(event) => handleCreatePost(event)}>
+      <form onSubmit={(event) => handleCreatePost(event)} onFocus={handleFocus}>
         <input
+          ref={titleInputRef}
           type="text"
           value={title}
           onChange={(e) => {
@@ -44,6 +67,7 @@ function Main() {
         />
         <input
           type="text"
+          ref={contentInputRef}
           value={content}
           onChange={(e) => {
             if (e.target.value.length <= 100) {
@@ -54,32 +78,28 @@ function Main() {
           }}
           placeholder="어떤 이야기를 나누고 싶나요?"
         />
-        <select onChange={(e) => setCategory(e.target.value)}>
-          <option selected={category === '발라드'} value={'발라드'}>
-            발라드
-          </option>
-          <option selected={category === '힙합'} value={'힙합'}>
-            힙합
-          </option>
-          <option selected={category === 'R&B'} value={'R&B'}>
-            R&B
-          </option>
-          <option selected={category === '락'} value={'락'}>
-            락
-          </option>
-          <option selected={category === '댄스'} value={'댄스'}>
-            댄스
-          </option>
-          <option selected={category === '연예인'} value={'연예인'}>
-            연예인
-          </option>
-        </select>
-        <button type="submit">추가</button>
+        {category === null ? (
+          <select
+            ref={categorySelected}
+            value={selectedCategory}
+            onChange={(e) => setCategory(e.target.value)}
+          >
+            <option value={'발라드'}>발라드</option>
+            <option value={'힙합'}>힙합</option>
+            <option value={'R&B'}>R&B</option>
+            <option value={'락'}>락</option>
+            <option value={'댄스'}>댄스</option>
+            <option value={'연예인'}>연예인</option>
+          </select>
+        ) : (
+          <p>{category}</p>
+        )}
+        <button ref={submitBtn} type="submit">
+          추가
+        </button>
       </form>
       <StPostBox>
-        {posts.map((post) => (
-          <Post key={post.id} post={post} />
-        ))}
+        <Post posts={posts} category={category} userInfo={userInfo} />
       </StPostBox>
     </StContainer>
   );
@@ -93,7 +113,13 @@ const StContainer = styled.div`
   align-items: center;
   width: 75%;
   margin: 40px 0;
-  /* border: 2px solid black; */
+
+  form {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+  }
 `;
 
 const StPostBox = styled.ul`
