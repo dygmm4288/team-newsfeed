@@ -14,10 +14,23 @@ export default function Auth() {
   const signIn = async (event) => {
     event.preventDefault();
 
-    signInWithEmail(email, password).then(() => {
-      alert('로그인에 성공했습니다.');
-      navigate('/');
-    });
+    signInWithEmail(email, password)
+      .then(() => {
+        alert('로그인에 성공했습니다.');
+        navigate('/');
+      })
+      .catch((error) => {
+        switch (error.code) {
+          case 'auth/user-not-found' || 'auth/wrong-password':
+            return alert('이메일 혹은 비밀번호가 일치하지 않습니다.');
+          case 'auth/network-request-failed':
+            return alert('네트워크 연결에 실패 하였습니다.');
+          case 'auth/internal-error':
+            return alert('잘못된 요청입니다.');
+          default:
+            return alert('로그인에 실패 하였습니다.');
+        }
+      });
   };
   return (
     <>
