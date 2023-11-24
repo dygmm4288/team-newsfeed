@@ -1,75 +1,38 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
-import Post from './Post';
-import { addDoc, collection, getDocs } from 'firebase/firestore';
-import { db } from '../../firebase/firebase.config';
 import { useAuth } from '../../contexts/auth.context';
-import { useNavigate } from 'react-router-dom';
-import { useSearchParams } from 'react-router-dom';
+import { usePost } from '../../contexts/post.context';
+import Post from './Post';
 
 function Main() {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [posts, setPosts] = useState([]);
 
-  const [selectedCategory, setSelectedCategory] = useState('발라드');
+  const [searchParams] = useSearchParams();
+  const selectedCategory = searchParams.get('category');
 
-  const { userInfo } = useAuth();
+  const [category, setCategory] = useState(selectedCategory || '발라드');
   const titleInputRef = useRef();
   const contentInputRef = useRef();
-  const categorySelecte = useRef();
-  const sunmitBtn = useRef();
+  const categorySelected = useRef();
+  const submitBtn = useRef();
+
+  const { userInfo } = useAuth();
+  const { createPost, posts } = usePost();
 
   const navigate = useNavigate();
 
-  // data get (가져오기)
-  useEffect(() => {
-    const fetchData = async () => {
-      const querySnapshot = await getDocs(collection(db, 'posts'));
-      const fetchedPosts = [];
-      querySnapshot.forEach((doc) => {
-        fetchedPosts.push(doc.data());
-      });
-      setPosts(fetchedPosts);
-    };
-    fetchData();
-  }, []);
-
-  // data get (추가하기)
-  const hanbleAddPost = async (event) => {
+  const handleCreatePost = async (event) => {
     event.preventDefault();
-
     if (title.trim() && content.trim()) {
-      const newPost = {
-        // userId: 'test', 게시물 고유 아이디 - 필요한 이유?? 삭제 수정하려고
-        // nickname : 회원가입 후 작성한 닉네임 값
-        //profileImg : 회원가입시 등록한 이미지 값
-        title: title,
-        content: content,
-        createdAt: new Date().toLocaleString(),
-        category: selectedCategory
-        //updatedAt은 수정쪽에서 건들기
-        //likeCount,review는 추가기능
-      };
-
-      setPosts([newPost, ...posts]);
-
-      //Firestore에서 'posts'컬렉션에 대한 참조 생성하기
-      const collectionRef = collection(db, 'posts');
-      // 'posts' 컬렉션에 newPost 문서를 추가합니다.
-      await addDoc(collectionRef, newPost);
-
+      createPost({ title, content, category });
       setTitle('');
       setContent('');
     } else {
       alert('제목과 내용 모두 입력해주세요💌');
     }
   };
-
-  // 주소에서 category 가져오기
-  const [searchParams, setSearchParams] = useSearchParams();
-  const category = searchParams.get('category');
-
   // 로그인 X alert
   const handleFocus = () => {
     if (userInfo === null) {
@@ -80,16 +43,15 @@ function Main() {
       } else {
         titleInputRef.current.blur();
         contentInputRef.current.blur();
-        categorySelecte.current.blur();
-        sunmitBtn.current.blur();
+        categorySelected.current.blur();
+        submitBtn.current.blur();
       }
     }
   };
 
   return (
-    //flex로 input 세로 배치 할 예정
     <StContainer>
-      <form onSubmit={(event) => hanbleAddPost(event)} onFocus={handleFocus}>
+      <form onSubmit={(event) => handleCreatePost(event)} onFocus={handleFocus}>
         <input
           ref={titleInputRef}
           type="text"
@@ -102,10 +64,10 @@ function Main() {
             }
           }}
           placeholder="제목을 입력해주세요"
-        ></input>
+        />
         <input
+          type="text"
           ref={contentInputRef}
-          type="textarea"
           value={content}
           onChange={(e) => {
             if (e.target.value.length <= 100) {
@@ -118,9 +80,9 @@ function Main() {
         />
         {category === null ? (
           <select
-            ref={categorySelecte}
+            ref={categorySelected}
             value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
+            onChange={(e) => setCategory(e.target.value)}
           >
             <option value={'발라드'}>발라드</option>
             <option value={'힙합'}>힙합</option>
@@ -132,7 +94,7 @@ function Main() {
         ) : (
           <p>{category}</p>
         )}
-        <button ref={sunmitBtn} type="submit">
+        <button ref={submitBtn} type="submit">
           추가
         </button>
       </form>

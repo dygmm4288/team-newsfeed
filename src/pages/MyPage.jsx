@@ -1,3 +1,4 @@
+import { collection, getDocs } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -7,19 +8,19 @@ import ScrollToTopBtn from '../components/Layout/ScrollToTopBtn';
 import { useAuth } from '../contexts/auth.context';
 import { db, storage } from '../firebase/firebase.config';
 import { getDefaultProfileImgURL } from '../firebase/firebaseStorage';
-import { collection, getDocs } from 'firebase/firestore';
 
 function MyPage() {
   const [isEditing, setIsEditing] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedFileIsFilled, setSelectedFileIsFilled] = useState(false);
-  const { userInfo, signInWithEmail, setUserProfileImgUrl, setUserNickname } = useAuth();
+  const { userInfo, signInWithEmail, setUserProfileImgUrl, setUserNickname } =
+    useAuth();
 
   const [editedNickname, setEditedNickname] = useState(userInfo?.nickname);
   const [imgUrl, setImgUrl] = useState(userInfo?.profileImgUrl || '');
   const [myPosts, setMyPosts] = useState([]);
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     const fetchData = async () => {
       // 유저정보가 없을 때
@@ -52,7 +53,7 @@ function MyPage() {
   const handleFileSelect = (event) => {
     const selectedFile = event.target.files[0];
     setSelectedFile(selectedFile);
-  }
+  };
 
   function validationCheck() {
     if (editedNickname.length === 0) {
@@ -85,7 +86,7 @@ function MyPage() {
     // Storage에  upload를 함
     try {
       // 새 이미지가 선택된 경우에만 storage에 업로드
-      if(isNewImageSelected) {
+      if (isNewImageSelected) {
         await uploadBytes(imageRef, selectedFile);
       }
     } catch (e) {
@@ -97,14 +98,16 @@ function MyPage() {
     // Storage에 있는 이미지를 auth에 반영을 시켜야 한다. 그러기 위해서 우선 URL을 가져온다
     try {
       // 새 이미지가 선택된 경우에만 download URL을 가져와서 프로필 사진 업데이트
-      if(isNewImageSelected){
+      if (isNewImageSelected) {
         const downloadURL = await getDownloadURL(imageRef);
         await setUserProfileImgUrl(downloadURL); // 반영이 바로 안됨 // 여기는 firebase auth
         setImgUrl(downloadURL); // 여기는 홈페이지 랜더링
       }
     } catch (e) {
       console.error(
-        'error occurred while downloading image from storage or setting user profile image url',e);
+        'error occurred while downloading image from storage or setting user profile image url',
+        e
+      );
       alert('이미지를 변경 하는데 실패했습니다.');
       return;
     }
@@ -117,48 +120,70 @@ function MyPage() {
 
   const typeEditedNickname = (event) => {
     setEditedNickname(event.target.value);
-  }
+  };
 
   const goEditMode = () => {
     setIsEditing(true);
-  }
+  };
 
   return (
     <StOuterFrame>
       <StMainContainer>
         <Header />
         <StMyInformationContainer>
-            <StProfilePicture src={imgUrl}/>
-            {console.log('imgUrl', imgUrl)}
-            <StMyInformation>
-                <StMyInformationDetailsContainer>
-                  <StHiMyNickname>안녕하세요, {isEditing ? userInfo?.nickname : editedNickname}님!</StHiMyNickname>
-                  <StMyInformationDetailsSmallContainer>
-                    <StMyEmail>E-mail: {userInfo?.email}</StMyEmail>
-                    {!isEditing && <><StMyNickName>Nickname: {editedNickname}</StMyNickName></>}
-                    {isEditing && <EditForm onSubmit={saveUpdatedProfile}>
-                      닉네임: <NicknameEditInput onChange={typeEditedNickname} value={editedNickname} />
-                      <StImageInputAfterContainer>
-                        <StImageInput type="file" onChange={handleFileSelect} />
-                      </StImageInputAfterContainer> 
-                    </EditForm>}
-                  </StMyInformationDetailsSmallContainer>
-                </StMyInformationDetailsContainer>
-                <StButtonContainer>
-                  {!isEditing && (<StProfileEditButton onClick={goEditMode}>프로필 수정하기</StProfileEditButton>)}
-                  {isEditing && (<StButtonSmallContainer>
-                  <StButton onClick={()=>setIsEditing(false)}>취소하기</StButton>
-                  <StButton onClick={saveUpdatedProfile}>변경사항 저장</StButton>
-                </StButtonSmallContainer>)}
-                </StButtonContainer>
-            </StMyInformation>
+          <StProfilePicture src={imgUrl} />
+          {console.log('imgUrl', imgUrl)}
+          <StMyInformation>
+            <StMyInformationDetailsContainer>
+              <StHiMyNickname>
+                안녕하세요, {isEditing ? userInfo?.nickname : editedNickname}님!
+              </StHiMyNickname>
+              <StMyInformationDetailsSmallContainer>
+                <StMyEmail>E-mail: {userInfo?.email}</StMyEmail>
+                {!isEditing && (
+                  <>
+                    <StMyNickName>Nickname: {editedNickname}</StMyNickName>
+                  </>
+                )}
+                {isEditing && (
+                  <EditForm onSubmit={saveUpdatedProfile}>
+                    닉네임:{' '}
+                    <NicknameEditInput
+                      onChange={typeEditedNickname}
+                      value={editedNickname}
+                    />
+                    <StImageInputAfterContainer>
+                      <StImageInput type="file" onChange={handleFileSelect} />
+                    </StImageInputAfterContainer>
+                  </EditForm>
+                )}
+              </StMyInformationDetailsSmallContainer>
+            </StMyInformationDetailsContainer>
+            <StButtonContainer>
+              {!isEditing && (
+                <StProfileEditButton onClick={goEditMode}>
+                  프로필 수정하기
+                </StProfileEditButton>
+              )}
+              {isEditing && (
+                <StButtonSmallContainer>
+                  <StButton onClick={() => setIsEditing(false)}>
+                    취소하기
+                  </StButton>
+                  <StButton onClick={saveUpdatedProfile}>
+                    변경사항 저장
+                  </StButton>
+                </StButtonSmallContainer>
+              )}
+            </StButtonContainer>
+          </StMyInformation>
         </StMyInformationContainer>
         <StMyPostContainer>
           <StMyPostTitle>My Post</StMyPostTitle>
           <StMyPostList>
             {/* 닉네임으로 필터링하기 -> 조건부랜더링(리스트가 없을때, 있을 때->map) */}
-            {myPosts.map((myPost)=>{
-              return(
+            {myPosts.map((myPost) => {
+              return (
                 <StMyPost>
                   <p>{myPost.email}</p>
                   <p>{myPost.nickname}</p>
@@ -241,9 +266,9 @@ const StMyEmail = styled.p`
 `;
 
 const StMyNickName = styled.p`
-   margin: 0 0 5px 0;
-   font-size: 0.95rem;
-   color: #929292;
+  margin: 0 0 5px 0;
+  font-size: 0.95rem;
+  color: #929292;
 `;
 
 const NicknameEditInput = styled.input`
@@ -283,8 +308,8 @@ const StHiMyNickname = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  line-height: 2.0;
-  line-height: 2.0;
+  line-height: 2;
+  line-height: 2;
   width: 250px;
   font-weight: 600;
   margin-left: 10px;
@@ -305,7 +330,6 @@ const StButton = styled.button`
   cursor: pointer;
   margin: 10px 0 10px 0;
 `;
-
 
 const StMyPostContainer = styled.div`
   border: 1px solid black;
@@ -364,7 +388,6 @@ const StImageInput = styled.input`
   cursor: pointer;
   width: 100%;
 `;
-
 
 const StProfileEditButton = styled.button`
   margin-top: 10px;

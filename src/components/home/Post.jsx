@@ -1,12 +1,22 @@
-import React from 'react';
-import ProfilePicture from '../../assets/Layout/Test-ProfilePicture.png';
-import styled from 'styled-components';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import ProfilePicture from '../../assets/Layout/Test-ProfilePicture.png';
+import { useAuth } from '../../contexts/auth.context';
+import { usePost } from '../../contexts/post.context';
+function Post({ post }) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedContent, setEditedContent] = useState(post.content);
 
-function Post({ posts, category, userInfo }) {
+  const { userInfo } = useAuth();
+  const { deletePost, updatePost } = usePost();
+
   const navigate = useNavigate();
 
-  // 로그인 X alert
+  const handleToggleEditMode = () => {
+    setIsEditing((prev) => !prev);
+  };
+
   const handleClick = () => {
     if (userInfo === null) {
       if (
@@ -16,48 +26,85 @@ function Post({ posts, category, userInfo }) {
       }
     }
   };
-
-  // location 이용
-  // const location = useLocation();
-  // const queryString = location.search;
-  // const category = queryString.get('category');
-
-  // useEffect(() => {
-  //   console.log('현재 카테고리:', queryString);
-  // }, [queryString]);
-
-  // useSearchParams 이용
-  // Main.jsx로 로직 이동
+  const handleDeletePost = async () => {
+    const confirmDelete = window.confirm('정말로 삭제하시겠습니까?');
+    if (confirmDelete) {
+      try {
+        await deletePost({ postId: post.id });
+      } catch (error) {
+        console.log('error', error);
+      }
+    }
+  };
+  const handleUpdatePost = async () => {
+    updatePost({ postId: post.id, data: { content: editedContent } });
+  };
 
   return (
     <>
-      {posts.filter((posts) => {
-        return category === null ? true : posts.category === category;
-      }).length === 0 ? (
-        <StNoPosts>
-          등록되어 있는 포스트가 없습니다.
-          <br />첫 포스트를 등록해 보세요~! 😀
-        </StNoPosts>
-      ) : (
-        posts
-          .filter((posts) => {
-            return category === null ? true : posts.category === category;
-          })
-          .map((posts) => (
-            // key값 부여해야하는 id값이 없음...!
-            <StPost key={posts.id}>
-              <StPostTop>
-                <img src={ProfilePicture} alt="ProfilePicture" />
-                <p>nickname : {posts.nickname}</p>
-              </StPostTop>
-              <StPostBottom>
-                <button onClick={handleClick}>···</button>
-                <p className="title">title : {posts.title}</p>
-                <p className="content">content : {posts.content}</p>
-              </StPostBottom>
-            </StPost>
-          ))
-      )}
+      (
+      <StPost key={post.id}>
+        <StPostTop>
+          <img src={ProfilePicture} alt="ProfilePicture" />
+          <p>nickname : {post.nickname}</p>
+        </StPostTop>
+        <StPostBottom>
+          <button onClick={handleClick}>···</button>
+          <p className="title">title : {post.title}</p>
+          <p className="content">content : {post.content}</p>
+          <StPostBottom>
+            {isEditing ? (
+              <>
+                <textarea
+                  value={editedContent}
+                  onChange={(e) => {
+                    setEditedContent(e.target.value);
+                  }}
+                ></textarea>
+                <div>
+                  <button
+                    onClick={() => {
+                      handleUpdatePost();
+                      handleToggleEditMode();
+                    }}
+                  >
+                    수정 완료
+                  </button>
+                  <button
+                    onClick={() => {
+                      setEditedContent(post.content);
+                      handleToggleEditMode();
+                    }}
+                  >
+                    취소
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <p>{post.content}</p>
+                <StButtonContainer>
+                  <button
+                    onClick={() => {
+                      handleToggleEditMode();
+                    }}
+                  >
+                    수정
+                  </button>
+                  <button
+                    onClick={() => {
+                      handleDeletePost();
+                    }}
+                  >
+                    삭제
+                  </button>
+                </StButtonContainer>
+              </>
+            )}
+          </StPostBottom>
+        </StPostBottom>
+      </StPost>
+      )
     </>
   );
 }
@@ -73,23 +120,20 @@ const StNoPosts = styled.p`
 export const StPost = styled.li`
   width: 500px;
   min-height: 300px;
-  margin-top: 20px;
+  border: 2px solid black;
 `;
-
 const StPostTop = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
   height: 20%;
   padding: 0 10px;
-
   img {
     width: 40px;
     height: 40px;
     border-radius: 50%;
   }
 `;
-
 const StPostBottom = styled.div`
   position: relative;
   display: flex;
@@ -105,13 +149,12 @@ const StPostBottom = styled.div`
     height: 15%;
   }
 
-  button {
-    position: absolute;
-    right: 4%;
-  }
-
   p {
     height: 100%;
     padding-bottom: 20px;
   }
+`;
+const StButtonContainer = styled.div`
+  display: flex;
+  flex-direction: row;
 `;
