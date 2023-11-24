@@ -107,12 +107,6 @@ function Post({ post }) {
 
 export default Post;
 
-const StNoPosts = styled.p`
-  text-align: center;
-  line-height: 1.5;
-  margin-top: 40px;
-`;
-
 export const StPost = styled.li`
   width: 500px;
   min-height: 300px;
