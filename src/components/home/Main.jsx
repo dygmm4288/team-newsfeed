@@ -49,18 +49,12 @@ const StContainer = styled.div`
   align-items: center;
   width: 75%;
   margin: 40px 0;
-
-  form {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    width: 100%;
-  }
 `;
 
 const StPostBox = styled.ul`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 30px;
+  margin: 30px 0;
 `;

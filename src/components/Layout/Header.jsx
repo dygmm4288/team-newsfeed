@@ -2,6 +2,7 @@ import React, { useCallback } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAuth } from '../../contexts/auth.context';
+import beatBridge from '../../assets/logo/BeatBridge.png';
 
 function Header() {
   const navigate = useNavigate();
@@ -21,7 +22,10 @@ function Header() {
     <StHeader>
       <StWrapper>
         <Link to="/">
-          <h1>Beat Bridge</h1>
+          <img className="logo" src={beatBridge} alt="BeatBridge" />
+        </Link>
+        <Link to="auth">
+          <button className="login_btn">로그인</button>
         </Link>
         {/* mypage */}
         {currentPath === '/mypage' ? (
@@ -55,8 +59,11 @@ const StHeader = styled.div`
   z-index: 1000;
   width: 100%;
   height: 70px;
-  background-color: #ffffff;
+  background-color: #2c2c2c;
   box-shadow: var(--box-shadow);
+  * {
+    color: white;
+  }
 `;
 const StWrapper = styled.div`
   display: flex;
@@ -68,18 +75,31 @@ const StWrapper = styled.div`
   > div {
     cursor: pointer;
   }
+  .logo {
+    width: 200px;
+  }
+  .login_btn {
+    background: transparent;
+    border: 2px solid #ff5b22;
+    padding: 3px;
+  }
 `;
 const StIdAndProfilePicture = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
+  gap: 20px;
   cursor: pointer;
+  p {
+    font-size: 15px;
+  }
   img {
-    width: 64px;
-    height: 64px;
+    width: 50px;
+    height: 50px;
     object-fit: cover;
     border-radius: 50%;
     cursor: pointer;
+    border: 2px solid white;
   }
 `;
 const StSkeletonWrapper = styled.div`
