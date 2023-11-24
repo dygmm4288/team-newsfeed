@@ -11,11 +11,8 @@ export default function Auth() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  //로그인할때 누군지 확인중
-  // const { signInWithEmail,userInfo } = useAuth();
-  // useEffect(() => {
-  //   console.log(userInfo);
-  // },[userInfo]);
+  const { userInfo, signInWithEmail, signInWithGithub, signOutUser } = useAuth();
+
 
   const signIn = async(event) =>{
     event.preventDefault();
@@ -58,7 +55,6 @@ export default function Auth() {
         </StSignUpWrapper>
     </StContainer>
       </>
-
   );
 }
 
