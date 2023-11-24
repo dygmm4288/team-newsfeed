@@ -2,8 +2,6 @@ import React, { useCallback } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAuth } from '../../contexts/auth.context';
-import SkeletonCircle from '../common/skeleton/SkeletonCircle';
-import SkeletonLine from '../common/skeleton/SkeletonLine';
 
 function Header() {
   const navigate = useNavigate();
@@ -24,6 +22,9 @@ function Header() {
       <StWrapper>
         <Link to="/">
           <h1>Beat Bridge</h1>
+        </Link>
+        <Link to="auth">
+          <button>로그인</button>
         </Link>
         {/* mypage */}
         {currentPath === '/mypage' ? (
@@ -57,7 +58,7 @@ const StHeader = styled.div`
   z-index: 1000;
   width: 100%;
   height: 70px;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   box-shadow: var(--box-shadow);
 `;
 const StWrapper = styled.div`
@@ -84,7 +85,6 @@ const StIdAndProfilePicture = styled.div`
     cursor: pointer;
   }
 `;
-
 const StSkeletonWrapper = styled.div`
   display: flex;
   flex-direction: row;

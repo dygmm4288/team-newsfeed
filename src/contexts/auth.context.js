@@ -18,8 +18,7 @@ const initialState = {
   setUserNickname: (nickname) => {},
   setUserProfileImgUrl: (profileImgUrl) => {},
   signInWithGithub: () => {},
-  error: null,
-  isLoading: false
+  error: null
 };
 // context 생성
 export const AuthContext = createContext(initialState);
@@ -31,25 +30,24 @@ export const AuthProvider = ({ children }) => {
   //! 현재는 테스트를 위해 로그인을 할 때 default 이미지를 넣지만 나중에는 회원가입을 할 때 해당 기능을 수행해야한다.
 
   const signInWithEmail = (email, password) => {
-    setIsLoading(true);
     setError(null);
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredentialImpl) => {
         setUser(userCredentialImpl.user);
         setDefaultProfileImgUrl(userCredentialImpl.user);
       })
-      .catch((err) => setError(err))
-      .finally(() => setIsLoading(false));
+      .catch((err) => {
+        setError(err);
+        console.error(err);
+      });
   };
   const signOutUser = () => {
     setError(null);
-    setIsLoading(true);
-    signOut(auth).finally(() => setIsLoading(false));
+    signOut(auth);
   };
   const signInWithGithub = () => {
     const provider = new GithubAuthProvider();
     setError(null);
-    setIsLoading(true);
     signInWithPopup(auth, provider)
       .then(async (result) => {
         setUser(result.user);
@@ -58,23 +56,18 @@ export const AuthProvider = ({ children }) => {
       .catch((err) => {
         setError(err);
         console.error(err);
-      })
-      .finally(() => {
-        setIsLoading(false);
       });
   };
 
-  const setUserNickname = (nickname) => {
+  const setUserNickname = async (nickname) => {
     setIsLoading(true);
-    return updateProfileBy({ displayName: nickname }).finally(() =>
-      setIsLoading(false)
-    );
+    await updateProfileBy({ displayName: nickname });
+    setIsLoading(false);
   };
-  const setUserProfileImgUrl = (profileImgUrl) => {
+  const setUserProfileImgUrl = async (profileImgUrl) => {
     setIsLoading(true);
-    return updateProfileBy({ photoURL: profileImgUrl }).finally(() => {
-      setIsLoading(false);
-    });
+    await updateProfileBy({ photoURL: profileImgUrl });
+    setIsLoading(false);
   };
   useEffect(() => {
     onAuthStateChanged(auth, (authUser) => {
@@ -85,7 +78,7 @@ export const AuthProvider = ({ children }) => {
       }
     });
   }, []);
-
+  console.log('loading is : ', isLoading);
   const userInfo = user
     ? {
         nickname: user.displayName,
@@ -135,7 +128,7 @@ const updateProfileBy = (updatedValue) => {
 async function setDefaultProfileImgUrl(user) {
   if (user.photoURL) return;
   try {
-    return updateProfileBy({ photoURL: await getDefaultProfileImgURL() });
+    updateProfileBy({ photoURL: await getDefaultProfileImgURL() });
   } catch (err) {
     console.error(
       'error occurred while getting the default profile image url.'
