@@ -52,6 +52,7 @@ const GlobalStyle = createGlobalStyle`
   * {
   font-family: 'NanumSquareNeo-Variable';
     box-sizing: border-box;
+    
   }
   :root {
     --box-shadow: 1px 1px 6px #3A3A3A;
