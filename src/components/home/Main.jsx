@@ -5,21 +5,6 @@ import { usePost } from '../../contexts/post.context';
 import Post from './Post';
 import PostForm from './PostForm';
 
-// Data 임시 기록
-// PostInfo(Document)
-// {
-//   게시물 아이디 : (firebase에서 랜덤으로 들어갈 것임)
-//   content
-//   title
-//   category
-//   nickname
-//   createdAt : new Date().toLocaleString()
-//   profileImage:
-//   updatedAt?
-//   likeCount?
-//   review?
-// }
-
 function Main() {
   const [searchParams] = useSearchParams();
   const paramCategory = searchParams.get('category');
