@@ -13,6 +13,7 @@ function Main() {
   const selectedCategory = searchParams.get('category');
 
   const [category, setCategory] = useState(selectedCategory || '발라드');
+
   const titleInputRef = useRef();
   const contentInputRef = useRef();
   const categorySelected = useRef();
@@ -49,6 +50,10 @@ function Main() {
     }
   };
 
+  const postsFilteredByCategory = posts.filter(
+    (post) => !selectedCategory || post.category === selectedCategory
+  );
+
   return (
     <StContainer>
       <form onSubmit={(event) => handleCreatePost(event)} onFocus={handleFocus}>
@@ -78,10 +83,10 @@ function Main() {
           }}
           placeholder="어떤 이야기를 나누고 싶나요?"
         />
-        {category === null ? (
+        {!selectedCategory ? (
           <select
             ref={categorySelected}
-            value={selectedCategory}
+            value={category}
             onChange={(e) => setCategory(e.target.value)}
           >
             <option value={'발라드'}>발라드</option>
@@ -92,23 +97,34 @@ function Main() {
             <option value={'연예인'}>연예인</option>
           </select>
         ) : (
-          <p>{category}</p>
+          <p>{selectedCategory}</p>
         )}
         <button ref={submitBtn} type="submit">
           추가
         </button>
       </form>
       <StPostBox>
-        {posts.map((post) => (
-          <Post post={post} />
-        ))}
+        {postsFilteredByCategory.length === 0 ? (
+          <StNoPosts>
+            등록되어 있는 포스트가 없습니다.
+            <br />첫 포스트를 등록해 보세요~! 😀
+          </StNoPosts>
+        ) : (
+          postsFilteredByCategory.map((post) => (
+            <Post key={post.id} post={post} />
+          ))
+        )}
       </StPostBox>
     </StContainer>
   );
 }
 
 export default Main;
-
+const StNoPosts = styled.p`
+  text-align: center;
+  line-height: 1.5;
+  margin-top: 40px;
+`;
 const StContainer = styled.div`
   display: flex;
   flex-direction: column;
