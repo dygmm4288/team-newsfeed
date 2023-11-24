@@ -36,7 +36,7 @@ export const AuthProvider = ({ children }) => {
         setDefaultProfileImgUrl(userCredentialImpl.user);
       })
       .catch((err) => {
-        setError(err)
+        setError(err);
         console.error(err);
       });
   };
