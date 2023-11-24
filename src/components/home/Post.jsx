@@ -25,6 +25,7 @@ export default function Post({ post }) {
 
   const handleUpdatePost = async () => {
     updatePost({ postId: post.id, content: editedContent });
+    setIsEditing(false);
   };
 
   return (
@@ -39,6 +40,7 @@ export default function Post({ post }) {
         <StPostBottom>
           {post.isEditing ? (
             <textarea
+              value={editedContent}
               onChange={(e) => {
                 setEditedContent(e.target.value);
               }}
