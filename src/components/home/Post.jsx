@@ -51,7 +51,6 @@ export default function Post({ post }) {
         <p>nickname : {post.nickname}</p>
       </StPostTop>
       <StPostBottom>
-        {/* <button onClick={handleClick}>···</button> */}
         {isEditing ? (
           <>
             <textarea
