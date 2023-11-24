@@ -8,7 +8,6 @@ import PostForm from './PostForm';
 function Main() {
   const [searchParams] = useSearchParams();
   const paramCategory = searchParams.get('category');
-
   const { posts } = usePost();
 
   // 현재 카테고리를 기준으로 필터링한 포스트들
@@ -17,7 +16,7 @@ function Main() {
   );
   return (
     <StContainer>
-      <PostForm paramCategory={paramCategory} />
+      <PostForm />
       <StPostBox>
         {checkEmpty(postsFilteredByCategory) ? (
           <StNoPosts>
