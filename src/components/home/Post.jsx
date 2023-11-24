@@ -48,7 +48,7 @@ export default function Post({ post }) {
           src={post.userInfo?.profileImgUrl || DefaultProfileImg}
           alt="ProfilePicture"
         />
-        <p>nickname : {post.nickname}</p>
+        <p>nickname : {post.userInfo.nickname}</p>
       </StPostTop>
       <StPostBottom>
         <button onClick={handleClick}>···</button>
