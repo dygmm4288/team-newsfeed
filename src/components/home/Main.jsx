@@ -7,10 +7,26 @@ import { useAuth } from '../../contexts/auth.context';
 import { useNavigate } from 'react-router-dom';
 import { useSearchParams } from 'react-router-dom';
 
+// Data 임시 기록
+// PostInfo(Document)
+// {
+//   게시물 아이디 : (firebase에서 랜덤으로 들어갈 것임)
+//   content
+//   title
+//   category
+//   nickname
+//   createdAt : new Date().toLocaleString()
+//   profileImage:
+//   updatedAt?
+//   likeCount?
+//   review?
+// }
+
 function Main() {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [posts, setPosts] = useState([]);
+  const [docId, setDocId] = useState([]);
 
   const [selectedCategory, setSelectedCategory] = useState('발라드');
 
@@ -27,13 +43,20 @@ function Main() {
     const fetchData = async () => {
       const querySnapshot = await getDocs(collection(db, 'posts'));
       const fetchedPosts = [];
+      const fetchedDocId = [];
       querySnapshot.forEach((doc) => {
+        console.log('doc.id : ', doc.id);
+        console.log('doc.data() : ', doc.data());
         fetchedPosts.push(doc.data());
+        fetchedDocId.push(doc.id);
       });
       setPosts(fetchedPosts);
+      setDocId(fetchedDocId);
     };
     fetchData();
   }, []);
+
+  console.log('userInfo : ', userInfo);
 
   // data get (추가하기)
   const hanbleAddPost = async (event) => {
@@ -42,8 +65,8 @@ function Main() {
     if (title.trim() && content.trim()) {
       const newPost = {
         // userId: 'test', 게시물 고유 아이디 - 필요한 이유?? 삭제 수정하려고
-        // nickname : 회원가입 후 작성한 닉네임 값
-        //profileImg : 회원가입시 등록한 이미지 값
+        nickname: userInfo.nickname,
+        profileImg: userInfo.profileImgUrl,
         title: title,
         content: content,
         createdAt: new Date().toLocaleString(),
