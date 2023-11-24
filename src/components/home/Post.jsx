@@ -50,58 +50,54 @@ function Post({ post }) {
         </StPostTop>
         <StPostBottom>
           <button onClick={handleClick}>···</button>
-          <p className="title">title : {post.title}</p>
-          <p className="content">content : {post.content}</p>
-          <StPostBottom>
-            {isEditing ? (
-              <>
-                <textarea
-                  value={editedContent}
-                  onChange={(e) => {
-                    setEditedContent(e.target.value);
+          {isEditing ? (
+            <>
+              <textarea
+                value={editedContent}
+                onChange={(e) => {
+                  setEditedContent(e.target.value);
+                }}
+              ></textarea>
+              <div>
+                <button
+                  onClick={() => {
+                    handleUpdatePost();
+                    handleToggleEditMode();
                   }}
-                ></textarea>
-                <div>
-                  <button
-                    onClick={() => {
-                      handleUpdatePost();
-                      handleToggleEditMode();
-                    }}
-                  >
-                    수정 완료
-                  </button>
-                  <button
-                    onClick={() => {
-                      setEditedContent(post.content);
-                      handleToggleEditMode();
-                    }}
-                  >
-                    취소
-                  </button>
-                </div>
-              </>
-            ) : (
-              <>
-                <p>{post.content}</p>
-                <StButtonContainer>
-                  <button
-                    onClick={() => {
-                      handleToggleEditMode();
-                    }}
-                  >
-                    수정
-                  </button>
-                  <button
-                    onClick={() => {
-                      handleDeletePost();
-                    }}
-                  >
-                    삭제
-                  </button>
-                </StButtonContainer>
-              </>
-            )}
-          </StPostBottom>
+                >
+                  수정 완료
+                </button>
+                <button
+                  onClick={() => {
+                    setEditedContent(post.content);
+                    handleToggleEditMode();
+                  }}
+                >
+                  취소
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              <p>{post.content}</p>
+              <StButtonContainer>
+                <button
+                  onClick={() => {
+                    handleToggleEditMode();
+                  }}
+                >
+                  수정
+                </button>
+                <button
+                  onClick={() => {
+                    handleDeletePost();
+                  }}
+                >
+                  삭제
+                </button>
+              </StButtonContainer>
+            </>
+          )}
         </StPostBottom>
       </StPost>
       )
