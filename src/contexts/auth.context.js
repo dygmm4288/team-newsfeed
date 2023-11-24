@@ -31,17 +31,22 @@ export const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null);
   //! 현재는 테스트를 위해 로그인을 할 때 default 이미지를 넣지만 나중에는 회원가입을 할 때 해당 기능을 수행해야한다.
 
-  const signInWithEmail = (email, password) => {
+  const signInWithEmail = async (email, password) => {
+    setIsLoading(true);
     setError(null);
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredentialImpl) => {
-        setUser(userCredentialImpl.user);
-        setDefaultProfileImgUrl(userCredentialImpl.user);
-      })
-      .catch((err) => {
-        setError(err);
-        console.error(err);
-      });
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      setUser(userCredential.user);
+    } catch (err) {
+      setError(err);
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
   };
   const signOutUser = () => {
     setError(null);
@@ -90,7 +95,7 @@ export const AuthProvider = ({ children }) => {
       return true;
     } catch (e) {
       console.error(e);
-      return false;
+      throw new Error(e);
     } finally {
       setIsLoading(false);
     }

@@ -1,8 +1,7 @@
-import { signInWithEmailAndPassword } from 'firebase/auth';
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { auth } from '../firebase/firebase.config';
+import { useAuth } from '../contexts/auth.context';
 
 export default function Auth() {
   //이메일, 비밀번호
@@ -10,22 +9,15 @@ export default function Auth() {
   const [password, setPassword] = useState('');
 
   const navigate = useNavigate();
+  const { signInWithEmail } = useAuth();
 
   const signIn = async (event) => {
     event.preventDefault();
-    try {
-      //로그인 성공 시
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+
+    signInWithEmail(email, password).then(() => {
+      alert('로그인에 성공했습니다.');
       navigate('/');
-    } catch (error) {
-      // TODO: 여기에 에러에 따라서 사용자에게 이율르 알려줘야 한다.
-      console.log(error);
-      alert('로그인실패');
-    }
+    });
   };
   return (
     <>
@@ -55,10 +47,12 @@ export default function Auth() {
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </Input>
+              <BtnWrapper>
+                <button type="submit" onClick={signIn}>
+                  Login
+                </button>
+              </BtnWrapper>
             </Form>
-            <BtnWrapper>
-              <button onClick={signIn}>Login</button>
-            </BtnWrapper>
             <Link to="/signup">
               <p>회원가입</p>
             </Link>
