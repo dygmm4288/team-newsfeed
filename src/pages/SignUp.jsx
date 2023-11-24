@@ -1,52 +1,31 @@
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAuth } from '../contexts/auth.context';
-import { auth } from '../firebase/firebase.config';
 
 export default function SignUp() {
-  // 이메일, 비밀번호, 닉네임
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const { userInfo } = useAuth();
-  // const [repeatPwd , setRepeatPwd] = useState("");
-  const [nickname, setNickname] = useState('');
-
-  // //오류메세지 상태저장
-  // const [passwordConfirmNessage , setPasswordMessage] = useState<String>('');
-
-  // //유효성 검사
-  // const [isPasswordConfirm, setIsPasswordConfirm] = useState<boolean>(false);
+  const [formState, setFormState] = useState({
+    nickname: '',
+    password: '',
+    email: ''
+  });
+  const { email, password, nickname } = formState;
+  const navigate = useNavigate();
+  const { signUpByEmail } = useAuth();
 
   const onChange = (event) => {
     const {
       target: { name, value }
     } = event;
-    if (name === 'email') {
-      setEmail(value);
-    }
-    if (name === 'password') {
-      setPassword(value);
-    }
-    if (name === 'nickname') {
-      setNickname(value);
-    }
+    setFormState((prev) => ({ ...prev, [name]: value }));
   };
+
   const signUp = (event) => {
     event.preventDefault();
-
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // 회원가입 성공시
-        updateProfile(userCredential.user, { displayName: nickname });
-        alert('회원가입성공 다시 로그인하세요.');
-        window.location = '/auth';
-      })
-      .catch((error) => {
-        // 회원가입 실패시
-        console.error(error);
-      });
+    signUpByEmail(email, password, nickname).then(() => {
+      alert('회원가입에 성공했습니다.');
+      navigate('/');
+    });
   };
 
   return (
@@ -54,7 +33,7 @@ export default function SignUp() {
       <StSignUpWrapper>
         <StSignUpLeft>
           <Logo>
-            <p>BeatBrdge</p>
+            <p>BeatBridge</p>
           </Logo>
           <Form>
             <Input>
@@ -96,7 +75,7 @@ export default function SignUp() {
           </Link>
         </StSignUpLeft>
         <StSignUpRight>
-          <img src=""></img>
+          <img src="" alt="사람이 기타를 치고 있는 그림"></img>
         </StSignUpRight>
       </StSignUpWrapper>
     </StContainer>
