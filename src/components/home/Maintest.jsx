@@ -18,7 +18,7 @@ function Maintest() {
   //로그인한 사용자 값 따로 구조분해할당으로 가져오기
   const { userInfo } = useAuth();
   //컴포넌트에서 해당 컨텍스트 안에 값을 사용하기 위해 사용
-  const { createPost, post } = usePost();
+  const { createPost, posts } = usePost();
   //데이터를 가져오기 때문에 async 사용
   const handleCreatePost = async (event) => {
     // 함수 실행시 홈페이지 새로고침 방지
@@ -90,6 +90,11 @@ function Maintest() {
         </select>
         <button type="submit">추가</button>
       </form>
+      <div>
+        {posts.map((post) => {
+          <Post key={post.id} post={post} />;
+        })}
+      </div>
     </div>
   );
 }
