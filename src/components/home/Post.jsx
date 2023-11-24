@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import DefaultProfileImg from '../../assets/Layout/Test-ProfilePicture.png';
 import { useAuth } from '../../contexts/auth.context';
@@ -11,20 +10,8 @@ export default function Post({ post }) {
   const { userInfo } = useAuth();
   const { deletePost, updatePost } = usePost();
 
-  const navigate = useNavigate();
-
   const handleToggleEditMode = () => {
     setIsEditing((prev) => !prev);
-  };
-
-  const handleClick = () => {
-    if (userInfo === null) {
-      if (
-        window.confirm('로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?')
-      ) {
-        navigate('/auth');
-      }
-    }
   };
 
   const handleDeletePost = async () => {
@@ -40,6 +27,7 @@ export default function Post({ post }) {
   const handleUpdatePost = async () => {
     updatePost({ postId: post.id, data: { content: editedContent } });
   };
+  const isCanEdit = userInfo?.email === post.userInfo.email;
 
   return (
     <StPost>
@@ -82,22 +70,24 @@ export default function Post({ post }) {
           <>
             <h1>{post.title}</h1>
             <p>{post.content}</p>
-            <StButtonContainer>
-              <button
-                onClick={() => {
-                  handleToggleEditMode();
-                }}
-              >
-                수정
-              </button>
-              <button
-                onClick={() => {
-                  handleDeletePost();
-                }}
-              >
-                삭제
-              </button>
-            </StButtonContainer>
+            {isCanEdit && (
+              <StButtonContainer>
+                <button
+                  onClick={() => {
+                    handleToggleEditMode();
+                  }}
+                >
+                  수정
+                </button>
+                <button
+                  onClick={() => {
+                    handleDeletePost();
+                  }}
+                >
+                  삭제
+                </button>
+              </StButtonContainer>
+            )}
           </>
         )}
       </StPostBottom>

@@ -52,7 +52,7 @@ export default function PostForm() {
     ) {
       navigate('/auth');
     }
-    event.currentTarget.blur();
+    event.target.blur();
   };
   const checkValidation = (validate, alertMsg) => (value) => {
     if (validate(value)) return true;
