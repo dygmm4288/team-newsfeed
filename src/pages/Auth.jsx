@@ -36,6 +36,12 @@ export default function Auth() {
   return (
     <>
       <StContainer>
+        <StH1Box>
+          <h1>음악을 사랑하는 사람들의 커뮤니티</h1>
+          <h1>
+            ⚡ 여러분의 이야기를 <span>Beat Up</span> 해주세요! ⚡
+          </h1>
+        </StH1Box>
         <StSignInWrapper>
           <StSignInLeft>
             <img src={signInBGImg} alt="signInBG"></img>
@@ -83,6 +89,22 @@ const StContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+`;
+
+const StH1Box = styled.div`
+  position: absolute;
+  top: 17%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 25px;
+
+  span {
+    color: #ff5b22;
+    font-weight: 700;
+  }
 `;
 
 const StSignInWrapper = styled.div`

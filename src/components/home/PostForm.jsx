@@ -27,7 +27,7 @@ export default function PostForm() {
     }
     if (
       !window.confirm(
-        `포스트를 ${paramCategory || category} 카테고리에 등록하시겠습니까?`
+        `Beat를 ${paramCategory || category} 카테고리에 등록하시겠습니까?`
       )
     )
       return;

@@ -80,7 +80,6 @@ export default function SignUp() {
               placeholder={'Repeat Password'}
               required
             ></Input>
-
             <Input
               type=""
               value={nickname}

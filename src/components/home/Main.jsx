@@ -20,8 +20,8 @@ function Main() {
       <StPostBox>
         {checkEmpty(postsFilteredByCategory) ? (
           <StNoPosts>
-            <p>등록되어 있는 포스트가 없습니다.</p>
-            <p>⚡ 나의 첫 Beat를 Beat Up 해보세요! ⚡</p>
+            <p>등록되어 있는 Beat가 없습니다.</p>
+            <p>⚡ 카테고리의 첫 Beat를 Beat Up 해보세요! ⚡</p>
           </StNoPosts>
         ) : (
           postsFilteredByCategory.map((post) => (
@@ -56,6 +56,6 @@ const StPostBox = styled.ul`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 50px;
+  gap: 40px;
   margin: 30px 0;
 `;

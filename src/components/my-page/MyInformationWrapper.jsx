@@ -24,33 +24,33 @@ export default function MyInformationWrapper() {
       <StProfilePicture src={profileImgUrl} />
       <StMyInformation>
         <StHiMyNickname>안녕하세요, {nickname} 님!</StHiMyNickname>
-            {!isEditing ? (
-                <StMyInformationDetailsContainer>
-                  <StMyInformationDetailsSmallContainer>
-                    <StMyEmail>E-mail:&nbsp;{email}</StMyEmail>
-                    <StMyNickName>닉네임:&nbsp;{nickname}</StMyNickName>
-                  </StMyInformationDetailsSmallContainer>
-                  <StButtonSmallContainer>
-                    <StProfileEditButton onClick={handleSignOut}>
-                      로그아웃
-                    </StProfileEditButton>
-                    <StProfileEditButton onClick={handleToggleEditMode}>
-                      프로필 수정
-                    </StProfileEditButton>
-                  </StButtonSmallContainer>
-                </StMyInformationDetailsContainer>
-            ) : (
-              <MyPageEditForm
-                nickname={nickname}
-                email={email}
-                setIsEditing={setIsEditing}
-              >
-                <StButtonSmallContainer>
-                  <StButton onClick={handleToggleEditMode}>취소하기</StButton>
-                  <StButton type="submit">변경사항 저장</StButton>
-                </StButtonSmallContainer>
-              </MyPageEditForm>
-            )}
+        {!isEditing ? (
+          <StMyInformationDetailsContainer>
+            <StMyInformationDetailsSmallContainer>
+              <StMyEmail>E-mail:&nbsp;{email}</StMyEmail>
+              <StMyNickName>닉네임:&nbsp;{nickname}</StMyNickName>
+            </StMyInformationDetailsSmallContainer>
+            <StButtonSmallContainer>
+              <StProfileEditButton onClick={handleSignOut}>
+                로그아웃
+              </StProfileEditButton>
+              <StProfileEditButton onClick={handleToggleEditMode}>
+                프로필 수정
+              </StProfileEditButton>
+            </StButtonSmallContainer>
+          </StMyInformationDetailsContainer>
+        ) : (
+          <MyPageEditForm
+            nickname={nickname}
+            email={email}
+            setIsEditing={setIsEditing}
+          >
+            <StButtonSmallContainer>
+              <StButton onClick={handleToggleEditMode}>취소하기</StButton>
+              <StButton type="submit">변경사항 저장</StButton>
+            </StButtonSmallContainer>
+          </MyPageEditForm>
+        )}
       </StMyInformation>
     </StMyInformationContainer>
   );
@@ -67,7 +67,7 @@ const StMyInformationContainer = styled.div`
   margin-top: 50px;
   padding-left: 30px;
   padding-right: 40px;
-  background-color: #F2F2F2;
+  background-color: #f2f2f2;
   border-radius: 5px;
 `;
 
@@ -105,13 +105,13 @@ const StMyInformationDetailsSmallContainer = styled.div`
 
 const StMyEmail = styled.p`
   margin: 5px 0 0 0;
-  color: #2C2C2C;
+  color: #2c2c2c;
   font-size: 0.85rem;
 `;
 
 const StMyNickName = styled.p`
   margin: 0 0 5px 0;
-  color: #2C2C2C;
+  color: #2c2c2c;
   font-size: 0.85rem;
 `;
 
@@ -164,12 +164,12 @@ const StButton = styled.button`
   cursor: pointer;
   margin: 10px 0 10px 0;
   font-size: 0.75rem;
-  background-color: #2C2C2C;
+  background-color: #2c2c2c;
   color: white;
   border: none;
   transition: 0.2s ease;
   &:hover {
-    background-color: #FF5B22;
+    background-color: #ff5b22;
     transform: scale(1.02);
   }
 `;
@@ -180,12 +180,12 @@ const StProfileEditButton = styled.button`
   cursor: pointer;
   margin: 10px 0 10px 0;
   font-size: 0.75rem;
-  background-color: #2C2C2C;
+  background-color: #2c2c2c;
   border: none;
   color: white;
-    transition: 0.2s ease;
+  transition: 0.2s ease;
   &:hover {
-    background-color: #FF5B22;
+    background-color: #ff5b22;
     transform: scale(1.02);
   }
 `;

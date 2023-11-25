@@ -36,7 +36,7 @@ export default function Post({ post }) {
           src={post.userInfo?.profileImgUrl || DefaultProfileImg}
           alt="ProfilePicture"
         />
-        <p>nickname : {post.userInfo.nickname}</p>
+        <p>{post.userInfo.nickname}</p>
       </StPostTop>
       <StPostBottom>
         {isEditing ? (
@@ -107,7 +107,7 @@ const StPostTop = styled.div`
   align-items: center;
   height: 50px;
   padding: 0 10px;
-  gap: 5px;
+  gap: 10px;
 
   img {
     width: 50px;
