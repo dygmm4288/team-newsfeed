@@ -58,13 +58,13 @@ export default function Post({ post }) {
       <StPostBottom>
         {isEditing ? (
           <>
-            <textarea
+            <input
               value={editedTitle}
               onChange={handleChangeValue(
                 checkValidation(checkValidateTitle, '제목이 너무 깁니다.'),
                 setEditedTitle
               )}
-            ></textarea>
+            ></input>
             <textarea
               value={editedContent}
               onChange={handleChangeValue(
@@ -94,7 +94,16 @@ export default function Post({ post }) {
         ) : (
           <>
             <h1>{post.title}</h1>
-            <p>{post.content}</p>
+            <p>
+              {post.content.split('\n').map((line) => {
+                return (
+                  <>
+                    {line}
+                    <br />
+                  </>
+                );
+              })}
+            </p>
             {isCanEdit && (
               <StButtonContainer>
                 <button
@@ -166,35 +175,33 @@ const StPostBottom = styled.div`
     box-shadow: 3px 3px 10px #020202;
   }
 
-  textarea {
-    &:nth-child(1) {
-      width: 100%;
-      height: 45px;
-      resize: none;
-      outline: none;
-      padding: 10px;
-      font-size: 17.4px;
-      color: white;
-      background: transparent;
-      border: none;
-      border-bottom: 2px solid #ff5b22;
-      overflow-y: hidden;
-    }
+  input {
+    width: 100%;
+    height: 45px;
+    resize: none;
+    outline: none;
+    padding: 10px;
+    font-size: 17.4px;
+    color: white;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid #ff5b22;
+    overflow-y: hidden;
+  }
 
-    &:nth-child(2) {
-      width: 100%;
-      height: 100%;
-      resize: none;
-      outline: none;
-      padding: 10px;
-      margin-bottom: 20px;
-      font-size: 17.4px;
-      color: white;
-      background: transparent;
-      border: 2px solid #ff5b22;
-      border-radius: 5px;
-      line-height: 1.36;
-    }
+  textarea {
+    width: 100%;
+    height: 100%;
+    resize: none;
+    outline: none;
+    padding: 10px;
+    margin-bottom: 20px;
+    font-size: 17.4px;
+    color: white;
+    background: transparent;
+    border: 2px solid #ff5b22;
+    border-radius: 5px;
+    line-height: 1.36;
   }
 
   h1 {

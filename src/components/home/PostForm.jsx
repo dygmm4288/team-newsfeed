@@ -77,7 +77,7 @@ export default function PostForm() {
         )}
         placeholder="제목을 입력해주세요."
       />
-      <StContentInput
+      <StContentTextarea
         type="text"
         value={content}
         onChange={handleChangeValue(
@@ -145,7 +145,7 @@ const StTitleInput = styled.input`
   }
 `;
 
-const StContentInput = styled.textarea`
+const StContentTextarea = styled.textarea`
   height: 100%;
   resize: none;
   border: none;
