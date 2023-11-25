@@ -37,8 +37,8 @@ function MyPage() {
           <StMyPostList>
             {checkEmpty(myPosts)? (
               <StNoMyPosts onClick={() => navigate('/')}>
-                <p>등록되어 있는 나의 포스트가 없습니다.</p>
-                <p>나의 첫 포스트를 Beat Up 해보세요!</p>
+                <p>등록되어 있는 나의 Beat가 없습니다.</p>
+                <p>⚡ 나의 첫 포스트를 Beat Up 해보세요! ⚡</p>
               </StNoMyPosts>
             ) : (
               myPosts.map((myPost) => {
@@ -124,7 +124,7 @@ const StMyPostList = styled.div`
 
 const StMyPost = styled.div`
   display: flex;
-  flex-basis: 350px;
+  /* flex-basis: 350px; */
   width: 680px;
   min-height: 150px;
   padding: 20px;

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAuth } from '../contexts/auth.context';
+import signupImg from '../assets/background/signUp.jpg';
 
 export default function SignUp() {
   const [formState, setFormState] = useState({
@@ -54,57 +55,51 @@ export default function SignUp() {
     <StContainer>
       <StSignUpWrapper>
         <StSignUpLeft>
-          <Logo>
-            <p>BeatBridge</p>
-          </Logo>
           <Form>
-            <Input>
-              Email :{' '}
-              <input
+            <Input
                 type="email"
                 value={email}
                 name="email"
                 onChange={onChange}
+                placeholder={"Email"}
                 required
-              ></input>
-              <br />
-              PassWord :{' '}
-              <input
+            ></Input>
+            <Input
                 type="password"
                 value={password}
                 name="password"
                 onChange={onChange}
+                placeholder={"Password"}
                 required
-              ></input>
-              <br />
-              Repeat Pwd :{' '}
-              <input
+            ></Input>
+            <Input
                 type="password"
                 value={confirmPassword}
                 name="confirmPassword"
                 onChange={onChange}
+                placeholder={"Repeat Password"}
                 required
-              ></input>
-              <br />
-              NickName :{' '}
-              <input
+              ></Input>
+
+              <Input
                 type=""
                 value={nickname}
                 name="nickname"
                 onChange={onChange}
+                placeholder={"Nickname"}
                 required
-              ></input>
-            </Input>
+            ></Input>
           </Form>
           <BtnWrapper>
-            <button onClick={signUp}>Sign Up</button>
+            <SignUpBtn onClick={signUp}>Sign Up</SignUpBtn>
+            <Link to="/auth">
+              <GoToLogIn>로그인 화면으로 이동</GoToLogIn>
+            </Link>
           </BtnWrapper>
-          <Link to="/auth">
-            <p>로그인화면으로이동</p>
-          </Link>
+
         </StSignUpLeft>
         <StSignUpRight>
-          <img src="" alt="사람이 기타를 치고 있는 그림"></img>
+          <SignUpImg src={signupImg} alt="사람이 기타를 치고 있는 그림" />
         </StSignUpRight>
       </StSignUpWrapper>
     </StContainer>
@@ -115,57 +110,106 @@ const StContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  border: 2px solid black;
+  justify-content: center;
+  /* border: 2px solid black; */
+  height: 100vh;
 `;
 const StSignUpWrapper = styled.div`
   width: 800px;
-  height: 500px;
+  height: 400px;
   display: flex;
   align-items: center;
-  border: 2px solid black;
-  position: relative;
+  background-color: #2C2C2C;
+  color: white;
+  box-shadow: 3px 3px 8px black;
 `;
+
 const StSignUpLeft = styled.form`
   width: 400px;
-  height: 300px;
+  height: 400px;
   border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  background-color: #2C2C2C;
+  color: black;
 `;
 const StSignUpRight = styled.div`
   width: 400px;
-  height: 300px;
+  height: 400px;
   border: 1px solid black;
 `;
-const Logo = styled.div`
-  width: 400px;
-  height: 80px;
-  border: 1px solid black;
-  & p {
-    font-size: larger;
-    text-align: center;
-  }
-`;
+
 const Form = styled.div`
-  height: 150px;
-  border: 1px solid black;
+  height: 65%;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  text-align: center;
   justify-content: center;
-  position: relative;
+  padding: 50px 0 0 0;
+  gap: 15px;
 `;
-const Input = styled.form`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-`;
+
 const BtnWrapper = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
-  & button {
-    background-color: black;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
+  height: 35%;
+  padding-bottom: 20px;
+`;
+
+const SignUpImg = styled.img`
+  height: 400px;
+  width: 400px;
+  object-fit: cover;
+`;
+
+const GoToLogIn = styled.p`
+  font-size: 12px;
+  color: #acacac;
+  margin-top: 10px;
+`;
+
+const Input = styled.input`
+  width: 70%;
+  height: 30px;
+  padding: 7px 15px;
+  border: none;
+  border-bottom: 3px solid black;
+  background-color: #2C2C2C;
+  font-size: 20px;
+  text-align: center;
+  color: white;
+  outline: none;
+  &::placeholder{
+    font-size: 25px;
+    text-align: center;
   }
+  &::-webkit-autofill {
+    -webkit-box-showdow: 000 1000px #2c2c2c inset;
+    -webkit-text-fill-color: white;
+  }
+`;
+
+const SignUpBtn = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  width: 220px;
+  font-size: 16px;
+  text-align: center;
+  background-color: #000000;
+  color: #FF5B22;
+  border: 1px solid #FF5B22;
+  transition: 0.2s ease-in-out;
+  cursor: pointer;
+  &:hover {
+      scale: 1.05;
+      color: #FF5B22;
+      box-shadow: 0 0 6px #FF5B22;
+    }
+    &:active {
+      scale: 0.95;
+    }
 `;
