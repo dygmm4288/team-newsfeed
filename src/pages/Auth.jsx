@@ -68,6 +68,7 @@ export default function Auth() {
                 <button type="submit" onClick={signInBG}>
                   Login
                 </button>
+                <button>Github</button>
               </StSignInBtnBox>
               <StGoToSignupPage>
                 <Link to="/signup">
@@ -187,10 +188,12 @@ const StSignInInputBox = styled.div`
 
 const StSignInBtnBox = styled.div`
   display: flex;
+  flex-direction: column;
   align-items: center;
-  height: 20%;
+  gap: 15px;
+  height: 25%;
 
-  button {
+  button:nth-child(1) {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -198,7 +201,7 @@ const StSignInBtnBox = styled.div`
     height: 40px;
     font-size: 16px;
     text-align: center;
-    background-color: black;
+    background: transparent;
     color: #ff5b22;
     border: 2px solid #ff5b22;
     cursor: pointer;
@@ -208,6 +211,34 @@ const StSignInBtnBox = styled.div`
       scale: 1.05;
       color: #ff5b22;
       box-shadow: 0 0 5px #ff5b22;
+      background-color: black;
+    }
+
+    &:active {
+      scale: 0.95;
+    }
+  }
+
+  /* Github 버튼 CSS */
+  button:nth-child(2) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 220px;
+    height: 40px;
+    font-size: 16px;
+    text-align: center;
+    background: transparent;
+    color: #acacac;
+    border: 2px solid #acacac;
+    cursor: pointer;
+    transition: 0.2s ease-in-out;
+
+    &:hover {
+      scale: 1.05;
+      color: #acacac;
+      box-shadow: 0 0 5px #ffffff;
+      background-color: black;
     }
 
     &:active {
@@ -220,7 +251,7 @@ const StGoToSignupPage = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 10px;
+  margin-top: 20px;
 
   p {
     color: #acacac;
