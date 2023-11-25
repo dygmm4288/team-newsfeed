@@ -47,7 +47,14 @@ function MyPage() {
                     <p>{myPost.email}</p>
                     <p>{myPost.nickname}</p>
                     <StMyPostTitle>{myPost.title}</StMyPostTitle>
-                    <StMyPostContent>{myPost.content}</StMyPostContent>
+                    <StMyPostContent>{myPost.content.split("\n").map((line)=>{
+                      return (
+                        <>
+                          {line}
+                          <br />
+                        </>
+                      );}
+                    )}</StMyPostContent>
                   </StMyPost>
                 );
               })
