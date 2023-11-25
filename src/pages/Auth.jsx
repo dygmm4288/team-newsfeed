@@ -142,7 +142,7 @@ const StSignInInputBox = styled.div`
     width: 70%;
     height: 30px;
     padding: 7px 15px;
-    font-size: 15px;
+    font-size: 20px;
     border: none;
     border-bottom: 2px solid black;
     background-color: #2c2c2c;
