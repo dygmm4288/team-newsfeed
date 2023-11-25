@@ -5,6 +5,7 @@ import { useAuth } from '../../contexts/auth.context';
 import { usePost } from '../../contexts/post.context';
 export default function Post({ post }) {
   const [isEditing, setIsEditing] = useState(false);
+  const [editedTitle, setEditedTitle] = useState(post.title);
   const [editedContent, setEditedContent] = useState(post.content);
 
   const { userInfo } = useAuth();
@@ -25,9 +26,25 @@ export default function Post({ post }) {
     }
   };
   const handleUpdatePost = async () => {
-    updatePost({ postId: post.id, data: { content: editedContent } });
+    updatePost({
+      postId: post.id,
+      data: { title: editedTitle, content: editedContent }
+    });
   };
   const isCanEdit = userInfo?.email === post.userInfo.email;
+
+  const checkValidation = (validate, alertMsg) => (value) => {
+    if (validate(value)) return true;
+    alert(alertMsg);
+    return false;
+  };
+
+  const handleChangeValue = (checkValid, setState) => (event) => {
+    if (checkValid(event.target.value)) {
+      setState(event.target.value);
+      return;
+    }
+  };
 
   return (
     <StPost>
@@ -41,12 +58,19 @@ export default function Post({ post }) {
       <StPostBottom>
         {isEditing ? (
           <>
-            <h1>{post.title}</h1>
+            <textarea
+              value={editedTitle}
+              onChange={handleChangeValue(
+                checkValidation(checkValidateTitle, '제목이 너무 깁니다.'),
+                setEditedTitle
+              )}
+            ></textarea>
             <textarea
               value={editedContent}
-              onChange={(e) => {
-                setEditedContent(e.target.value);
-              }}
+              onChange={handleChangeValue(
+                checkValidation(checkValidateContent, '내용이 너무 깁니다.'),
+                setEditedContent
+              )}
             ></textarea>
             <StButtonContainer>
               <button
@@ -96,6 +120,13 @@ export default function Post({ post }) {
   );
 }
 
+function checkValidateTitle(title) {
+  return title.length <= 22;
+}
+function checkValidateContent(content) {
+  return content.length <= 192;
+}
+
 const StPost = styled.li`
   width: 580px;
   height: 300px;
@@ -124,7 +155,7 @@ const StPostBottom = styled.div`
   justify-content: flex-start;
   align-items: flex-start;
   margin-top: 10px;
-  gap: 15px;
+  gap: 10px;
   height: 250px;
   padding: 25px;
   border-radius: 5px;
@@ -136,18 +167,34 @@ const StPostBottom = styled.div`
   }
 
   textarea {
-    width: 100%;
-    height: 100%;
-    resize: none;
-    outline: none;
-    padding: 10px;
-    margin-bottom: 20px;
-    font-size: 17.4px;
-    color: white;
-    background: transparent;
-    border: 2px solid #ff5b22;
-    border-radius: 5px;
-    line-height: 1.36;
+    &:nth-child(1) {
+      width: 100%;
+      height: 45px;
+      resize: none;
+      outline: none;
+      padding: 10px;
+      font-size: 17.4px;
+      color: white;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid #ff5b22;
+      overflow-y: hidden;
+    }
+
+    &:nth-child(2) {
+      width: 100%;
+      height: 100%;
+      resize: none;
+      outline: none;
+      padding: 10px;
+      margin-bottom: 20px;
+      font-size: 17.4px;
+      color: white;
+      background: transparent;
+      border: 2px solid #ff5b22;
+      border-radius: 5px;
+      line-height: 1.36;
+    }
   }
 
   h1 {

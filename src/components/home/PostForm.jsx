@@ -113,7 +113,7 @@ function checkValidateTitle(title) {
   return title.length <= 22;
 }
 function checkValidateContent(content) {
-  return content.length <= 188;
+  return content.length <= 192;
 }
 
 const StPostFormBox = styled.form`
