@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAuth } from '../contexts/auth.context';
+import signInBGImg from '../assets/background/signIn.jpg';
 
 export default function Auth() {
   //이메일, 비밀번호
@@ -11,7 +12,7 @@ export default function Auth() {
   const navigate = useNavigate();
   const { signInWithEmail } = useAuth();
 
-  const signIn = async (event) => {
+  const signInBG = async (event) => {
     event.preventDefault();
 
     signInWithEmail(email, password)
@@ -35,45 +36,41 @@ export default function Auth() {
   return (
     <>
       <StContainer>
-        <StSignUpWrapper>
-          <StSignUpLeft>
-            <img src="" alt="기타 그림"></img>
-          </StSignUpLeft>
-          <StSignUpRight>
-            <Logo>
-              <p>BeatBrdge</p>
-            </Logo>
-            <Form>
-              <Input>
-                Email :{' '}
+        <StSignInWrapper>
+          <StSignInLeft>
+            <img src={signInBGImg} alt="signInBG"></img>
+          </StSignInLeft>
+          <StSignInRight>
+            <StSignInForm>
+              <StSignInInputBox>
                 <input
                   type="email"
+                  placeholder="Email"
                   value={email}
                   name="email"
                   onChange={(e) => setEmail(e.target.value)}
                 />
-                PassWord :{' '}
                 <input
                   type="password"
+                  placeholder="Password"
                   value={password}
                   name="password"
                   onChange={(e) => setPassword(e.target.value)}
                 />
-              </Input>
-              <BtnWrapper>
-                <button type="submit" onClick={signIn}>
+              </StSignInInputBox>
+              <StSignInBtnBox>
+                <button type="submit" onClick={signInBG}>
                   Login
                 </button>
-              </BtnWrapper>
-            </Form>
-            <Link to="/signup">
-              <p>회원가입</p>
-            </Link>
-            <Link to="">
-              <p>비밀번호찾기</p>
-            </Link>
-          </StSignUpRight>
-        </StSignUpWrapper>
+              </StSignInBtnBox>
+              <StGoToSignupPage>
+                <Link to="/signup">
+                  <p>회원가입</p>
+                </Link>
+              </StGoToSignupPage>
+            </StSignInForm>
+          </StSignInRight>
+        </StSignInWrapper>
       </StContainer>
     </>
   );
@@ -81,60 +78,130 @@ export default function Auth() {
 
 const StContainer = styled.div`
   width: 100%;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  border: 2px solid black;
+  justify-content: center;
 `;
-const StSignUpWrapper = styled.div`
+
+const StSignInWrapper = styled.div`
   width: 800px;
-  height: 500px;
+  height: 400px;
   display: flex;
   align-items: center;
   border: 2px solid black;
-  position: relative;
+  background-color: #2c2c2c;
+  border: none;
+  box-shadow: 3px 3px 8px black;
 `;
-const StSignUpLeft = styled.form`
+
+const StSignInLeft = styled.form`
   width: 400px;
-  height: 300px;
+  height: 400px;
   border: 1px solid black;
-`;
-const StSignUpRight = styled.div`
-  width: 400px;
-  height: 300px;
-  border: 1px solid black;
-`;
-const Logo = styled.div`
-  width: 400px;
-  height: 80px;
-  border: 1px solid black;
-  & p {
-    font-size: larger;
-    text-align: center;
+
+  img {
+    width: 400px;
+    height: 400px;
+    object-fit: cover;
+    object-position: 50% 64%;
   }
 `;
-const Form = styled.div`
-  height: 150px;
-  border: 1px solid black;
-  align-items: center;
-  text-align: center;
-  justify-content: center;
-  position: relative;
-`;
-const Input = styled.form`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-`;
-const BtnWrapper = styled.div`
+
+const StSignInRight = styled.div`
   display: flex;
-  justify-content: space-evenly;
+  flex-direction: column;
+  justify-content: center;
+  width: 400px;
+  height: 400px;
+  border: 1px solid black;
+`;
+
+const StSignInForm = styled.form`
+  position: relative;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  & button {
-    background-color: black;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+`;
+
+const StSignInInputBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
+  height: 45%;
+
+  input {
+    width: 70%;
+    height: 30px;
+    padding: 7px 15px;
+    font-size: 15px;
+    border: none;
+    border-bottom: 2px solid black;
+    background-color: #2c2c2c;
+    font-size: 20px;
+    text-align: center;
+    outline: none;
     color: white;
+
+    &::placeholder {
+      font-size: 25px;
+    }
+
+    /* 자동완성 시 텍스트 및 배경 색 컨트롤 */
+    &:-webkit-autofill {
+      -webkit-box-shadow: 0 0 0 1000px #2c2c2c inset;
+      -webkit-text-fill-color: #fff;
+    }
+  }
+`;
+
+const StSignInBtnBox = styled.div`
+  display: flex;
+  align-items: center;
+  height: 20%;
+
+  button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 220px;
+    height: 40px;
     font-size: 16px;
+    text-align: center;
+    background-color: black;
+    color: #ff5b22;
+    border: 2px solid #ff5b22;
     cursor: pointer;
+    transition: 0.2s ease-in-out;
+
+    &:hover {
+      scale: 1.05;
+      color: #ff5b22;
+      box-shadow: 0 0 5px #ff5b22;
+    }
+
+    &:active {
+      scale: 0.95;
+    }
+  }
+`;
+
+const StGoToSignupPage = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+
+  p {
+    color: #acacac;
+    font-size: 12px;
   }
 `;

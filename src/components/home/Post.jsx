@@ -41,20 +41,21 @@ export default function Post({ post }) {
       <StPostBottom>
         {isEditing ? (
           <>
+            <h1>{post.title}</h1>
             <textarea
               value={editedContent}
               onChange={(e) => {
                 setEditedContent(e.target.value);
               }}
             ></textarea>
-            <div>
+            <StButtonContainer>
               <button
                 onClick={() => {
                   handleUpdatePost();
                   handleToggleEditMode();
                 }}
               >
-                수정 완료
+                ⭕
               </button>
               <button
                 onClick={() => {
@@ -62,9 +63,9 @@ export default function Post({ post }) {
                   handleToggleEditMode();
                 }}
               >
-                취소
+                ⛔
               </button>
-            </div>
+            </StButtonContainer>
           </>
         ) : (
           <>
@@ -77,14 +78,14 @@ export default function Post({ post }) {
                     handleToggleEditMode();
                   }}
                 >
-                  수정
+                  🔨
                 </button>
                 <button
                   onClick={() => {
                     handleDeletePost();
                   }}
                 >
-                  삭제
+                  💥
                 </button>
               </StButtonContainer>
             )}
@@ -97,43 +98,92 @@ export default function Post({ post }) {
 
 const StPost = styled.li`
   width: 580px;
-  min-height: 250px;
+  height: 300px;
 `;
+
 const StPostTop = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  height: 20%;
+  height: 50px;
   padding: 0 10px;
+  gap: 5px;
+
   img {
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
   }
 `;
+
 const StPostBottom = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
-  height: 80%;
-  padding: 15px;
-  border: 2px solid blue;
-  border-radius: 20px;
+  margin-top: 10px;
+  gap: 15px;
+  height: 250px;
+  padding: 25px;
+  border-radius: 5px;
+  color: white;
+  background-color: #2c2c2c;
 
-  .title {
+  &:hover {
+    box-shadow: 3px 3px 10px #020202;
+  }
+
+  textarea {
+    width: 100%;
+    height: 100%;
+    resize: none;
+    outline: none;
+    padding: 10px;
+    margin-bottom: 20px;
+    font-size: 18px;
+    color: white;
+    background: transparent;
+    border: 2px solid #ff5b22;
+    border-radius: 5px;
+  }
+
+  h1 {
     height: 15%;
+    font-size: 25px;
   }
   p {
+    width: 100%;
     height: 100%;
-    padding-bottom: 20px;
+    font-size: 18px;
+    margin-bottom: 20px;
   }
 `;
+
 const StButtonContainer = styled.div`
   display: flex;
   flex-direction: row;
   position: absolute;
-  right: 13px;
+  right: 25px;
   bottom: 13px;
+  gap: 10px;
+
+  button {
+    width: 30px;
+    height: 23px;
+    background: transparent;
+    background-color: #464646;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+
+    &:hover {
+      scale: 1.3;
+      background-color: #ff5b22;
+    }
+
+    &:active {
+      scale: 0.9;
+    }
+  }
 `;

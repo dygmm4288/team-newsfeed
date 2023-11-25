@@ -21,7 +21,7 @@ function Main() {
         {checkEmpty(postsFilteredByCategory) ? (
           <StNoPosts>
             <p>등록되어 있는 포스트가 없습니다.</p>
-            <p>첫 포스트를 등록해 보세요~! 😀</p>
+            <p>⚡ 나의 첫 Beat를 Beat Up 해보세요! ⚡</p>
           </StNoPosts>
         ) : (
           postsFilteredByCategory.map((post) => (
@@ -41,7 +41,8 @@ export default Main;
 const StNoPosts = styled.p`
   text-align: center;
   line-height: 1.5;
-  margin-top: 40px;
+  margin-top: 20px;
+  font-size: 20px;
 `;
 const StContainer = styled.div`
   display: flex;
@@ -55,6 +56,6 @@ const StPostBox = styled.ul`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 30px;
+  gap: 50px;
   margin: 30px 0;
 `;

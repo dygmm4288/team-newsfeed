@@ -101,7 +101,9 @@ export default function PostForm() {
         ) : (
           <p>{paramCategory}</p>
         )}
-        <button type="submit">Beat Up</button>
+        <button type="submit">
+          <span>Beat Up</span>
+        </button>
       </StBeatUpBox>
     </StPostFormBox>
   );
@@ -123,6 +125,7 @@ const StPostFormBox = styled.form`
   height: 180px;
   padding: 15px 20px;
   background-color: #f2f2f2;
+  border-radius: 5px;
 
   * {
     color: #2c2c2c;
@@ -169,6 +172,8 @@ const StBeatUpBox = styled.div`
     color: white;
     background-color: #2c2c2c;
     border: none;
+    border-radius: 5px;
+    cursor: pointer;
 
     & option {
       color: white;
@@ -176,17 +181,42 @@ const StBeatUpBox = styled.div`
     }
   }
 
+  p {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 13%;
+    font-size: 13px;
+    color: white;
+    background-color: #2c2c2c;
+    border-radius: 5px;
+  }
+
   button {
     width: 84%;
-    color: white;
     background-color: #ff5b22;
     border: none;
     font-weight: 600;
     transition: 0.2s ease-in-out;
+    border-radius: 5px;
+    cursor: pointer;
+
+    span {
+      color: white;
+    }
 
     &:hover {
-      scale: 1.04;
-      background-color: #ff3217;
+      scale: 1.005;
+      box-shadow: 1px 1px 4px #000000;
+    }
+
+    &:hover span {
+      display: none;
+    }
+
+    &:hover::before {
+      content: '⚡ Beat Up ⚡';
+      color: white;
     }
 
     &:active {
