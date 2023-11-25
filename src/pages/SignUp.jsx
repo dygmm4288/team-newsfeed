@@ -57,37 +57,36 @@ export default function SignUp() {
         <StSignUpLeft>
           <Form>
             <Input
-                type="email"
-                value={email}
-                name="email"
-                onChange={onChange}
-                placeholder={"Email"}
-                required
+              type="email"
+              value={email}
+              name="email"
+              onChange={onChange}
+              placeholder={'Email'}
+              required
             ></Input>
             <Input
-                type="password"
-                value={password}
-                name="password"
-                onChange={onChange}
-                placeholder={"Password"}
-                required
+              type="password"
+              value={password}
+              name="password"
+              onChange={onChange}
+              placeholder={'Password'}
+              required
             ></Input>
             <Input
-                type="password"
-                value={confirmPassword}
-                name="confirmPassword"
-                onChange={onChange}
-                placeholder={"Repeat Password"}
-                required
-              ></Input>
-
-              <Input
-                type=""
-                value={nickname}
-                name="nickname"
-                onChange={onChange}
-                placeholder={"Nickname"}
-                required
+              type="password"
+              value={confirmPassword}
+              name="confirmPassword"
+              onChange={onChange}
+              placeholder={'Repeat Password'}
+              required
+            ></Input>
+            <Input
+              type=""
+              value={nickname}
+              name="nickname"
+              onChange={onChange}
+              placeholder={'Nickname'}
+              required
             ></Input>
           </Form>
           <BtnWrapper>
@@ -96,7 +95,6 @@ export default function SignUp() {
               <GoToLogIn>로그인 화면으로 이동</GoToLogIn>
             </Link>
           </BtnWrapper>
-
         </StSignUpLeft>
         <StSignUpRight>
           <SignUpImg src={signupImg} alt="사람이 기타를 치고 있는 그림" />
@@ -119,7 +117,7 @@ const StSignUpWrapper = styled.div`
   height: 400px;
   display: flex;
   align-items: center;
-  background-color: #2C2C2C;
+  background-color: #2c2c2c;
   color: white;
   box-shadow: 3px 3px 8px black;
 `;
@@ -130,7 +128,7 @@ const StSignUpLeft = styled.form`
   border: 1px solid black;
   display: flex;
   flex-direction: column;
-  background-color: #2C2C2C;
+  background-color: #2c2c2c;
   color: black;
 `;
 const StSignUpRight = styled.div`
@@ -176,17 +174,17 @@ const Input = styled.input`
   padding: 7px 15px;
   border: none;
   border-bottom: 3px solid black;
-  background-color: #2C2C2C;
+  background-color: #2c2c2c;
   font-size: 20px;
   text-align: center;
   color: white;
   outline: none;
-  &::placeholder{
+  &::placeholder {
     font-size: 25px;
     text-align: center;
   }
-  &::-webkit-autofill {
-    -webkit-box-showdow: 000 1000px #2c2c2c inset;
+  &:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px #2c2c2c inset;
     -webkit-text-fill-color: white;
   }
 `;
@@ -200,16 +198,16 @@ const SignUpBtn = styled.button`
   font-size: 16px;
   text-align: center;
   background-color: #000000;
-  color: #FF5B22;
-  border: 1px solid #FF5B22;
+  color: #ff5b22;
+  border: 1px solid #ff5b22;
   transition: 0.2s ease-in-out;
   cursor: pointer;
   &:hover {
-      scale: 1.05;
-      color: #FF5B22;
-      box-shadow: 0 0 6px #FF5B22;
-    }
-    &:active {
-      scale: 0.95;
-    }
+    scale: 1.05;
+    color: #ff5b22;
+    box-shadow: 0 0 6px #ff5b22;
+  }
+  &:active {
+    scale: 0.95;
+  }
 `;

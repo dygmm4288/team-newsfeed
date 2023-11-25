@@ -35,10 +35,10 @@ function MyPage() {
         <StMyPostContainer>
           <StMyPostsTitle>My Post</StMyPostsTitle>
           <StMyPostList>
-            {checkEmpty(myPosts)? (
+            {checkEmpty(myPosts) ? (
               <StNoMyPosts onClick={() => navigate('/')}>
                 <p>등록되어 있는 나의 Beat가 없습니다.</p>
-                <p>⚡ 나의 첫 포스트를 Beat Up 해보세요! ⚡</p>
+                <p>⚡ 나의 첫 Beat를 Beat Up 해보세요! ⚡</p>
               </StNoMyPosts>
             ) : (
               myPosts.map((myPost) => {
@@ -88,7 +88,7 @@ const StMyPostContainer = styled.div`
   justify-content: center;
   width: 800px;
   min-height: 800px;
-  background-color: #2C2C2C;
+  background-color: #2c2c2c;
   border-radius: 5px;
 `;
 
@@ -126,12 +126,13 @@ const StMyPost = styled.div`
   display: flex;
   /* flex-basis: 350px; */
   width: 680px;
-  min-height: 150px;
+  min-height: 180px;
   padding: 20px;
-  background-color: #F2F2F2;
+  background-color: #f2f2f2;
   flex-direction: column;
   justify-content: flex-start;
   gap: 10px;
+  line-height: 1.1;
 `;
 
 const StMyPostTitle = styled.p`
@@ -151,7 +152,7 @@ const StNoMyPosts = styled.div`
   align-items: center;
   gap: 10px;
   margin: 15px;
-  color: #FF5B22;
+  color: #ff5b22;
   background-color: #161616;
   width: 670px;
   height: 100px;
@@ -159,7 +160,7 @@ const StNoMyPosts = styled.div`
   transition: 0.15s ease;
   &:hover {
     transform: scale(1.02);
-    background-color: #FF5B22;
+    background-color: #ff5b22;
     color: white;
   }
 `;

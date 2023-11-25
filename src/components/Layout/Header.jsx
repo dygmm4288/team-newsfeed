@@ -24,12 +24,9 @@ function Header() {
         <Link to="/">
           <img className="logo" src={beatBridge} alt="BeatBridge" />
         </Link>
-        <Link to="auth">
-          <button className="login_btn">로그인</button>
-        </Link>
         {/* mypage */}
         {currentPath === '/mypage' ? (
-          <button onClick={() => navigate('/')}>Go to home</button>
+          <button onClick={() => navigate('/')}>Home</button>
         ) : userInfo === null ? (
           // homepage - login X
           <>
@@ -78,17 +75,23 @@ const StWrapper = styled.div`
   .logo {
     width: 200px;
   }
-  .login_btn {
+  button {
     background: transparent;
-    border: 2px solid #ff5b22;
     padding: 3px;
+    color: #ff5b22;
+    border: none;
+    padding: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    border-radius: 5px;
+    cursor: pointer;
   }
 `;
 const StIdAndProfilePicture = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 20px;
+  gap: 12px;
   cursor: pointer;
   p {
     font-size: 15px;
@@ -99,7 +102,6 @@ const StIdAndProfilePicture = styled.div`
     object-fit: cover;
     border-radius: 50%;
     cursor: pointer;
-    border: 2px solid white;
   }
 `;
 const StSkeletonWrapper = styled.div`
