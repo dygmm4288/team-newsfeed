@@ -27,7 +27,7 @@ export default function PostForm() {
     }
     if (
       !window.confirm(
-        `포스트를 ${paramCategory || category} 카테고리에 등록하시겠습니까?`
+        `Beat를 ${paramCategory || category} 카테고리에 등록하시겠습니까?`
       )
     )
       return;
@@ -66,6 +66,26 @@ export default function PostForm() {
       return;
     }
   };
+
+  const handleTextareaKeyPress = (event) => {
+    // 엔터 키를 눌렀을 때 행 수를 제한합니다.
+    if (event.key === 'Enter') {
+      // 현재 textarea의 행 수를 계산합니다.
+      const currentRowCount = content.split('\n').length;
+      // 최대 허용 행 수를 설정합니다.
+      const maxRowCount = 6;
+      console.log(currentRowCount);
+
+      // 최대 허용 행 수를 초과하면 엔터 키 이벤트를 무시합니다.
+      if (currentRowCount >= maxRowCount) {
+        console.log('여기까지옴');
+        event.preventDefault();
+        event.stopPropagation();
+        alert('6줄 이하로 작성해 주세요! 😲');
+      }
+    }
+  };
+
   return (
     <StPostFormBox onSubmit={handleCreatePost} onFocus={handleFocus}>
       <StTitleInput
@@ -77,7 +97,7 @@ export default function PostForm() {
         )}
         placeholder="제목을 입력해주세요."
       />
-      <StContentInput
+      <StContentTextarea
         type="text"
         value={content}
         onChange={handleChangeValue(
@@ -85,6 +105,7 @@ export default function PostForm() {
           setContent
         )}
         placeholder="어떤 이야기를 나누고 싶나요?"
+        onKeyPress={handleTextareaKeyPress}
       />
       <StBeatUpBox>
         {!paramCategory ? (
@@ -101,17 +122,19 @@ export default function PostForm() {
         ) : (
           <p>{paramCategory}</p>
         )}
-        <button type="submit">Beat Up</button>
+        <button type="submit">
+          <span>Beat Up</span>
+        </button>
       </StBeatUpBox>
     </StPostFormBox>
   );
 }
 
 function checkValidateTitle(title) {
-  return title.length <= 15;
+  return title.length <= 22;
 }
 function checkValidateContent(content) {
-  return content.length <= 100;
+  return content.length <= 192;
 }
 
 const StPostFormBox = styled.form`
@@ -120,9 +143,10 @@ const StPostFormBox = styled.form`
   justify-content: space-between;
   gap: 10px;
   width: 580px;
-  height: 180px;
+  height: 191px;
   padding: 15px 20px;
   background-color: #f2f2f2;
+  border-radius: 5px;
 
   * {
     color: #2c2c2c;
@@ -136,21 +160,27 @@ const StTitleInput = styled.input`
   border-bottom: 2px solid #ff5b22;
   padding-bottom: 5px;
   font-size: 18px;
-
+  outline: none;
   &::placeholder {
     color: #2c2c2c;
   }
 `;
 
-const StContentInput = styled.textarea`
+const StContentTextarea = styled.textarea`
   height: 100%;
   resize: none;
   border: none;
   font-size: 13px;
   background: transparent;
-
+  outline: none;
   &::placeholder {
     color: #2c2c2c;
+  }
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  &::-webkit-scrollbar-thumb {
+    display: none;
   }
 `;
 
@@ -169,6 +199,8 @@ const StBeatUpBox = styled.div`
     color: white;
     background-color: #2c2c2c;
     border: none;
+    border-radius: 5px;
+    cursor: pointer;
 
     & option {
       color: white;
@@ -176,17 +208,42 @@ const StBeatUpBox = styled.div`
     }
   }
 
+  p {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 13%;
+    font-size: 13px;
+    color: white;
+    background-color: #2c2c2c;
+    border-radius: 5px;
+  }
+
   button {
     width: 84%;
-    color: white;
     background-color: #ff5b22;
     border: none;
     font-weight: 600;
     transition: 0.2s ease-in-out;
+    border-radius: 5px;
+    cursor: pointer;
+
+    span {
+      color: white;
+    }
 
     &:hover {
-      scale: 1.04;
-      background-color: #ff3217;
+      scale: 1.005;
+      box-shadow: 1px 1px 4px #000000;
+    }
+
+    &:hover span {
+      display: none;
+    }
+
+    &:hover::before {
+      content: '⚡ Beat Up ⚡';
+      color: white;
     }
 
     &:active {

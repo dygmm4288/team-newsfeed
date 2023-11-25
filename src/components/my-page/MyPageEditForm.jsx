@@ -84,18 +84,22 @@ export default function MyPageEditForm({
 
   return (
     <StEditForm onSubmit={handleSaveUpdatedProfile}>
-      <span>닉네임: </span>
-      <StNicknameEditInput
-        value={editedNickname}
-        onChange={handleChangeEditedNickname}
-      />
-      <StImageInputAfterWrapper>
-        <StImageInput
-          type="file"
-          // value={imgInputValue}
-          onChange={handleFileSelect}
-        />
-      </StImageInputAfterWrapper>
+      <StMyInformationDetailsSmallContainer>
+        <StMyEmail>E-mail:&nbsp;{email}</StMyEmail>
+        <StNickNameAfter>닉네임:
+          <StNicknameEditInput
+            value={editedNickname}
+            onChange={handleChangeEditedNickname}
+          />
+        </StNickNameAfter>
+        <StImageInputAfterWrapper>
+          <StImageInput
+            type="file"
+            // value={imgInputValue}
+            onChange={handleFileSelect}
+          />
+        </StImageInputAfterWrapper>
+      </StMyInformationDetailsSmallContainer>
       {children}
     </StEditForm>
   );
@@ -103,7 +107,14 @@ export default function MyPageEditForm({
 
 const StEditForm = styled.form`
   color: #929292;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
+  display: flex;
+  flex: row;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 20px 20px 20px;
+  min-width: 452px;
+  height: 120px;
 `;
 const StNicknameEditInput = styled.input`
   color: #929292;
@@ -124,4 +135,28 @@ const StImageInputAfterWrapper = styled.div`
 const StImageInput = styled.input`
   cursor: pointer;
   width: 100%;
+`;
+
+const StNickNameAfter = styled.span`
+  margin: 0;
+  color: #929292;
+  font-size: 0.85rem;
+`;
+
+const StMyInformationDetailsSmallContainer = styled.div`
+  background-color: #f2f2f2;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  padding: 8px 8px 8px 15px;
+  min-height: 90px;
+  width: 270px;
+`;
+
+const StMyEmail = styled.p`
+  margin: 5px 0 5px 0;
+  color: #929292;
+  font-size: 0.85rem;
 `;

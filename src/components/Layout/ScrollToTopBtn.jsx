@@ -55,14 +55,13 @@ const StScrollToTopBtn = styled.button`
   border-radius: 50%;
   border: none;
   color: #fff;
-  background-color: #007bff;
+  background-color: #ff5b22;
   box-shadow: var(--box-shadow);
-  scale: 0;
   transition: 0.2s ease-in-out;
+  scale: 0;
   cursor: pointer;
 
   &:hover {
-    scale: 1.1;
-    background-color: #3c9aff;
+    scale: 1.2;
   }
 `;

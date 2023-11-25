@@ -1,5 +1,4 @@
 import { createGlobalStyle } from 'styled-components';
-
 const GlobalStyle = createGlobalStyle`
   @font-face {
       font-family: 'NanumSquareNeo-Variable';
@@ -17,8 +16,8 @@ const GlobalStyle = createGlobalStyle`
   dl, dt, dd, ol, ul, li,
   fieldset, form, label, legend,
   table, caption, tbody, tfoot, thead, tr, th, td,
-  article, aside, canvas, details, embed, 
-  figure, figcaption, footer, header, hgroup, 
+  article, aside, canvas, details, embed,
+  figure, figcaption, footer, header, hgroup,
   menu, nav, output, ruby, section, summary,
   time, mark, audio, video {
     margin: 0;
@@ -29,7 +28,7 @@ const GlobalStyle = createGlobalStyle`
     vertical-align: baseline;
   }
   /* HTML5 display-role reset for older browsers */
-  article, aside, details, figcaption, figure, 
+  article, aside, details, figcaption, figure,
   footer, header, hgroup, menu, nav, section {
     display: block;
   }
@@ -52,19 +51,20 @@ const GlobalStyle = createGlobalStyle`
     border-spacing: 0;
   }
   * {
+  font-family: 'NanumSquareNeo-Variable';
     box-sizing: border-box;
+    
   }
-
   :root {
-    --box-shadow: 1px 1px 6px #3a3a3a;
+    --box-shadow: 1px 1px 6px #3A3A3A;
     --img-size: 40px;
-    --twinkle-color: #565656; 
+    --twinkle-color: #565656;
     }
   html {
+    font-family: 'NanumSquareNeo-Variable';
     scroll-behavior: smooth;
     height: 100vh;
   }
-
   a:visited  {
     color:transparent;
   }
@@ -76,5 +76,4 @@ const GlobalStyle = createGlobalStyle`
     font-family: 'NanumSquareNeo-Variable';
   }
 `;
-
 export default GlobalStyle;

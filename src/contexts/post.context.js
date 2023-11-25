@@ -59,6 +59,7 @@ const PostProvider = ({ children }) => {
       category,
       userInfo
     };
+    console.log(newPost);
     //Firestore에서 'posts'컬렉션에 대한 참조 생성하기
     const collectionRef = collection(db, 'posts');
     // 'posts' 컬렉션에 newPost 문서를 추가합니다.
