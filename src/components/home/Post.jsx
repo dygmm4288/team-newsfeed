@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import DefaultProfileImg from '../../assets/Layout/Test-ProfilePicture.png';
+import DefaultProfileImg from '../../assets/Layout/Test-ProfilePicture2.png';
 import { useAuth } from '../../contexts/auth.context';
 import { usePost } from '../../contexts/post.context';
 export default function Post({ post }) {

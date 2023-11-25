@@ -9,7 +9,7 @@ export const getDownloadFileURL = (filePath) => {
 };
 
 export const getDefaultProfileImgURL = (() => {
-  const DEFAULT_PROFILE_IMG_PATH = 'profile/default-profile-img.png';
+  const DEFAULT_PROFILE_IMG_PATH = 'profile/default-profile-img2.png';
   let downloadURL = null;
 
   return () => {
