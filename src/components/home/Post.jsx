@@ -146,6 +146,7 @@ const StPostBottom = styled.div`
     background: transparent;
     border: 2px solid #ff5b22;
     border-radius: 5px;
+    line-height: 1.36;
   }
 
   h1 {
@@ -157,6 +158,7 @@ const StPostBottom = styled.div`
     height: 100%;
     font-size: 18px;
     margin-bottom: 20px;
+    line-height: 1.36;
   }
 `;
 

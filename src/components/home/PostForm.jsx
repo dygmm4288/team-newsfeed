@@ -110,10 +110,10 @@ export default function PostForm() {
 }
 
 function checkValidateTitle(title) {
-  return title.length <= 15;
+  return title.length <= 22;
 }
 function checkValidateContent(content) {
-  return content.length <= 100;
+  return content.length <= 189;
 }
 
 const StPostFormBox = styled.form`
