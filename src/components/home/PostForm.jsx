@@ -113,7 +113,7 @@ function checkValidateTitle(title) {
   return title.length <= 22;
 }
 function checkValidateContent(content) {
-  return content.length <= 189;
+  return content.length <= 188;
 }
 
 const StPostFormBox = styled.form`
@@ -139,7 +139,7 @@ const StTitleInput = styled.input`
   border-bottom: 2px solid #ff5b22;
   padding-bottom: 5px;
   font-size: 18px;
-
+  outline: none;
   &::placeholder {
     color: #2c2c2c;
   }
@@ -151,7 +151,7 @@ const StContentInput = styled.textarea`
   border: none;
   font-size: 13px;
   background: transparent;
-
+  outline: none;
   &::placeholder {
     color: #2c2c2c;
   }

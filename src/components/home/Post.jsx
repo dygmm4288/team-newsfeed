@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import DefaultProfileImg from '../../assets/Layout/Test-ProfilePicture.png';
+import DefaultProfileImg from '../../assets/Layout/Test-ProfilePicture2.png';
 import { useAuth } from '../../contexts/auth.context';
 import { usePost } from '../../contexts/post.context';
 export default function Post({ post }) {
@@ -113,6 +113,7 @@ const StPostTop = styled.div`
     width: 50px;
     height: 50px;
     border-radius: 50%;
+    object-fit: cover;
   }
 `;
 
@@ -141,7 +142,7 @@ const StPostBottom = styled.div`
     outline: none;
     padding: 10px;
     margin-bottom: 20px;
-    font-size: 18px;
+    font-size: 17.4px;
     color: white;
     background: transparent;
     border: 2px solid #ff5b22;
@@ -156,9 +157,10 @@ const StPostBottom = styled.div`
   p {
     width: 100%;
     height: 100%;
-    font-size: 18px;
+    font-size: 17.4px;
     margin-bottom: 20px;
     line-height: 1.36;
+    margin-top: 5px;
   }
 `;
 

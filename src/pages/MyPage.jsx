@@ -126,12 +126,13 @@ const StMyPost = styled.div`
   display: flex;
   /* flex-basis: 350px; */
   width: 680px;
-  min-height: 150px;
+  min-height: 180px;
   padding: 20px;
   background-color: #f2f2f2;
   flex-direction: column;
   justify-content: flex-start;
   gap: 10px;
+  line-height: 1.1;
 `;
 
 const StMyPostTitle = styled.p`
