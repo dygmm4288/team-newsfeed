@@ -7,9 +7,10 @@ export default function SignUp() {
   const [formState, setFormState] = useState({
     nickname: '',
     password: '',
+    confirmPassword: '',
     email: ''
   });
-  const { email, password, nickname } = formState;
+  const { email, password, nickname, confirmPassword } = formState;
   const navigate = useNavigate();
   const { signUpByEmail } = useAuth();
 
@@ -22,10 +23,31 @@ export default function SignUp() {
 
   const signUp = (event) => {
     event.preventDefault();
-    signUpByEmail(email, password, nickname).then(() => {
-      alert('회원가입에 성공했습니다.');
-      navigate('/');
-    });
+    if (confirmPassword !== password) {
+      alert('비밀번호가 일치하지 않습니다.');
+      return;
+    }
+    signUpByEmail(email, password, nickname)
+      .then(() => {
+        alert('회원가입에 성공했습니다.');
+        navigate('/');
+      })
+      .catch((error) => {
+        switch (error.code) {
+          case 'auth/email-already-in-use':
+            return alert('이미 사용 중인 이메일입니다.');
+          case 'auth/internal-error':
+            return alert('잘못된 요청입니다.');
+          case 'auth/weak-password':
+            return alert('비밀번호는 6글자 이상이어야 합니다.');
+          case 'auth/network-request-failed':
+            return alert('네트워크 연결에 실패 하였습니다.');
+          case 'auth/invalid-email':
+            return alert('잘못된 이메일 형식입니다.');
+          default:
+            return alert('회원가입에 실패했습니다.');
+        }
+      });
   };
 
   return (
@@ -55,7 +77,14 @@ export default function SignUp() {
                 required
               ></input>
               <br />
-              Repeat Pwd : <input type="password"></input>
+              Repeat Pwd :{' '}
+              <input
+                type="password"
+                value={confirmPassword}
+                name="confirmPassword"
+                onChange={onChange}
+                required
+              ></input>
               <br />
               NickName :{' '}
               <input
