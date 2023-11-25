@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { useAuth } from '../contexts/auth.context';
 import signInBGImg from '../assets/background/signIn.jpg';
+import { useAuth } from '../contexts/auth.context';
 
 export default function Auth() {
   //이메일, 비밀번호
@@ -10,7 +10,27 @@ export default function Auth() {
   const [password, setPassword] = useState('');
 
   const navigate = useNavigate();
-  const { signInWithEmail } = useAuth();
+  const { signInWithEmail, signInWithGithub } = useAuth();
+
+  const signInBgWithGithub = () => {
+    signInWithGithub()
+      .then(() => {
+        alert('로그인에 성공했습니다.');
+        navigate('/');
+      })
+      .catch((error) => {
+        switch (error.code) {
+          case 'auth/user-not-found' || 'auth/wrong-password':
+            return alert('이메일 혹은 비밀번호가 일치하지 않습니다.');
+          case 'auth/network-request-failed':
+            return alert('네트워크 연결에 실패 하였습니다.');
+          case 'auth/internal-error':
+            return alert('잘못된 요청입니다.');
+          default:
+            return alert('로그인에 실패 하였습니다.');
+        }
+      });
+  };
 
   const signInBG = async (event) => {
     event.preventDefault();
@@ -68,13 +88,15 @@ export default function Auth() {
                 <button type="submit" onClick={signInBG}>
                   Login
                 </button>
-                <button>Github</button>
+                <button type="button" onClick={signInBgWithGithub}>
+                  Github
+                </button>
               </StSignInBtnBox>
-              <StGoToSignupPage>
+              <StGoToSignUpPage>
                 <Link to="/signup">
                   <p>회원가입</p>
                 </Link>
-              </StGoToSignupPage>
+              </StGoToSignUpPage>
             </StSignInForm>
           </StSignInRight>
         </StSignInWrapper>
@@ -247,7 +269,7 @@ const StSignInBtnBox = styled.div`
   }
 `;
 
-const StGoToSignupPage = styled.div`
+const StGoToSignUpPage = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
