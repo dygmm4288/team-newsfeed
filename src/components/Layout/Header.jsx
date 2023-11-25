@@ -40,7 +40,7 @@ function Header() {
         ) : (
           // homepage - login O
           <StIdAndProfilePicture onClick={handleNavigateToMyPage}>
-            <p>{userInfo?.email}</p>
+            <p>{userInfo?.nickname}</p>
             <img src={userInfo?.profileImgUrl} alt="profile avatar" />
           </StIdAndProfilePicture>
         )}

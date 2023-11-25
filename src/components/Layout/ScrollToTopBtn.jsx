@@ -58,6 +58,7 @@ const StScrollToTopBtn = styled.button`
   background-color: #ff5b22;
   box-shadow: var(--box-shadow);
   transition: 0.2s ease-in-out;
+  scale: 0;
   cursor: pointer;
 
   &:hover {
