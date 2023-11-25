@@ -66,6 +66,26 @@ export default function PostForm() {
       return;
     }
   };
+
+  const handleTextareaKeyPress = (event) => {
+    // 엔터 키를 눌렀을 때 행 수를 제한합니다.
+    if (event.key === 'Enter') {
+      // 현재 textarea의 행 수를 계산합니다.
+      const currentRowCount = content.split('\n').length;
+      // 최대 허용 행 수를 설정합니다.
+      const maxRowCount = 6;
+      console.log(currentRowCount);
+
+      // 최대 허용 행 수를 초과하면 엔터 키 이벤트를 무시합니다.
+      if (currentRowCount >= maxRowCount) {
+        console.log('여기까지옴');
+        event.preventDefault();
+        event.stopPropagation();
+        alert('6줄 이하로 작성해 주세요! 😲');
+      }
+    }
+  };
+
   return (
     <StPostFormBox onSubmit={handleCreatePost} onFocus={handleFocus}>
       <StTitleInput
@@ -85,6 +105,7 @@ export default function PostForm() {
           setContent
         )}
         placeholder="어떤 이야기를 나누고 싶나요?"
+        onKeyPress={handleTextareaKeyPress}
       />
       <StBeatUpBox>
         {!paramCategory ? (
@@ -122,7 +143,7 @@ const StPostFormBox = styled.form`
   justify-content: space-between;
   gap: 10px;
   width: 580px;
-  height: 180px;
+  height: 191px;
   padding: 15px 20px;
   background-color: #f2f2f2;
   border-radius: 5px;
@@ -154,6 +175,12 @@ const StContentTextarea = styled.textarea`
   outline: none;
   &::placeholder {
     color: #2c2c2c;
+  }
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  &::-webkit-scrollbar-thumb {
+    display: none;
   }
 `;
 

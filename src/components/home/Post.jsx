@@ -46,6 +46,25 @@ export default function Post({ post }) {
     }
   };
 
+  const handleTextareaKeyPress = (event) => {
+    // 엔터 키를 눌렀을 때 행 수를 제한합니다.
+    if (event.key === 'Enter') {
+      // 현재 textarea의 행 수를 계산합니다.
+      const currentRowCount = editedContent.split('\n').length;
+      // 최대 허용 행 수를 설정합니다.
+      const maxRowCount = 6;
+      console.log(currentRowCount);
+
+      // 최대 허용 행 수를 초과하면 엔터 키 이벤트를 무시합니다.
+      if (currentRowCount >= maxRowCount) {
+        console.log('여기까지옴');
+        event.preventDefault();
+        event.stopPropagation();
+        alert('6줄 이하로 작성해 주세요! 😲');
+      }
+    }
+  };
+
   return (
     <StPost>
       <StPostTop>
@@ -71,6 +90,7 @@ export default function Post({ post }) {
                 checkValidation(checkValidateContent, '내용이 너무 깁니다.'),
                 setEditedContent
               )}
+              onKeyPress={handleTextareaKeyPress}
             ></textarea>
             <StButtonContainer>
               <button
@@ -202,6 +222,14 @@ const StPostBottom = styled.div`
     border: 2px solid #ff5b22;
     border-radius: 5px;
     line-height: 1.36;
+
+    &::-webkit-scrollbar {
+      background-color: #646464;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: #737373;
+    }
   }
 
   h1 {

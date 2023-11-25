@@ -47,14 +47,16 @@ function MyPage() {
                     <p>{myPost.email}</p>
                     <p>{myPost.nickname}</p>
                     <StMyPostTitle>{myPost.title}</StMyPostTitle>
-                    <StMyPostContent>{myPost.content.split("\n").map((line)=>{
-                      return (
-                        <>
-                          {line}
-                          <br />
-                        </>
-                      );}
-                    )}</StMyPostContent>
+                    <StMyPostContent>
+                      {myPost.content.split('\n').map((line) => {
+                        return (
+                          <>
+                            {line}
+                            <br />
+                          </>
+                        );
+                      })}
+                    </StMyPostContent>
                   </StMyPost>
                 );
               })
@@ -131,15 +133,14 @@ const StMyPostList = styled.div`
 
 const StMyPost = styled.div`
   display: flex;
-  /* flex-basis: 350px; */
   width: 680px;
-  min-height: 180px;
-  padding: 20px;
+  min-height: 190px;
+  padding: 3px 30px 0;
   background-color: #f2f2f2;
   flex-direction: column;
   justify-content: flex-start;
   gap: 10px;
-  line-height: 1.1;
+  line-height: 1.2;
 `;
 
 const StMyPostTitle = styled.p`
