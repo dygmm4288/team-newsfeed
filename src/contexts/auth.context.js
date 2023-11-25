@@ -52,18 +52,30 @@ export const AuthProvider = ({ children }) => {
     setError(null);
     signOut(auth);
   };
-  const signInWithGithub = () => {
+  const signInWithGithub = async () => {
     const provider = new GithubAuthProvider();
+    setIsLoading(true);
     setError(null);
-    signInWithPopup(auth, provider)
-      .then(async (result) => {
-        setUser(result.user);
-        setDefaultProfileImgUrl(result.user);
-      })
-      .catch((err) => {
-        setError(err);
-        console.error(err);
-      });
+    try {
+      const userCredential = await signInWithPopup(auth, provider);
+      const user = userCredential.user;
+      setUser(user);
+      if (!userCredential.photoURL) {
+        await setDefaultProfileImgUrl(user);
+      }
+      if (!userCredential.displayName) {
+        const emailNickname = user.email.split('@')[0];
+        await updateProfileBy({
+          displayName: emailNickname
+        });
+      }
+    } catch (err) {
+      setError(err);
+      console.error(err);
+      throw new Error(err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const setUserNickname = async (nickname) => {
