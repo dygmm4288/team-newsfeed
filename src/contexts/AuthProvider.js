@@ -1,30 +1,18 @@
 import {
-  GithubAuthProvider,
-  createUserWithEmailAndPassword,
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  signOut,
-  updateProfile
+    GithubAuthProvider,
+    createUserWithEmailAndPassword,
+    onAuthStateChanged,
+    signInWithEmailAndPassword,
+    signInWithPopup,
+    signOut,
+    updateProfile
 } from 'firebase/auth';
-import { createContext, useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { auth } from '../firebase/firebase.config';
 import { getDefaultProfileImgURL } from '../firebase/firebaseStorage';
 import useAsync from '../hooks/useAsync';
+import { AuthContext, setDefaultProfileImgUrl, updateProfileBy } from './auth.context';
 
-// initialState
-const initialState = {
-  userInfo: auth.currentUser,
-  signInWithEmail: (email, password) => {},
-  signOutUser: () => {},
-  setUserNickname: (nickname) => {},
-  setUserProfileImgUrl: (profileImgUrl) => {},
-  signInWithGithub: () => {},
-  signUpByEmail: (email, password, nickname) => {},
-  error: null
-};
-// context 생성
-export const AuthContext = createContext(initialState);
 // Provider 생성
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(auth.currentUser);
@@ -104,10 +92,10 @@ export const AuthProvider = ({ children }) => {
 
   const userInfo = user
     ? {
-        nickname: user.displayName,
-        email: user.email,
-        profileImgUrl: user.photoURL
-      }
+      nickname: user.displayName,
+      email: user.email,
+      profileImgUrl: user.photoURL
+    }
     : null;
 
   const value = {
@@ -121,42 +109,6 @@ export const AuthProvider = ({ children }) => {
     signUpByEmail
   };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={value}>{children}
+    <button onClick=></button></AuthContext.Provider >;
 };
-
-export const useAuth = () => useContext(AuthContext);
-
-const updateProfileBy = (updatedValue) => {
-  if (!auth.currentUser)
-    return new Promise((_, rej) => {
-      rej(new Error('Not valid auth current user'));
-    });
-  return updateProfile(auth.currentUser, updatedValue)
-    .then(() => {
-      console.log(
-        '[updateProfile] : Update Profile Success, update value is : ',
-        updatedValue
-      );
-    })
-    .catch((err) => {
-      console.error(
-        '[Error updateProfile] : Update Profile Fail, err is : ',
-        err
-      );
-    })
-    .finally(() => {
-      console.log('[updateProfile] : update Profile processed');
-    });
-};
-
-async function setDefaultProfileImgUrl(user) {
-  if (user.photoURL) return;
-  try {
-    updateProfileBy({ photoURL: await getDefaultProfileImgURL() });
-  } catch (err) {
-    console.error(
-      'error occurred while getting the default profile image url.'
-    );
-    console.error(err);
-  }
-}
