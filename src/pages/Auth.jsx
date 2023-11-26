@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import signInBGImg from '../assets/background/signIn.jpg';
@@ -10,49 +10,23 @@ export default function Auth() {
   const [password, setPassword] = useState('');
 
   const navigate = useNavigate();
-  const { signInWithEmail, signInWithGithub } = useAuth();
+  const { userInfo, error, signInWithEmail, signInWithGithub } = useAuth();
 
   const signInBgWithGithub = () => {
-    signInWithGithub()
-      .then(() => {
-        alert('로그인에 성공했습니다.');
-        navigate('/');
-      })
-      .catch((error) => {
-        switch (error.code) {
-          case 'auth/user-not-found' || 'auth/wrong-password':
-            return alert('이메일 혹은 비밀번호가 일치하지 않습니다.');
-          case 'auth/network-request-failed':
-            return alert('네트워크 연결에 실패 하였습니다.');
-          case 'auth/internal-error':
-            return alert('잘못된 요청입니다.');
-          default:
-            return alert('로그인에 실패 하였습니다.');
-        }
-      });
+    signInWithGithub();
   };
 
   const signInBG = async (event) => {
     event.preventDefault();
 
-    signInWithEmail(email, password)
-      .then(() => {
-        alert('로그인에 성공했습니다.');
-        navigate('/');
-      })
-      .catch((error) => {
-        switch (error.code) {
-          case 'auth/user-not-found' || 'auth/wrong-password':
-            return alert('이메일 혹은 비밀번호가 일치하지 않습니다.');
-          case 'auth/network-request-failed':
-            return alert('네트워크 연결에 실패 하였습니다.');
-          case 'auth/internal-error':
-            return alert('잘못된 요청입니다.');
-          default:
-            return alert('로그인에 실패 하였습니다.');
-        }
-      });
+    signInWithEmail(email, password);
   };
+  useEffect(() => {
+    if (!userInfo || error) return;
+    alert('로그인에 성공했습니다.');
+    userInfo && navigate('/');
+  }, [userInfo]);
+
   return (
     <>
       <StContainer>
@@ -67,7 +41,7 @@ export default function Auth() {
             <img src={signInBGImg} alt="signInBG"></img>
           </StSignInLeft>
           <StSignInRight>
-            <StSignInForm>
+            <StSignInForm onSubmit={signInBG}>
               <StSignInInputBox>
                 <input
                   type="email"
@@ -85,9 +59,7 @@ export default function Auth() {
                 />
               </StSignInInputBox>
               <StSignInBtnBox>
-                <button type="submit" onClick={signInBG}>
-                  Login
-                </button>
+                <button type="submit">Login</button>
                 <button type="button" onClick={signInBgWithGithub}>
                   Github
                 </button>

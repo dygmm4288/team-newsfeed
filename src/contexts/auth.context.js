@@ -29,7 +29,6 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(auth.currentUser);
 
   const [isLoading, executeAuth, error] = useAsync();
-
   const signInWithEmail = async (email, password) =>
     executeAuth(
       'sign in with email',
@@ -105,12 +104,16 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     if (!error) return;
     switch (error.code) {
+      case 'auth/invalid-login-credentials':
+        return alert('이메일이 존재하지 않습니다.');
       case 'auth/user-not-found' || 'auth/wrong-password':
         return alert('이메일 혹은 비밀번호가 일치하지 않습니다.');
       case 'auth/network-request-failed':
         return alert('네트워크 연결에 실패 하였습니다.');
       case 'auth/internal-error':
         return alert('잘못된 요청입니다.');
+      case 'auth/email-already-exists':
+        return alert('이메일을 기존 사용자가 이미 사용 중입니다.');
       default:
         return alert('로그인에 실패 하였습니다.');
     }
