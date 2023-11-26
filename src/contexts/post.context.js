@@ -103,18 +103,6 @@ const PostProvider = ({ children }) => {
         finallyTask: getPost
       }
     );
-  /* const updatePost = ({ postId, data }) => {
-    const postRef = doc(db, 'posts', postId);
-    updateDoc(postRef, data)
-      .then((res) => {
-        console.log('update success');
-        getPost();
-      })
-      .catch((e) => {
-        console.error('An Error occurred while updating posts');
-        console.error(e);
-      });
-  }; */
   const updatePosts = async ({ userInfo }) => {
     return Promise.all([
       posts
@@ -129,7 +117,18 @@ const PostProvider = ({ children }) => {
   };
 
   // D
-  const deletePost = ({ postId }) => {
+  const deletePost = ({ postId }) =>
+    executeFireStore(
+      'deleting posts',
+      () => {
+        const postRef = doc(db, 'posts', postId);
+        return deleteDoc(postRef);
+      },
+      {
+        finallyTask: getPost
+      }
+    );
+  /* const deletePost = ({ postId }) => {
     const postRef = doc(db, 'posts', postId);
     deleteDoc(postRef)
       .then((res) => {
@@ -140,7 +139,7 @@ const PostProvider = ({ children }) => {
         console.error('An Error occurred while deleting posts');
         console.error(e);
       });
-  };
+  }; */
 
   const value = { posts, createPost, updatePost, deletePost, updatePosts };
 
