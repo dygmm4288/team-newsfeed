@@ -111,7 +111,14 @@ const PostProvider = ({ children }) => {
       return deleteDoc(postRef);
     });
 
-  const value = { posts, createPost, updatePost, deletePost, updatePosts };
+  const value = {
+    posts,
+    createPost,
+    updatePost,
+    deletePost,
+    updatePosts,
+    isLoading
+  };
 
   return <PostContext.Provider value={value}>{children}</PostContext.Provider>;
 };

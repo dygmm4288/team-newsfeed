@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+
 import { StPost } from '../../home/Post';
 import { StTwinkleDiv } from './Skeleton.styles';
 import SkeletonCircle from './SkeletonCircle';

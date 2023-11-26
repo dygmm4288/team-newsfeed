@@ -156,7 +156,7 @@ function checkValidateContent(content) {
   return content.length <= 192;
 }
 
-const StPost = styled.li`
+export const StPost = styled.li`
   width: 580px;
   height: 300px;
 `;
