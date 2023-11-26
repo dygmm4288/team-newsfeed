@@ -69,36 +69,27 @@ const PostProvider = ({ children }) => {
 
   // 밑에 들어가는 로직은 똑같은 입력이 주어지면 똑같은 출력(로직을 수행할 수 있어야 한다)을 할 수 있어야 한다.
   // C
+  const executeFireStoreWithGetPost = (taskName, api) =>
+    executeFireStore(taskName, api, { finallyTask: getPost });
+
   const createPost = async ({ title, content, category, userInfo }) =>
-    executeFireStore(
-      'creating posts',
-      () => {
-        const newPost = {
-          title,
-          content,
-          createdAt: new Date().toLocaleString(),
-          category,
-          userInfo
-        };
-        const collectionRef = collection(db, 'posts');
-        return addDoc(collectionRef, newPost);
-      },
-      {
-        finallyTask: getPost
-      }
-    );
+    executeFireStoreWithGetPost('creating posts', () => {
+      const newPost = {
+        title,
+        content,
+        createdAt: new Date().toLocaleString(),
+        category,
+        userInfo
+      };
+      const collectionRef = collection(db, 'posts');
+      return addDoc(collectionRef, newPost);
+    });
   // U
   const updatePost = ({ postId, data }) =>
-    executeFireStore(
-      'updating posts',
-      () => {
-        const postRef = doc(db, 'posts', postId);
-        return updateDoc(postRef, data);
-      },
-      {
-        finallyTask: getPost
-      }
-    );
+    executeFireStoreWithGetPost('updating posts', () => {
+      const postRef = doc(db, 'posts', postId);
+      return updateDoc(postRef, data);
+    });
   const updatePosts = async ({ userInfo }) => {
     executeFireStore('updating posts', () =>
       Promise.all(
@@ -115,16 +106,10 @@ const PostProvider = ({ children }) => {
 
   // D
   const deletePost = ({ postId }) =>
-    executeFireStore(
-      'deleting posts',
-      () => {
-        const postRef = doc(db, 'posts', postId);
-        return deleteDoc(postRef);
-      },
-      {
-        finallyTask: getPost
-      }
-    );
+    executeFireStoreWithGetPost('deleting posts', () => {
+      const postRef = doc(db, 'posts', postId);
+      return deleteDoc(postRef);
+    });
 
   const value = { posts, createPost, updatePost, deletePost, updatePosts };
 
