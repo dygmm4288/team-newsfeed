@@ -9,11 +9,13 @@ export default function Auth() {
   const [password, setPassword] = useState('');
 
   const navigate = useNavigate();
-  const { userInfo, error, signInWithEmail, signInWithGithub } = useAuth();
-
-  const signInBgWithGithub = () => {
-    signInWithGithub();
-  };
+  const {
+    userInfo,
+    error,
+    signInWithEmail,
+    signInWithGithub,
+    signInWithGoogle
+  } = useAuth();
 
   const signInBG = async (event) => {
     event.preventDefault();
@@ -59,8 +61,11 @@ export default function Auth() {
               </StSignInInputBox>
               <StSignInBtnBox>
                 <button type="submit">Login</button>
-                <button type="button" onClick={signInBgWithGithub}>
+                <button type="button" onClick={() => signInWithGithub()}>
                   Github
+                </button>
+                <button type="button" onClick={() => signInWithGoogle()}>
+                  Google
                 </button>
               </StSignInBtnBox>
               <StGoToSignUpPage>
@@ -212,7 +217,7 @@ const StSignInBtnBox = styled.div`
   }
 
   /* Github 버튼 CSS */
-  button:nth-child(2) {
+  button {
     display: flex;
     justify-content: center;
     align-items: center;
