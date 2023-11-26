@@ -10,108 +10,102 @@ import {
 import { createContext, useContext, useEffect, useState } from 'react';
 import { auth } from '../firebase/firebase.config';
 import { getDefaultProfileImgURL } from '../firebase/firebaseStorage';
+import useAsync from '../hooks/useAsync';
 
 // initialState
 const initialState = {
   userInfo: auth.currentUser,
+  isLoading: false,
+  error: null,
+  isProfileUpdatingLoading: false,
   signInWithEmail: (email, password) => {},
   signOutUser: () => {},
-  setUserNickname: (nickname) => {},
-  setUserProfileImgUrl: (profileImgUrl) => {},
   signInWithGithub: () => {},
   signUpByEmail: (email, password, nickname) => {},
-  error: null
+  updateProfileBy: async (updatedValue) => {},
+  updateProfileByNickname: (nickname) => {},
+  updateProfileByProfileImgUrl: (profileImgUrl) => {}
 };
 // context 생성
 export const AuthContext = createContext(initialState);
 // Provider 생성
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(auth.currentUser);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
 
-  const signInWithEmail = async (email, password) => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      setUser(userCredential.user);
-    } catch (err) {
-      setError(err);
-      console.error(err);
-      throw new Error(err);
-    } finally {
-      setIsLoading(false);
+  const [isLoading, executeAuth, error] = useAsync();
+  const [isProfileUpdatingLoading, setIsProfileUpdatingLoading] =
+    useState(false);
+
+  const signInWithEmail = async (email, password) =>
+    executeAuth(
+      'sign in with email',
+      () => signInWithEmailAndPassword(auth, email, password),
+      { asyncTask: (userCredential) => setUser(userCredential.user) }
+    );
+  const updateProfileBy = async (updatedValue) => {
+    if (!auth.currentUser) {
+      return new Promise((_, rej) => {
+        rej(new Error('Not valid auth current user'));
+      });
     }
+    setIsProfileUpdatingLoading(true);
+    return updateProfile(auth.currentUser, updatedValue)
+      .then(() => {
+        console.log(
+          '[updateProfile] : Update Profile Success, update value is : ',
+          updatedValue
+        );
+      })
+      .catch((err) => {
+        console.error(
+          '[Error updateProfile] : Update Profile Fail, err is : ',
+          err
+        );
+      })
+      .finally(() => {
+        console.log('[updateProfile] : update Profile processed');
+        setIsProfileUpdatingLoading(false);
+      });
+  };
+  const updateProfileByNickname = (nickname) => {
+    return updateProfileBy({ displayName: nickname });
+  };
+  const updateProfileByProfileImgUrl = (nickname) => {
+    return updateProfileBy({ photoURL: nickname });
   };
   const signOutUser = () => {
-    setError(null);
     signOut(auth);
   };
-  const signInWithGithub = async () => {
-    const provider = new GithubAuthProvider();
-    setIsLoading(true);
-    setError(null);
-    try {
-      const userCredential = await signInWithPopup(auth, provider);
-      const user = userCredential.user;
-      setUser(user);
-      if (!userCredential.photoURL) {
-        await setDefaultProfileImgUrl(user);
-      }
-      if (!userCredential.displayName) {
-        const emailNickname = user.email.split('@')[0];
-        await updateProfileBy({
-          displayName: emailNickname
-        });
-      }
-    } catch (err) {
-      setError(err);
-      console.error(err);
-      throw new Error(err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const setUserProfile = (userInputNickname) => async (userCredential) => {
+    const user = userCredential.user;
+    let { displayName, photoURL } = user;
 
-  const setUserNickname = async (nickname) => {
-    setIsLoading(true);
-    await updateProfileBy({ displayName: nickname });
-    setIsLoading(false);
-  };
-  const setUserProfileImgUrl = async (profileImgUrl) => {
-    setIsLoading(true);
-    await updateProfileBy({ photoURL: profileImgUrl });
-    setIsLoading(false);
-  };
-  const signUpByEmail = async (email, password, nickname) => {
-    setIsLoading(true);
-    try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      const user = userCredential.user;
-      let profileImgUrl = user.photoURL;
-      if (!profileImgUrl) profileImgUrl = await getDefaultProfileImgURL();
+    let profileImgUrl = photoURL;
+    let nickname = displayName;
 
-      await updateProfile(user, {
-        displayName: nickname,
-        photoURL: profileImgUrl
-      });
-      return true;
-    } catch (e) {
-      console.error(e);
-      throw new Error(e);
-    } finally {
-      setIsLoading(false);
-    }
+    if (!profileImgUrl) profileImgUrl = await getDefaultProfileImgURL();
+    if (!displayName) nickname = getNicknameWithEmail(user.email);
+    await updateProfileBy({
+      displayName: userInputNickname || nickname,
+      photoURL: profileImgUrl
+    });
   };
+  const signInWithGithub = async () =>
+    executeAuth(
+      'sign in with github',
+      () => signInWithPopup(auth, new GithubAuthProvider()),
+      {
+        asyncTask: setUserProfile()
+      }
+    );
+  const signUpByEmail = async (email, password, nickname) =>
+    executeAuth(
+      'sign up with email',
+      () => createUserWithEmailAndPassword(auth, email, password),
+      {
+        asyncTask: setUserProfile(nickname)
+      }
+    );
 
   useEffect(() => {
     onAuthStateChanged(auth, (authUser) => {
@@ -122,6 +116,27 @@ export const AuthProvider = ({ children }) => {
       }
     });
   }, []);
+  useEffect(() => {
+    if (!error) return;
+    switch (error.code) {
+      case 'auth/invalid-login-credentials':
+        return alert('이메일이 존재하지 않습니다.');
+      case 'auth/user-not-found' || 'auth/wrong-password':
+        return alert('이메일 혹은 비밀번호가 일치하지 않습니다.');
+      case 'auth/network-request-failed':
+        return alert('네트워크 연결에 실패 하였습니다.');
+      case 'auth/internal-error':
+        return alert('잘못된 요청입니다.');
+      case 'auth/email-already-exists':
+        return alert('이메일을 기존 사용자가 이미 사용 중입니다.');
+      case 'auth/weak-password':
+        return alert('비밀번호는 6글자 이상이어야 합니다.');
+      case 'auth/invalid-email':
+        return alert('잘못된 이메일 형식입니다.');
+      default:
+        return alert('로그인에 실패 하였습니다.');
+    }
+  }, [error]);
 
   const userInfo = user
     ? {
@@ -133,51 +148,22 @@ export const AuthProvider = ({ children }) => {
 
   const value = {
     userInfo,
+    isLoading,
     signInWithEmail,
     error,
+    isProfileUpdatingLoading,
     signOutUser,
-    setUserNickname,
-    setUserProfileImgUrl,
     signInWithGithub,
-    signUpByEmail
+    signUpByEmail,
+    updateProfileBy,
+    updateProfileByNickname,
+    updateProfileByProfileImgUrl
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => useContext(AuthContext);
-
-const updateProfileBy = (updatedValue) => {
-  if (!auth.currentUser)
-    return new Promise((_, rej) => {
-      rej(new Error('Not valid auth current user'));
-    });
-  return updateProfile(auth.currentUser, updatedValue)
-    .then(() => {
-      console.log(
-        '[updateProfile] : Update Profile Success, update value is : ',
-        updatedValue
-      );
-    })
-    .catch((err) => {
-      console.error(
-        '[Error updateProfile] : Update Profile Fail, err is : ',
-        err
-      );
-    })
-    .finally(() => {
-      console.log('[updateProfile] : update Profile processed');
-    });
-};
-
-async function setDefaultProfileImgUrl(user) {
-  if (user.photoURL) return;
-  try {
-    updateProfileBy({ photoURL: await getDefaultProfileImgURL() });
-  } catch (err) {
-    console.error(
-      'error occurred while getting the default profile image url.'
-    );
-    console.error(err);
-  }
+function getNicknameWithEmail(email) {
+  return email.split('@')[0];
 }

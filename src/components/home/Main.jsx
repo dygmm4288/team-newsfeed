@@ -2,13 +2,14 @@ import React from 'react';
 import { useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { usePost } from '../../contexts/post.context';
+import SkeletonPost from '../common/skeleton/SkeletonPost';
 import Post from './Post';
 import PostForm from './PostForm';
 
 function Main() {
   const [searchParams] = useSearchParams();
   const paramCategory = searchParams.get('category');
-  const { posts } = usePost();
+  const { posts, isLoading } = usePost();
 
   // 현재 카테고리를 기준으로 필터링한 포스트들
   const postsFilteredByCategory = posts.filter(
@@ -18,7 +19,8 @@ function Main() {
     <StContainer>
       <PostForm />
       <StPostBox>
-        {checkEmpty(postsFilteredByCategory) ? (
+        {isLoading && <SkeletonPost />}
+        {!isLoading && checkEmpty(postsFilteredByCategory) ? (
           <StNoPosts>
             <p>등록되어 있는 Beat가 없습니다.</p>
             <p>⚡ 카테고리의 첫 Beat를 Beat Up 해보세요! ⚡</p>

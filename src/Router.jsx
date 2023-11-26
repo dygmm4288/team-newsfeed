@@ -10,9 +10,9 @@ export default function Router() {
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route exact path="/" element={<Home />}></Route>
-        <Route exact path="mypage" element={<MyPage />}></Route>
+        <Route exact path="my-page" element={<MyPage />}></Route>
         <Route exact path="auth" element={<Auth />} />
-        <Route exact path="signup" element={<SignUp />}></Route>
+        <Route exact path="sign-up" element={<SignUp />}></Route>
       </Route>
     </Routes>
   );

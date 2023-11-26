@@ -10,6 +10,7 @@ import {
 } from 'firebase/firestore';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { db } from '../firebase/firebase.config';
+import useAsync from '../hooks/useAsync';
 
 const initialState = {
   posts: [],
@@ -26,28 +27,11 @@ const PostContext = createContext(initialState);
 const PostProvider = ({ children }) => {
   // posts를 데이터베이스에서 요청을 해야 한다.
   const [posts, setPosts] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [isLoading, executeFireStore, error] = useAsync();
 
   useEffect(() => {
     getPost();
   }, []);
-
-  const executeFireStore = async (taskName, asyncApi, options) => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const result = await asyncApi();
-      if (options?.asyncTask) await options.asyncTask(result);
-    } catch (err) {
-      setError(err);
-      console.error(`An Error occurred while ${taskName}`);
-    } finally {
-      setIsLoading(false);
-      if (options?.finallyTask) await options.finallyTask();
-    }
-  };
-
   const getPost = () =>
     executeFireStore(
       'fetching posts',
@@ -111,7 +95,14 @@ const PostProvider = ({ children }) => {
       return deleteDoc(postRef);
     });
 
-  const value = { posts, createPost, updatePost, deletePost, updatePosts };
+  const value = {
+    posts,
+    createPost,
+    updatePost,
+    deletePost,
+    updatePosts,
+    isLoading
+  };
 
   return <PostContext.Provider value={value}>{children}</PostContext.Provider>;
 };
