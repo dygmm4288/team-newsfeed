@@ -1,5 +1,6 @@
 import {
   GithubAuthProvider,
+  GoogleAuthProvider,
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   signInWithEmailAndPassword,
@@ -21,6 +22,7 @@ const initialState = {
   signInWithEmail: (email, password) => {},
   signOutUser: () => {},
   signInWithGithub: () => {},
+  signInWithGoogle: () => {},
   signUpByEmail: (email, password, nickname) => {},
   updateProfileBy: async (updatedValue) => {},
   updateProfileByNickname: (nickname) => {},
@@ -90,14 +92,17 @@ export const AuthProvider = ({ children }) => {
       photoURL: profileImgUrl
     });
   };
-  const signInWithGithub = async () =>
+  const signInWith = (provider, providerName) => async () =>
     executeAuth(
-      'sign in with github',
-      () => signInWithPopup(auth, new GithubAuthProvider()),
+      'sign in with ' + providerName,
+      () => signInWithPopup(auth, new provider()),
       {
         asyncTask: setUserProfile()
       }
     );
+  const signInWithGithub = signInWith(GithubAuthProvider, 'github');
+  const signInWithGoogle = signInWith(GoogleAuthProvider, 'google');
+
   const signUpByEmail = async (email, password, nickname) =>
     executeAuth(
       'sign up with email',
@@ -154,6 +159,7 @@ export const AuthProvider = ({ children }) => {
     isProfileUpdatingLoading,
     signOutUser,
     signInWithGithub,
+    signInWithGoogle,
     signUpByEmail,
     updateProfileBy,
     updateProfileByNickname,
