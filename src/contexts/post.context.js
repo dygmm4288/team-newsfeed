@@ -33,22 +33,18 @@ const PostProvider = ({ children }) => {
     getPost();
   }, []);
 
-  const executeFireStore = async (
-    taskName,
-    asyncApi,
-    { asyncTask, finallyTask }
-  ) => {
+  const executeFireStore = async (taskName, asyncApi, options) => {
     setIsLoading(true);
     setError(null);
     try {
       const result = await asyncApi();
-      if (asyncTask) await asyncTask(result);
+      if (options?.asyncTask) await options.asyncTask(result);
     } catch (err) {
       setError(err);
       console.error(`An Error occurred while ${taskName}`);
     } finally {
       setIsLoading(false);
-      if (finallyTask) await finallyTask();
+      if (options?.finallyTask) await options.finallyTask();
     }
   };
 
@@ -104,16 +100,17 @@ const PostProvider = ({ children }) => {
       }
     );
   const updatePosts = async ({ userInfo }) => {
-    return Promise.all([
-      posts
-        .filter((post) => post.userInfo.email === userInfo.email)
-        .map((post) => {
-          return updatePost({ postId: post.id, data: { userInfo: userInfo } });
-        })
-    ]).catch((e) => {
-      console.error('An occurred while updating posts');
-      console.error(e);
-    });
+    executeFireStore('updating posts', () =>
+      Promise.all(
+        posts.reduce((acc, post) => {
+          if (post.userInfo.email === userInfo.email) {
+            const postRef = doc(db, 'posts', post.id);
+            acc.push(updateDoc(postRef, { userInfo: userInfo }));
+          }
+          return acc;
+        }, [])
+      )
+    );
   };
 
   // D
@@ -128,18 +125,6 @@ const PostProvider = ({ children }) => {
         finallyTask: getPost
       }
     );
-  /* const deletePost = ({ postId }) => {
-    const postRef = doc(db, 'posts', postId);
-    deleteDoc(postRef)
-      .then((res) => {
-        console.log('delete success');
-        getPost();
-      })
-      .catch((e) => {
-        console.error('An Error occurred while deleting posts');
-        console.error(e);
-      });
-  }; */
 
   const value = { posts, createPost, updatePost, deletePost, updatePosts };
 
