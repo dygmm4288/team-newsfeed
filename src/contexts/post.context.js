@@ -33,56 +33,63 @@ const PostProvider = ({ children }) => {
     getPost();
   }, []);
 
-  const executeFireStore = async (asyncApi, asyncTask, errorMsg) => {
+  const executeFireStore = async (
+    taskName,
+    asyncApi,
+    { asyncTask, finallyTask }
+  ) => {
     setIsLoading(true);
     setError(null);
     try {
       const result = await asyncApi();
-      if (result) await asyncTask(result);
+      if (asyncTask) await asyncTask(result);
     } catch (err) {
       setError(err);
-      console.error(errorMsg);
+      console.error(`An Error occurred while ${taskName}`);
     } finally {
       setIsLoading(false);
+      if (finallyTask) await finallyTask();
     }
   };
 
-  const getPost = () => {
+  const getPost = () =>
     executeFireStore(
+      'fetching posts',
       () => {
         const postsRef = collection(db, 'posts');
         const q = query(postsRef, orderBy('createdAt', 'desc'));
         return getDocs(q);
       },
-      (querySnapshot) => {
-        const fetchedPostsWithId = querySnapshot.docs.map((doc) => {
-          return { id: doc.id, ...doc.data() };
-        });
-        setPosts(fetchedPostsWithId);
-      },
-      'An Error occurred while fetching posts'
-    );
-  };
 
-  /* const getPost = async () => {
-    const postsRef = collection(db, 'posts');
-    const q = query(postsRef, orderBy('createdAt', 'desc'));
-    return getDocs(q)
-      .then((querySnapshot) => {
-        const fetchedPostsWithId = querySnapshot.docs.map((doc) => {
-          return { id: doc.id, ...doc.data() };
-        });
-        setPosts(fetchedPostsWithId);
-      })
-      .catch((e) => {
-        console.error('An Error occurred while fetching posts');
-        console.error(e);
-      });
-  }; */
+      {
+        asyncTask: (querySnapshot) => {
+          const fetchedPostsWithId = querySnapshot.docs.map((doc) => {
+            return { id: doc.id, ...doc.data() };
+          });
+          setPosts(fetchedPostsWithId);
+        }
+      }
+    );
 
   // 밑에 들어가는 로직은 똑같은 입력이 주어지면 똑같은 출력(로직을 수행할 수 있어야 한다)을 할 수 있어야 한다.
   // C
-  const createPost = async ({ title, content, category, userInfo }) => {
+  const createPost = async ({ title, content, category, userInfo }) =>
+    executeFireStore(
+      'creating posts',
+      () => {
+        const newPost = {
+          title,
+          content,
+          createdAt: new Date().toLocaleString(),
+          category,
+          userInfo
+        };
+        const collectionRef = collection(db, 'posts');
+        return addDoc(collectionRef, newPost);
+      },
+      { finallyTask: getPost }
+    );
+  /* const createPost = async ({ title, content, category, userInfo }) => {
     // db에 document를 생성해서 추가를 해야한다.
     const newPost = {
       title,
@@ -103,7 +110,7 @@ const PostProvider = ({ children }) => {
     } finally {
       await getPost();
     }
-  };
+  }; */
   // U
   const updatePost = ({ postId, data }) => {
     const postRef = doc(db, 'posts', postId);
