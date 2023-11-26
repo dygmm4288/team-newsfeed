@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { useAuth } from '../../contexts/auth.context';
 import beatBridge from '../../assets/logo/BeatBridge.png';
+import { useAuth } from '../../contexts/auth.context';
 
 function Header() {
   const navigate = useNavigate();
@@ -11,7 +11,7 @@ function Header() {
   const currentPath = location.pathname;
 
   const handleNavigateToMyPage = useCallback(() => {
-    navigate('/mypage');
+    navigate('/my-page');
   }, []);
 
   const handleNavigateToAuth = useCallback(() => {

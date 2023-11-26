@@ -15,7 +15,7 @@ export default function SignUp() {
   const navigate = useNavigate();
   const { signUpByEmail, userInfo, error } = useAuth();
 
-  const onChange = (event) => {
+  const handleChangeFormState = (event) => {
     const {
       target: { name, value }
     } = event;
@@ -25,6 +25,7 @@ export default function SignUp() {
   const signUp = (event) => {
     event.preventDefault();
     if (confirmPassword !== password) {
+      setFormState((prev) => ({ ...prev, password: '', confirmPassword: '' }));
       alert('비밀번호가 일치하지 않습니다.');
       return;
     }
@@ -39,50 +40,50 @@ export default function SignUp() {
   return (
     <StContainer>
       <StSignUpWrapper>
-        <StSignUpLeft>
-          <Form>
-            <Input
+        <StFormWrapper onSubmit={signUp}>
+          <StFormContainer>
+            <StInput
               type="email"
               value={email}
               name="email"
-              onChange={onChange}
+              onChange={handleChangeFormState}
               placeholder={'Email'}
               required
-            ></Input>
-            <Input
+            ></StInput>
+            <StInput
               type="password"
               value={password}
               name="password"
-              onChange={onChange}
+              onChange={handleChangeFormState}
               placeholder={'Password'}
               required
-            ></Input>
-            <Input
+            ></StInput>
+            <StInput
               type="password"
               value={confirmPassword}
               name="confirmPassword"
-              onChange={onChange}
+              onChange={handleChangeFormState}
               placeholder={'Repeat Password'}
               required
-            ></Input>
-            <Input
+            ></StInput>
+            <StInput
               type=""
               value={nickname}
               name="nickname"
-              onChange={onChange}
+              onChange={handleChangeFormState}
               placeholder={'Nickname'}
               required
-            ></Input>
-          </Form>
-          <BtnWrapper>
-            <SignUpBtn onClick={signUp}>Sign Up</SignUpBtn>
+            ></StInput>
+          </StFormContainer>
+          <StBtnWrapper>
+            <StSignUpBtn>Sign Up</StSignUpBtn>
             <Link to="/auth">
-              <GoToLogIn>로그인 화면으로 이동</GoToLogIn>
+              <StGoToLogIn>로그인 화면으로 이동</StGoToLogIn>
             </Link>
-          </BtnWrapper>
-        </StSignUpLeft>
+          </StBtnWrapper>
+        </StFormWrapper>
         <StSignUpRight>
-          <SignUpImg src={signupImg} alt="사람이 기타를 치고 있는 그림" />
+          <StSignUpImg src={signupImg} alt="사람이 기타를 치고 있는 그림" />
         </StSignUpRight>
       </StSignUpWrapper>
     </StContainer>
@@ -107,7 +108,7 @@ const StSignUpWrapper = styled.div`
   box-shadow: 3px 3px 8px black;
 `;
 
-const StSignUpLeft = styled.form`
+const StFormWrapper = styled.form`
   width: 400px;
   height: 400px;
   border: 1px solid black;
@@ -122,7 +123,7 @@ const StSignUpRight = styled.div`
   border: 1px solid black;
 `;
 
-const Form = styled.div`
+const StFormContainer = styled.div`
   height: 65%;
   display: flex;
   flex-direction: column;
@@ -132,7 +133,7 @@ const Form = styled.div`
   gap: 15px;
 `;
 
-const BtnWrapper = styled.div`
+const StBtnWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
@@ -141,19 +142,19 @@ const BtnWrapper = styled.div`
   padding-bottom: 20px;
 `;
 
-const SignUpImg = styled.img`
+const StSignUpImg = styled.img`
   height: 400px;
   width: 400px;
   object-fit: cover;
 `;
 
-const GoToLogIn = styled.p`
+const StGoToLogIn = styled.p`
   font-size: 12px;
   color: #acacac;
   margin-top: 10px;
 `;
 
-const Input = styled.input`
+const StInput = styled.input`
   width: 70%;
   height: 30px;
   padding: 7px 15px;
@@ -174,7 +175,7 @@ const Input = styled.input`
   }
 `;
 
-const SignUpBtn = styled.button`
+const StSignUpBtn = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;

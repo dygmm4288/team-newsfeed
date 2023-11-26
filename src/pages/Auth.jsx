@@ -65,7 +65,7 @@ export default function Auth() {
                 </button>
               </StSignInBtnBox>
               <StGoToSignUpPage>
-                <Link to="/signup">
+                <Link to="/sign-up">
                   <p>회원가입</p>
                 </Link>
               </StGoToSignUpPage>
