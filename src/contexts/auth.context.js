@@ -17,6 +17,7 @@ const initialState = {
   userInfo: auth.currentUser,
   isLoading: false,
   error: null,
+  isProfileUpdatingLoading: false,
   signInWithEmail: (email, password) => {},
   signOutUser: () => {},
   signInWithGithub: () => {},
@@ -32,6 +33,8 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(auth.currentUser);
 
   const [isLoading, executeAuth, error] = useAsync();
+  const [isProfileUpdatingLoading, setIsProfileUpdatingLoading] =
+    useState(false);
 
   const signInWithEmail = async (email, password) =>
     executeAuth(
@@ -45,6 +48,7 @@ export const AuthProvider = ({ children }) => {
         rej(new Error('Not valid auth current user'));
       });
     }
+    setIsProfileUpdatingLoading(true);
     return updateProfile(auth.currentUser, updatedValue)
       .then(() => {
         console.log(
@@ -60,6 +64,7 @@ export const AuthProvider = ({ children }) => {
       })
       .finally(() => {
         console.log('[updateProfile] : update Profile processed');
+        setIsProfileUpdatingLoading(false);
       });
   };
   const updateProfileByNickname = (nickname) => {
@@ -146,6 +151,7 @@ export const AuthProvider = ({ children }) => {
     isLoading,
     signInWithEmail,
     error,
+    isProfileUpdatingLoading,
     signOutUser,
     signInWithGithub,
     signUpByEmail,

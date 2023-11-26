@@ -14,8 +14,12 @@ export default function MyPageEditForm({
   const [imgInputValue, setImgInputValue] = useState(null);
   const [editedNickname, setEditedNickname] = useState(nickname || '');
 
-  const { updateProfileByNickname, updateProfileByProfileImgUrl, userInfo } =
-    useAuth();
+  const {
+    updateProfileByNickname,
+    updateProfileByProfileImgUrl,
+    userInfo,
+    isProfileUpdatingLoading
+  } = useAuth();
   const { updatePosts } = usePost();
 
   const handleFileSelect = (e) => {
@@ -27,6 +31,7 @@ export default function MyPageEditForm({
 
   const handleSaveUpdatedProfile = async (e) => {
     e.preventDefault();
+    setIsEditing(false);
     if (!checkValidation(editedNickname)) return;
     const newUserInfo = {
       ...userInfo
@@ -63,8 +68,6 @@ export default function MyPageEditForm({
         alert('사용자 닉네임을 변경하는데 실패했습니다.');
       }
     }
-
-    setIsEditing(false);
     updatePosts({ userInfo: newUserInfo });
   };
 
