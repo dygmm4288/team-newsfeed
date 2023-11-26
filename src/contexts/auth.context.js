@@ -15,13 +15,12 @@ import useAsync from '../hooks/useAsync';
 // initialState
 const initialState = {
   userInfo: auth.currentUser,
+  isLoading: false,
+  error: null,
   signInWithEmail: (email, password) => {},
   signOutUser: () => {},
-  setUserNickname: (nickname) => {},
-  setUserProfileImgUrl: (profileImgUrl) => {},
   signInWithGithub: () => {},
-  signUpByEmail: (email, password, nickname) => {},
-  error: null
+  signUpByEmail: (email, password, nickname) => {}
 };
 // context 생성
 export const AuthContext = createContext(initialState);
@@ -37,59 +36,62 @@ export const AuthProvider = ({ children }) => {
       () => signInWithEmailAndPassword(auth, email, password),
       { asyncTask: (userCredential) => setUser(userCredential.user) }
     );
-
+  const updateProfileBy = async (updatedValue) => {
+    if (!auth.currentUser)
+      return new Promise((_, rej) => {
+        rej(new Error('Not valid auth current user'));
+      });
+    return updateProfile(auth.currentUser, updatedValue)
+      .then(() => {
+        console.log(
+          '[updateProfile] : Update Profile Success, update value is : ',
+          updatedValue
+        );
+      })
+      .catch((err) => {
+        console.error(
+          '[Error updateProfile] : Update Profile Fail, err is : ',
+          err
+        );
+      })
+      .finally(() => {
+        console.log('[updateProfile] : update Profile processed');
+      });
+  };
   const signOutUser = () => {
     signOut(auth);
+  };
+  const setUserProfile = (userInputNickname) => async (userCredential) => {
+    const user = userCredential.user;
+    let { displayName, photoURL } = user;
+
+    let profileImgUrl = photoURL;
+    let nickname = displayName;
+
+    if (!profileImgUrl) profileImgUrl = await getDefaultProfileImgURL();
+    if (!displayName) nickname = getNicknameWithEmail(user.email);
+
+    updateProfileBy(user, {
+      displayName: userInputNickname || nickname,
+      photoURL: profileImgUrl
+    });
   };
   const signInWithGithub = async () =>
     executeAuth(
       'sign in with github',
       () => signInWithPopup(auth, new GithubAuthProvider()),
       {
-        asyncTask: async (userCredential) => {
-          const user = userCredential.user;
-          setUser(user);
-          if (!userCredential.photoURL) {
-            await setDefaultProfileImgUrl(user);
-          }
-          if (!userCredential.displayName) {
-            const emailNickname = user.email.split('@')[0];
-            await updateProfileBy({
-              displayName: emailNickname
-            });
-          }
-        }
+        asyncTask: setUserProfile()
       }
     );
-
-  const setUserNickname = async (nickname) => {
-    await updateProfileBy({ displayName: nickname });
-  };
-  const setUserProfileImgUrl = async (profileImgUrl) => {
-    await updateProfileBy({ photoURL: profileImgUrl });
-  };
-  const signUpByEmail = async (email, password, nickname) => {
-    try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      const user = userCredential.user;
-      let profileImgUrl = user.photoURL;
-      if (!profileImgUrl) profileImgUrl = await getDefaultProfileImgURL();
-
-      await updateProfile(user, {
-        displayName: nickname,
-        photoURL: profileImgUrl
-      });
-      return true;
-    } catch (e) {
-      console.error(e);
-      throw new Error(e);
-    } finally {
-    }
-  };
+  const signUpByEmail = async (email, password, nickname) =>
+    executeAuth(
+      'sign up with email',
+      () => createUserWithEmailAndPassword(auth, email, password),
+      {
+        asyncTask: setUserProfile(nickname)
+      }
+    );
 
   useEffect(() => {
     onAuthStateChanged(auth, (authUser) => {
@@ -100,6 +102,19 @@ export const AuthProvider = ({ children }) => {
       }
     });
   }, []);
+  useEffect(() => {
+    if (!error) return;
+    switch (error.code) {
+      case 'auth/user-not-found' || 'auth/wrong-password':
+        return alert('이메일 혹은 비밀번호가 일치하지 않습니다.');
+      case 'auth/network-request-failed':
+        return alert('네트워크 연결에 실패 하였습니다.');
+      case 'auth/internal-error':
+        return alert('잘못된 요청입니다.');
+      default:
+        return alert('로그인에 실패 하였습니다.');
+    }
+  }, [error]);
 
   const userInfo = user
     ? {
@@ -111,11 +126,10 @@ export const AuthProvider = ({ children }) => {
 
   const value = {
     userInfo,
+    isLoading,
     signInWithEmail,
     error,
     signOutUser,
-    setUserNickname,
-    setUserProfileImgUrl,
     signInWithGithub,
     signUpByEmail
   };
@@ -124,38 +138,6 @@ export const AuthProvider = ({ children }) => {
 };
 
 export const useAuth = () => useContext(AuthContext);
-
-const updateProfileBy = (updatedValue) => {
-  if (!auth.currentUser)
-    return new Promise((_, rej) => {
-      rej(new Error('Not valid auth current user'));
-    });
-  return updateProfile(auth.currentUser, updatedValue)
-    .then(() => {
-      console.log(
-        '[updateProfile] : Update Profile Success, update value is : ',
-        updatedValue
-      );
-    })
-    .catch((err) => {
-      console.error(
-        '[Error updateProfile] : Update Profile Fail, err is : ',
-        err
-      );
-    })
-    .finally(() => {
-      console.log('[updateProfile] : update Profile processed');
-    });
-};
-
-async function setDefaultProfileImgUrl(user) {
-  if (user.photoURL) return;
-  try {
-    updateProfileBy({ photoURL: await getDefaultProfileImgURL() });
-  } catch (err) {
-    console.error(
-      'error occurred while getting the default profile image url.'
-    );
-    console.error(err);
-  }
+function getNicknameWithEmail(email) {
+  return email.split('@')[0];
 }
