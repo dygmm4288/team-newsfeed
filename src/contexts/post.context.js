@@ -87,32 +87,23 @@ const PostProvider = ({ children }) => {
         const collectionRef = collection(db, 'posts');
         return addDoc(collectionRef, newPost);
       },
-      { finallyTask: getPost }
+      {
+        finallyTask: getPost
+      }
     );
-  /* const createPost = async ({ title, content, category, userInfo }) => {
-    // db에 document를 생성해서 추가를 해야한다.
-    const newPost = {
-      title,
-      content,
-      createdAt: new Date().toLocaleString(),
-      category,
-      userInfo
-    };
-    // Fire store에서 'posts'컬렉션에 대한 참조 생성하기
-    const collectionRef = collection(db, 'posts');
-    // 'posts' 컬렉션에 newPost 문서를 추가합니다.
-    try {
-      await addDoc(collectionRef, newPost);
-      console.log('Success Add');
-    } catch (error) {
-      console.error(error);
-      console.error('An Error occurred while creating posts');
-    } finally {
-      await getPost();
-    }
-  }; */
   // U
-  const updatePost = ({ postId, data }) => {
+  const updatePost = ({ postId, data }) =>
+    executeFireStore(
+      'updating posts',
+      () => {
+        const postRef = doc(db, 'posts', postId);
+        return updateDoc(postRef, data);
+      },
+      {
+        finallyTask: getPost
+      }
+    );
+  /* const updatePost = ({ postId, data }) => {
     const postRef = doc(db, 'posts', postId);
     updateDoc(postRef, data)
       .then((res) => {
@@ -123,7 +114,7 @@ const PostProvider = ({ children }) => {
         console.error('An Error occurred while updating posts');
         console.error(e);
       });
-  };
+  }; */
   const updatePosts = async ({ userInfo }) => {
     return Promise.all([
       posts
