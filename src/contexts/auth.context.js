@@ -31,37 +31,36 @@ export const AuthProvider = ({ children }) => {
 
   const [isLoading, executeAuth, error] = useAsync();
 
-  const signInWithEmail = async (email, password) => {
+  const signInWithEmail = async (email, password) =>
     executeAuth(
-      'sing in with email',
+      'sign in with email',
       () => signInWithEmailAndPassword(auth, email, password),
       { asyncTask: (userCredential) => setUser(userCredential.user) }
     );
-  };
+
   const signOutUser = () => {
     signOut(auth);
   };
-  const signInWithGithub = async () => {
-    const provider = new GithubAuthProvider();
-    try {
-      const userCredential = await signInWithPopup(auth, provider);
-      const user = userCredential.user;
-      setUser(user);
-      if (!userCredential.photoURL) {
-        await setDefaultProfileImgUrl(user);
+  const signInWithGithub = async () =>
+    executeAuth(
+      'sign in with github',
+      () => signInWithPopup(auth, new GithubAuthProvider()),
+      {
+        asyncTask: async (userCredential) => {
+          const user = userCredential.user;
+          setUser(user);
+          if (!userCredential.photoURL) {
+            await setDefaultProfileImgUrl(user);
+          }
+          if (!userCredential.displayName) {
+            const emailNickname = user.email.split('@')[0];
+            await updateProfileBy({
+              displayName: emailNickname
+            });
+          }
+        }
       }
-      if (!userCredential.displayName) {
-        const emailNickname = user.email.split('@')[0];
-        await updateProfileBy({
-          displayName: emailNickname
-        });
-      }
-    } catch (err) {
-      console.error(err);
-      throw new Error(err);
-    } finally {
-    }
-  };
+    );
 
   const setUserNickname = async (nickname) => {
     await updateProfileBy({ displayName: nickname });
