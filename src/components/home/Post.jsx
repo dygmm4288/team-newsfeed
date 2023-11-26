@@ -21,7 +21,7 @@ export default function Post({ post }) {
       try {
         await deletePost({ postId: post.id });
       } catch (error) {
-        console.log('error', error);
+        console.error('error', error);
       }
     }
   };
@@ -47,17 +47,12 @@ export default function Post({ post }) {
   };
 
   const handleTextareaKeyPress = (event) => {
-    // 엔터 키를 눌렀을 때 행 수를 제한합니다.
     if (event.key === 'Enter') {
-      // 현재 textarea의 행 수를 계산합니다.
       const currentRowCount = editedContent.split('\n').length;
-      // 최대 허용 행 수를 설정합니다.
       const maxRowCount = 6;
       console.log(currentRowCount);
 
-      // 최대 허용 행 수를 초과하면 엔터 키 이벤트를 무시합니다.
       if (currentRowCount >= maxRowCount) {
-        console.log('여기까지옴');
         event.preventDefault();
         event.stopPropagation();
         alert('6줄 이하로 작성해 주세요! 😲');

@@ -3,10 +3,12 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import beatBridge from '../../assets/logo/BeatBridge.png';
 import { useAuth } from '../../contexts/auth.context';
+import SkeletonCircle from '../common/skeleton/SkeletonCircle';
+import SkeletonLine from '../common/skeleton/SkeletonLine';
 
 function Header() {
   const navigate = useNavigate();
-  const { userInfo } = useAuth();
+  const { userInfo, isProfileUpdatingLoading } = useAuth();
   const location = useLocation();
   const currentPath = location.pathname;
 
@@ -24,22 +26,20 @@ function Header() {
         <Link to="/">
           <img className="logo" src={beatBridge} alt="BeatBridge" />
         </Link>
-        {/* mypage */}
-        {currentPath === '/mypage' ? (
+        {currentPath === '/my-page' ? (
           <button onClick={() => navigate('/')}>Home</button>
         ) : userInfo === null ? (
-          // homepage - login X
           <>
-            {/* 어떻게 반영?? */}
-            {/* <StSkeletonWrapper>
-              <SkeletonLine />
-              <SkeletonCircle />
-            </StSkeletonWrapper> */}
             <button onClick={handleNavigateToAuth}>Log in</button>
           </>
         ) : (
-          // homepage - login O
           <StIdAndProfilePicture onClick={handleNavigateToMyPage}>
+            {isProfileUpdatingLoading && (
+              <StSkeletonWrapper>
+                <SkeletonLine />
+                <SkeletonCircle />
+              </StSkeletonWrapper>
+            )}
             <p>{userInfo?.nickname}</p>
             <img src={userInfo?.profileImgUrl} alt="profile avatar" />
           </StIdAndProfilePicture>

@@ -11,7 +11,6 @@ function Main() {
   const paramCategory = searchParams.get('category');
   const { posts, isLoading } = usePost();
 
-  // 현재 카테고리를 기준으로 필터링한 포스트들
   const postsFilteredByCategory = posts.filter(
     (post) => !paramCategory || post.category === paramCategory
   );

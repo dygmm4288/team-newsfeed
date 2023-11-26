@@ -5,7 +5,6 @@ import signInBGImg from '../assets/background/signIn.jpg';
 import { useAuth } from '../contexts/auth.context';
 
 export default function Auth() {
-  //이메일, 비밀번호
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -172,7 +171,6 @@ const StSignInInputBox = styled.div`
       font-size: 25px;
     }
 
-    /* 자동완성 시 텍스트 및 배경 색 컨트롤 */
     &:-webkit-autofill {
       -webkit-box-shadow: 0 0 0 1000px #2c2c2c inset;
       -webkit-text-fill-color: #fff;

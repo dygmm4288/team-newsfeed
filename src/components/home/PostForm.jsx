@@ -16,7 +16,6 @@ export default function PostForm() {
   const { userInfo } = useAuth();
 
   const navigate = useNavigate();
-  // 포스터 만드는 이벤트 핸들러
 
   const handleCreatePost = (event) => {
     event.preventDefault();
@@ -42,11 +41,8 @@ export default function PostForm() {
     setTitle('');
     setContent('');
   };
-  // 인풋 포커즈 시 로그인 여부 상태 확인 핸들러
-  // 선언적으로 값을 데이터를 관리할 수 없을 것 같으면
-  // 반환값을 사용한다 (like event) 함수라도 순수하게 유지
   const handleFocus = (event) => {
-    if (userInfo) return; // 로그인 한 상태라면 막을 필요가 없다.
+    if (userInfo) return;
     if (
       window.confirm('로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?')
     ) {
@@ -68,17 +64,11 @@ export default function PostForm() {
   };
 
   const handleTextareaKeyPress = (event) => {
-    // 엔터 키를 눌렀을 때 행 수를 제한합니다.
     if (event.key === 'Enter') {
-      // 현재 textarea의 행 수를 계산합니다.
       const currentRowCount = content.split('\n').length;
-      // 최대 허용 행 수를 설정합니다.
       const maxRowCount = 6;
-      console.log(currentRowCount);
 
-      // 최대 허용 행 수를 초과하면 엔터 키 이벤트를 무시합니다.
       if (currentRowCount >= maxRowCount) {
-        console.log('여기까지옴');
         event.preventDefault();
         event.stopPropagation();
         alert('6줄 이하로 작성해 주세요! 😲');
