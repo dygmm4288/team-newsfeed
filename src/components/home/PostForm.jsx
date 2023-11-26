@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { useAuth } from '../../contexts/auth.context';
 import { usePost } from '../../contexts/post.context';
 import { categories } from '../../data/categories';
+import useModal from '../../hooks/useModal';
 
 export default function PostForm() {
   const [searchParams] = useSearchParams();
@@ -17,42 +18,51 @@ export default function PostForm() {
 
   const navigate = useNavigate();
 
+  const { alertModal, confirmModal } = useModal();
+
   const handleCreatePost = (event) => {
     event.preventDefault();
 
     if (!title.trim() || !content.trim()) {
-      alert('제목과 내용 모두 입력해주세요💌');
+      alertModal({
+        name: '제목과 내용',
+        content: '제목과 내용 모두 입력해주세요💌'
+      });
       return;
     }
-    if (
-      !window.confirm(
-        `Beat를 ${paramCategory || category} 카테고리에 등록하시겠습니까?`
-      )
-    )
-      return;
 
-    createPost({
-      title,
-      content,
-      category: paramCategory || category,
-      userInfo
+    confirmModal({
+      name: 'Beat Up',
+      content: `Beat를 ${
+        paramCategory || category
+      } 카테고리에 등록하시겠습니까?`,
+      confirmLogic: () => {
+        createPost({
+          title,
+          content,
+          category: paramCategory || category,
+          userInfo
+        });
+
+        setTitle('');
+        setContent('');
+      }
     });
-
-    setTitle('');
-    setContent('');
   };
   const handleFocus = (event) => {
     if (userInfo) return;
-    if (
-      window.confirm('로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?')
-    ) {
-      navigate('/auth');
-    }
+    confirmModal({
+      name: '로그인',
+      content: '로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?',
+      confirmLogic: () => {
+        navigate('/auth');
+      }
+    });
     event.target.blur();
   };
   const checkValidation = (validate, alertMsg) => (value) => {
     if (validate(value)) return true;
-    alert(alertMsg);
+    alertModal({ name: '유효성 검사 실패', content: alertMsg });
     return false;
   };
 
@@ -71,7 +81,10 @@ export default function PostForm() {
       if (currentRowCount >= maxRowCount) {
         event.preventDefault();
         event.stopPropagation();
-        alert('6줄 이하로 작성해 주세요! 😲');
+        alertModal({
+          name: '유효성 검사',
+          content: '6줄 이하로 작성해 주세요! 😲'
+        });
       }
     }
   };

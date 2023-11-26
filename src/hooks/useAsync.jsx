@@ -13,6 +13,7 @@ export default function useAsync() {
     } catch (err) {
       setError(err);
       console.error(`An Error occurred while ${taskName}`);
+      console.error(err);
     } finally {
       setIsLoading(false);
       if (options?.finallyTask) await options.finallyTask();

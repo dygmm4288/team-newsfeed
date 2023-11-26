@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import signupImg from '../assets/background/signUp.jpg';
 import { useAuth } from '../contexts/auth.context';
+import useModal from '../hooks/useModal';
 
 export default function SignUp() {
   const [formState, setFormState] = useState({
@@ -14,6 +15,7 @@ export default function SignUp() {
   const { email, password, nickname, confirmPassword } = formState;
   const navigate = useNavigate();
   const { signUpByEmail, userInfo, error } = useAuth();
+  const { alertModal } = useModal();
 
   const handleChangeFormState = (event) => {
     const {
@@ -26,14 +28,17 @@ export default function SignUp() {
     event.preventDefault();
     if (confirmPassword !== password) {
       setFormState((prev) => ({ ...prev, password: '', confirmPassword: '' }));
-      alert('비밀번호가 일치하지 않습니다.');
+      alertModal({
+        name: '비밀번호 오류',
+        content: '비밀번호가 일치하지 않습니다.'
+      });
       return;
     }
     signUpByEmail(email, password, nickname);
   };
   useEffect(() => {
     if (!userInfo || error) return;
-    alert('회원가입에 성공했습니다.');
+    alertModal({ name: '회원가입 성공', content: '회원가입에 성공했습니다.' });
     navigate('/');
   }, [userInfo, error]);
 
