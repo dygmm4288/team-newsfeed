@@ -24,8 +24,8 @@ export default function Auth() {
   useEffect(() => {
     if (!userInfo || error) return;
     alert('로그인에 성공했습니다.');
-    userInfo && navigate('/');
-  }, [userInfo]);
+    navigate('/');
+  }, [userInfo, error]);
 
   return (
     <>

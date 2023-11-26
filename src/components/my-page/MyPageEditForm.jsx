@@ -14,8 +14,14 @@ export default function MyPageEditForm({
   const [imgInputValue, setImgInputValue] = useState(null);
   const [editedNickname, setEditedNickname] = useState(nickname || '');
 
-  const { setUserProfileImgUrl, setUserNickname, userInfo } = useAuth();
+  const {
+    updateProfileByNickname,
+    updateProfileByProfileImgUrl,
+    userInfo
+    // isProfileLoading
+  } = useAuth();
   const { updatePosts } = usePost();
+
   const handleFileSelect = (e) => {
     setImgInputValue(e.target.files[0]);
   };
@@ -40,7 +46,7 @@ export default function MyPageEditForm({
       }
       try {
         const downloadURL = await getDownloadURL(imageRef);
-        await setUserProfileImgUrl(downloadURL);
+        updateProfileByProfileImgUrl(downloadURL);
         newUserInfo.profileImgUrl = downloadURL;
       } catch (e) {
         console.error(
@@ -53,8 +59,7 @@ export default function MyPageEditForm({
     }
     if (userInfo.nickname !== editedNickname) {
       try {
-        setUserNickname(editedNickname);
-        setIsEditing(false);
+        updateProfileByNickname(editedNickname);
         alert('성공적으로 변경되었습니다.');
         newUserInfo.nickname = editedNickname;
       } catch (e) {
@@ -63,6 +68,7 @@ export default function MyPageEditForm({
       }
     }
 
+    setIsEditing(false);
     updatePosts({ userInfo: newUserInfo });
   };
 
@@ -86,7 +92,8 @@ export default function MyPageEditForm({
     <StEditForm onSubmit={handleSaveUpdatedProfile}>
       <StMyInformationDetailsSmallContainer>
         <StMyEmail>E-mail:&nbsp;{email}</StMyEmail>
-        <StNickNameAfter>닉네임:
+        <StNickNameAfter>
+          닉네임:
           <StNicknameEditInput
             value={editedNickname}
             onChange={handleChangeEditedNickname}

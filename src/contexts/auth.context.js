@@ -20,7 +20,10 @@ const initialState = {
   signInWithEmail: (email, password) => {},
   signOutUser: () => {},
   signInWithGithub: () => {},
-  signUpByEmail: (email, password, nickname) => {}
+  signUpByEmail: (email, password, nickname) => {},
+  updateProfileBy: async (updatedValue) => {},
+  updateProfileByNickname: (nickname) => {},
+  updateProfileByProfileImgUrl: (profileImgUrl) => {}
 };
 // context 생성
 export const AuthContext = createContext(initialState);
@@ -29,6 +32,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(auth.currentUser);
 
   const [isLoading, executeAuth, error] = useAsync();
+
   const signInWithEmail = async (email, password) =>
     executeAuth(
       'sign in with email',
@@ -36,10 +40,11 @@ export const AuthProvider = ({ children }) => {
       { asyncTask: (userCredential) => setUser(userCredential.user) }
     );
   const updateProfileBy = async (updatedValue) => {
-    if (!auth.currentUser)
+    if (!auth.currentUser) {
       return new Promise((_, rej) => {
         rej(new Error('Not valid auth current user'));
       });
+    }
     return updateProfile(auth.currentUser, updatedValue)
       .then(() => {
         console.log(
@@ -57,6 +62,12 @@ export const AuthProvider = ({ children }) => {
         console.log('[updateProfile] : update Profile processed');
       });
   };
+  const updateProfileByNickname = (nickname) => {
+    return updateProfileBy({ displayName: nickname });
+  };
+  const updateProfileByProfileImgUrl = (nickname) => {
+    return updateProfileBy({ photoURL: nickname });
+  };
   const signOutUser = () => {
     signOut(auth);
   };
@@ -69,8 +80,7 @@ export const AuthProvider = ({ children }) => {
 
     if (!profileImgUrl) profileImgUrl = await getDefaultProfileImgURL();
     if (!displayName) nickname = getNicknameWithEmail(user.email);
-
-    updateProfileBy(user, {
+    await updateProfileBy({
       displayName: userInputNickname || nickname,
       photoURL: profileImgUrl
     });
@@ -114,6 +124,10 @@ export const AuthProvider = ({ children }) => {
         return alert('잘못된 요청입니다.');
       case 'auth/email-already-exists':
         return alert('이메일을 기존 사용자가 이미 사용 중입니다.');
+      case 'auth/weak-password':
+        return alert('비밀번호는 6글자 이상이어야 합니다.');
+      case 'auth/invalid-email':
+        return alert('잘못된 이메일 형식입니다.');
       default:
         return alert('로그인에 실패 하였습니다.');
     }
@@ -134,7 +148,10 @@ export const AuthProvider = ({ children }) => {
     error,
     signOutUser,
     signInWithGithub,
-    signUpByEmail
+    signUpByEmail,
+    updateProfileBy,
+    updateProfileByNickname,
+    updateProfileByProfileImgUrl
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
