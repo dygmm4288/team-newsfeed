@@ -2,7 +2,7 @@ import createReducer from '../lib/createReducer';
 export const TYPE_CONFIRM = 'confirm';
 export const TYPE_ALERT = 'alert';
 // 액션 타입
-const OPEN_ALERT_MODAL = 'modal/OPEN_MODAL';
+const OPEN_ALERT_MODAL = 'modal/OPEN_ALERT_MODAL';
 const OPEN_CONFIRM_MODAL = 'modal/OPEN_CONFIRM_MODAL';
 const CLOSE_MODAL = 'modal/CLOSE_MODAL';
 const EXECUTE_CONFIRM = 'modal/SET_CONFIRM';
@@ -28,7 +28,7 @@ const initialState = {
   name: '',
   content: '',
   errorContent: '',
-  confirm: null,
+  confirm: false,
   confirmLogic: null
 };
 // 리듀서
@@ -42,7 +42,7 @@ const reducer = createReducer(initialState, {
       content,
       errorContent,
       confirmLogic: null,
-      confirm: null
+      confirm: false
     };
   },
   [OPEN_CONFIRM_MODAL]: (state, action) => {
@@ -52,7 +52,8 @@ const reducer = createReducer(initialState, {
       openType: TYPE_CONFIRM,
       name: action.payload.name,
       content: action.payload.content,
-      confirmLogic: action.payload.confirmLogic
+      confirmLogic: action.payload.confirmLogic,
+      confirm: true
     };
   },
   [CLOSE_MODAL]: (state, action) => {
@@ -67,6 +68,7 @@ const reducer = createReducer(initialState, {
     };
   },
   [EXECUTE_CONFIRM]: (state, action) => {
+    console.log(state, action);
     if (state.confirmLogic) state.confirmLogic();
     return {
       ...state,

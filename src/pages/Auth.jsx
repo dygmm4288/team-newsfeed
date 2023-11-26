@@ -3,10 +3,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import signInBGImg from '../assets/background/signIn.jpg';
 import { useAuth } from '../contexts/auth.context';
+import useModal from '../hooks/useModal';
 
 export default function Auth() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { alertModal } = useModal();
 
   const navigate = useNavigate();
   const {
@@ -24,7 +26,7 @@ export default function Auth() {
   };
   useEffect(() => {
     if (!userInfo || error) return;
-    alert('로그인에 성공했습니다.');
+    alertModal({ name: '로그인 성공', content: '로그인에 성공했습니다.' });
     navigate('/');
   }, [userInfo, error]);
 

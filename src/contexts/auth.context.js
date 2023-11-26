@@ -12,6 +12,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { auth } from '../firebase/firebase.config';
 import { getDefaultProfileImgURL } from '../firebase/firebaseStorage';
 import useAsync from '../hooks/useAsync';
+import useModal from '../hooks/useModal';
 
 // initialState
 const initialState = {
@@ -37,6 +38,7 @@ export const AuthProvider = ({ children }) => {
   const [isLoading, executeAuth, error] = useAsync();
   const [isProfileUpdatingLoading, setIsProfileUpdatingLoading] =
     useState(false);
+  const { alertModal } = useModal();
 
   const signInWithEmail = async (email, password) =>
     executeAuth(
@@ -121,25 +123,47 @@ export const AuthProvider = ({ children }) => {
       }
     });
   }, []);
+  // ! 더 줄일 수 있음 분명히...
   useEffect(() => {
     if (!error) return;
+    const loginAlertModal = (content) =>
+      alertModal({ name: '오류', content, errorContent: error.code });
     switch (error.code) {
       case 'auth/invalid-login-credentials':
-        return alert('이메일이 존재하지 않습니다.');
-      case 'auth/user-not-found' || 'auth/wrong-password':
-        return alert('이메일 혹은 비밀번호가 일치하지 않습니다.');
+        loginAlertModal('이메일 혹은 비밀번호가 일치하지 않습니다.');
+        break;
+      case 'auth/user-not-found':
+        loginAlertModal('이메일 혹은 비밀번호가 일치하지 않습니다.');
+        break;
+      case 'auth/wrong-password':
+        loginAlertModal('이메일 혹은 비밀번호가 일치하지 않습니다.');
+        break;
       case 'auth/network-request-failed':
-        return alert('네트워크 연결에 실패 하였습니다.');
+        loginAlertModal('네트워크 연결에 실패 하였습니다.');
+        break;
       case 'auth/internal-error':
-        return alert('잘못된 요청입니다.');
+        loginAlertModal('잘못된 요청입니다.');
+        break;
       case 'auth/email-already-exists':
-        return alert('이메일을 기존 사용자가 이미 사용 중입니다.');
+        loginAlertModal('이메일을 기존 사용자가 이미 사용 중입니다.');
+        break;
+      case 'auth/email-already-in-use':
+        loginAlertModal('이메일을 기존 사용자가 이미 사용 중입니다.');
+        break;
       case 'auth/weak-password':
-        return alert('비밀번호는 6글자 이상이어야 합니다.');
+        loginAlertModal('비밀번호는 6글자 이상이어야 합니다.');
+        break;
       case 'auth/invalid-email':
-        return alert('잘못된 이메일 형식입니다.');
+        loginAlertModal('잘못된 이메일 형식입니다.');
+        break;
+      case 'auth/account-exists-with-different-credential':
+        loginAlertModal(
+          '이미 사용 중인 이메일로 로그인할 수 없습니다. 다른 로그인 방법을 선택해주십시오.'
+        );
+        break;
       default:
-        return alert('로그인에 실패 하였습니다.');
+        loginAlertModal('로그인에 실패 하였습니다.');
+        break;
     }
   }, [error]);
 
@@ -171,5 +195,6 @@ export const AuthProvider = ({ children }) => {
 
 export const useAuth = () => useContext(AuthContext);
 function getNicknameWithEmail(email) {
-  return email.split('@')[0];
+  console.log(email);
+  return email ? email.split('@')[0] : '닉네임 변경 바람';
 }

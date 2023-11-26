@@ -46,6 +46,7 @@ const PostProvider = ({ children }) => {
           const fetchedPostsWithId = querySnapshot.docs.map((doc) => {
             return { id: doc.id, ...doc.data() };
           });
+          console.log(fetchedPostsWithId);
           setPosts(fetchedPostsWithId);
         }
       }
@@ -61,7 +62,7 @@ const PostProvider = ({ children }) => {
       const newPost = {
         title,
         content,
-        createdAt: new Date().toLocaleString(),
+        createdAt: new Date(),
         category,
         userInfo
       };

@@ -15,6 +15,7 @@ export default function Modal() {
   const handleCloseModal = useCallback(() => {
     dispatch(closeModal());
   }, []);
+
   const handleExecuteConfirm = useCallback(() => {
     dispatch(executeConfirm());
   }, []);

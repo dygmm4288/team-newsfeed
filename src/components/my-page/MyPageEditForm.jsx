@@ -24,7 +24,7 @@ export default function MyPageEditForm({
   const { updatePosts } = usePost();
 
   const { alertModal, confirmModal } = useModal();
-  const validationAlertModal = (content) =>
+  const alertModalWithValidate = (content) =>
     alertModal({ name: '유효성 검사 실패', content });
 
   const handleFileSelect = (e) => {
@@ -55,18 +55,17 @@ export default function MyPageEditForm({
           'error occurred while downloading image from storage or setting user profile image url',
           e
         );
-        alert('이미지를 변경 하는데 실패했습니다.');
+        alert('이미지를 다운로드하는데 실패했습니다.');
         return;
       }
     }
     if (userInfo.nickname !== editedNickname) {
       try {
         updateProfileByNickname(editedNickname);
-        alert('성공적으로 변경되었습니다.');
         newUserInfo.nickname = editedNickname;
       } catch (e) {
         console.error('error occurred while setting user nickname', e);
-        alert('사용자 닉네임을 변경하는데 실패했습니다.');
+        alert('닉네임을 변경하는데 실패했습니다.');
       }
     }
     updatePosts({ userInfo: newUserInfo });
@@ -80,21 +79,21 @@ export default function MyPageEditForm({
     confirmModal({
       name: '프로필 변경',
       content: '변경 사항을 저장하시겠습니까?',
-      confirmLogic: () => saveUpdateProfile
+      confirmLogic: () => saveUpdateProfile()
     });
   };
 
   const checkValidation = (nickname) => {
     if (nickname.length === 0) {
-      validationAlertModal('닉네임을 입력해주세요.');
+      alertModalWithValidate('닉네임을 입력해주세요.');
       return false;
     }
     if (nickname.length > 10) {
-      validationAlertModal('닉네임을 10자 이내로 입력해주세요.');
+      alertModalWithValidate('닉네임을 10자 이내로 입력해주세요.');
       return false;
     }
     if (/^\s*$/.test(nickname)) {
-      validationAlertModal('공백만 입력하셨습니다. 다시 입력해주세요.');
+      alertModalWithValidate('공백만 입력하셨습니다. 다시 입력해주세요.');
       return false;
     }
     return true;
