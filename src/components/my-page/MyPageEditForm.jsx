@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { useAuth } from '../../contexts/auth.context';
 import { usePost } from '../../contexts/post.context';
 import { storage } from '../../firebase/firebase.config';
+import useModal from '../../hooks/useModal';
 
 export default function MyPageEditForm({
   nickname,
@@ -22,17 +23,17 @@ export default function MyPageEditForm({
   } = useAuth();
   const { updatePosts } = usePost();
 
+  const { alertModal, confirmModal } = useModal();
+  const validationAlertModal = (content) =>
+    alertModal({ name: '유효성 검사 실패', content });
+
   const handleFileSelect = (e) => {
     setImgInputValue(e.target.files[0]);
   };
   const handleChangeEditedNickname = (e) => {
     setEditedNickname(e.target.value);
   };
-
-  const handleSaveUpdatedProfile = async (e) => {
-    e.preventDefault();
-    setIsEditing(false);
-    if (!checkValidation(editedNickname)) return;
+  const saveUpdateProfile = async () => {
     const newUserInfo = {
       ...userInfo
     };
@@ -71,20 +72,32 @@ export default function MyPageEditForm({
     updatePosts({ userInfo: newUserInfo });
   };
 
+  const handleSaveUpdatedProfile = async (e) => {
+    e.preventDefault();
+    setIsEditing(false);
+    if (!checkValidation(editedNickname)) return;
+
+    confirmModal({
+      name: '프로필 변경',
+      content: '변경 사항을 저장하시겠습니까?',
+      confirmLogic: () => saveUpdateProfile
+    });
+  };
+
   const checkValidation = (nickname) => {
     if (nickname.length === 0) {
-      alert('닉네임을 입력해주세요.');
+      validationAlertModal('닉네임을 입력해주세요.');
       return false;
     }
     if (nickname.length > 10) {
-      alert('닉네임을 10자 이내로 입력해주세요.');
+      validationAlertModal('닉네임을 10자 이내로 입력해주세요.');
       return false;
     }
     if (/^\s*$/.test(nickname)) {
-      alert('공백만 입력하셨습니다. 다시 입력해주세요.');
+      validationAlertModal('공백만 입력하셨습니다. 다시 입력해주세요.');
       return false;
     }
-    return window.confirm('변경사항을 저장하시겠습니까?');
+    return true;
   };
 
   return (

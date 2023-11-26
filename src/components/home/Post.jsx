@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import DefaultProfileImg from '../../assets/Layout/default-profile-img2.png';
 import { useAuth } from '../../contexts/auth.context';
 import { usePost } from '../../contexts/post.context';
+import useModal from '../../hooks/useModal';
 export default function Post({ post }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(post.title);
@@ -15,15 +16,16 @@ export default function Post({ post }) {
     setIsEditing((prev) => !prev);
   };
 
+  const { alertModal, confirmModal } = useModal();
+
   const handleDeletePost = async () => {
-    const confirmDelete = window.confirm('정말로 삭제하시겠습니까?');
-    if (confirmDelete) {
-      try {
-        await deletePost({ postId: post.id });
-      } catch (error) {
-        console.error('error', error);
+    confirmModal({
+      name: '게시글 삭제',
+      content: '정말로 삭제하시겠습니까?',
+      confirmLogic: () => {
+        deletePost({ postId: post.id });
       }
-    }
+    });
   };
   const handleUpdatePost = async () => {
     updatePost({
@@ -35,7 +37,7 @@ export default function Post({ post }) {
 
   const checkValidation = (validate, alertMsg) => (value) => {
     if (validate(value)) return true;
-    alert(alertMsg);
+    alertModal({ name: '유효성 검사 실패', content: alertMsg });
     return false;
   };
 
@@ -55,7 +57,10 @@ export default function Post({ post }) {
       if (currentRowCount >= maxRowCount) {
         event.preventDefault();
         event.stopPropagation();
-        alert('6줄 이하로 작성해 주세요! 😲');
+        alertModal({
+          name: '유효성 검사 실패',
+          content: '6줄 이하로 작성해 주세요! 😲'
+        });
       }
     }
   };
