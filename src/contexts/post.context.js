@@ -26,27 +26,59 @@ const PostContext = createContext(initialState);
 const PostProvider = ({ children }) => {
   // posts를 데이터베이스에서 요청을 해야 한다.
   const [posts, setPosts] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
   useEffect(() => {
     getPost();
   }, []);
+
+  const executeFireStore = async (asyncApi, asyncTask, errorMsg) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const result = await asyncApi();
+      if (result) await asyncTask(result);
+    } catch (err) {
+      setError(err);
+      console.error(errorMsg);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const getPost = () => {
+    executeFireStore(
+      () => {
+        const postsRef = collection(db, 'posts');
+        const q = query(postsRef, orderBy('createdAt', 'desc'));
+        return getDocs(q);
+      },
+      (querySnapshot) => {
+        const fetchedPostsWithId = querySnapshot.docs.map((doc) => {
+          return { id: doc.id, ...doc.data() };
+        });
+        setPosts(fetchedPostsWithId);
+      },
+      'An Error occurred while fetching posts'
+    );
+  };
+
+  /* const getPost = async () => {
     const postsRef = collection(db, 'posts');
     const q = query(postsRef, orderBy('createdAt', 'desc'));
-    getDocs(q)
+    return getDocs(q)
       .then((querySnapshot) => {
-        const fetchedPosts = [];
-        querySnapshot.forEach((doc) => {
-          fetchedPosts.push({ id: doc.id, ...doc.data() });
+        const fetchedPostsWithId = querySnapshot.docs.map((doc) => {
+          return { id: doc.id, ...doc.data() };
         });
-        // setPosts((prev) => prev.concat(1));
-        setPosts(fetchedPosts);
+        setPosts(fetchedPostsWithId);
       })
       .catch((e) => {
         console.error('An Error occurred while fetching posts');
         console.error(e);
       });
-    // console.log(setPosts((prev) => prev.concat(1)));
-  };
+  }; */
 
   // 밑에 들어가는 로직은 똑같은 입력이 주어지면 똑같은 출력(로직을 수행할 수 있어야 한다)을 할 수 있어야 한다.
   // C
@@ -59,24 +91,22 @@ const PostProvider = ({ children }) => {
       category,
       userInfo
     };
-    console.log(newPost);
-    //Firestore에서 'posts'컬렉션에 대한 참조 생성하기
+    // Fire store에서 'posts'컬렉션에 대한 참조 생성하기
     const collectionRef = collection(db, 'posts');
     // 'posts' 컬렉션에 newPost 문서를 추가합니다.
     try {
-      addDoc(collectionRef, newPost).then((res) => {
-        console.log('add success');
-        getPost();
-      });
+      await addDoc(collectionRef, newPost);
+      console.log('Success Add');
     } catch (error) {
       console.error(error);
-      console.log(newPost);
+      console.error('An Error occurred while creating posts');
+    } finally {
+      await getPost();
     }
   };
   // U
   const updatePost = ({ postId, data }) => {
     const postRef = doc(db, 'posts', postId);
-    console.log({ data });
     updateDoc(postRef, data)
       .then((res) => {
         console.log('update success');
@@ -87,7 +117,7 @@ const PostProvider = ({ children }) => {
         console.error(e);
       });
   };
-  const updatePosts = ({ userInfo }) => {
+  const updatePosts = async ({ userInfo }) => {
     return Promise.all([
       posts
         .filter((post) => post.userInfo.email === userInfo.email)
@@ -118,8 +148,6 @@ const PostProvider = ({ children }) => {
 
   return <PostContext.Provider value={value}>{children}</PostContext.Provider>;
 };
-// useContext(context)
-// 이렇게 하는 이유
 export const usePost = () => {
   return useContext(PostContext);
 };
