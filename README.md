@@ -1,4 +1,4 @@
-# BeatBridge (NewsFeed Web site)
+# BeatBridge (NewsFeed Website)
 BeatBridge(BB)는 비트로 함께 연결되는 사용자들이 음악과 관련된 경험과 의견을 나누며 새로운 음악을 발견하는 새로운 경험을 할 수 있습니다. 
 
 ## Project Type
@@ -80,13 +80,11 @@ Figma 활용하여 디자인 구현
 
 - 김소이 : 
 
-==========================================<수정해야함>
 ## Deployment
-
-Copy and paste on the web browser or Click Link to check the deployment result.
 
 [https:/beat-bridge.store](https://www.beat-bridge.store/)
 
 
 ## Built With
+* Icon : Icons8
 * Deployment Host : Vercel (https://vercel.com/)
