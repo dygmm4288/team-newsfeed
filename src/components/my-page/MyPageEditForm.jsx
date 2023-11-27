@@ -15,8 +15,7 @@ export default function MyPageEditForm({
   const [imgInputValue, setImgInputValue] = useState(null);
   const [editedNickname, setEditedNickname] = useState(nickname || '');
 
-  const { updateProfileByNickname, updateProfileByProfileImgUrl, userInfo } =
-    useAuth();
+  const { updateProfileBy, userInfo } = useAuth();
   const { updatePosts } = usePost();
 
   const { alertModal, confirmModal } = useModal();
@@ -33,6 +32,7 @@ export default function MyPageEditForm({
     const newUserInfo = {
       ...userInfo
     };
+
     if (imgInputValue) {
       const imageRef = ref(storage, `profile/${email}`);
       try {
@@ -44,7 +44,6 @@ export default function MyPageEditForm({
       }
       try {
         const downloadURL = await getDownloadURL(imageRef);
-        updateProfileByProfileImgUrl(downloadURL);
         newUserInfo.profileImgUrl = downloadURL;
       } catch (e) {
         console.error(
@@ -56,14 +55,9 @@ export default function MyPageEditForm({
       }
     }
     if (userInfo.nickname !== editedNickname) {
-      try {
-        updateProfileByNickname(editedNickname);
-        newUserInfo.nickname = editedNickname;
-      } catch (e) {
-        console.error('error occurred while setting user nickname', e);
-        alert('닉네임을 변경하는데 실패했습니다.');
-      }
+      newUserInfo.nickname = editedNickname;
     }
+    updateProfileBy(newUserInfo);
     updatePosts({ userInfo: newUserInfo });
   };
 

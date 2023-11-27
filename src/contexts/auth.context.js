@@ -20,13 +20,12 @@ const initialState = {
   userInfo: auth.currentUser,
   isLoading: false,
   error: null,
-  isProfileUpdatingLoading: false,
   signInWithEmail: (email, password) => {},
   signOutUser: () => {},
   signInWithGithub: () => {},
   signInWithGoogle: () => {},
   signUpByEmail: (email, password, nickname) => {},
-  updateProfileBy: async (updatedValue) => {},
+  updateProfileBy: (updatedValue) => {},
   updateProfileByNickname: (nickname) => {},
   updateProfileByProfileImgUrl: (profileImgUrl) => {}
 };
@@ -37,8 +36,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(auth.currentUser);
 
   const [isLoading, executeAuth, error] = useAsync();
-  const [isProfileUpdatingLoading, setIsProfileUpdatingLoading] =
-    useState(false);
+
   const { alertModal } = useModal();
 
   const signInWithEmail = async (email, password) =>
@@ -52,10 +50,13 @@ export const AuthProvider = ({ children }) => {
       throw new Error('No user is signed in');
     }
     let prevUser = { ...user };
-    setIsProfileUpdatingLoading(true);
-    setUser((prevUser) => ({ ...prevUser, ...updatedValue }));
-    updateProfile(auth.currentUser, updatedValue)
+    console.log(updatedValue);
+    updateProfile(auth.currentUser, {
+      displayName: updatedValue.nickname,
+      photoURL: updatedValue.profileImgUrl
+    })
       .then(() => {
+        setUser((prevUser) => ({ ...prevUser, ...updatedValue }));
         console.log(
           '[updateProfile] : Update Profile Success, update value is : ',
           updatedValue
@@ -70,7 +71,6 @@ export const AuthProvider = ({ children }) => {
       })
       .finally(() => {
         console.log('[updateProfile] : update Profile processed');
-        setIsProfileUpdatingLoading(false);
       });
   };
   const updateProfileByNickname = (nickname) => {
@@ -91,7 +91,7 @@ export const AuthProvider = ({ children }) => {
 
     if (!profileImgUrl) profileImgUrl = await getDefaultProfileImgURL();
     if (!displayName) nickname = getNicknameWithEmail(user.email);
-    await updateProfileBy({
+    updateProfileBy({
       displayName: userInputNickname || nickname,
       photoURL: profileImgUrl
     });
@@ -148,7 +148,6 @@ export const AuthProvider = ({ children }) => {
     isLoading,
     signInWithEmail,
     error,
-    isProfileUpdatingLoading,
     signOutUser,
     signInWithGithub,
     signInWithGoogle,
