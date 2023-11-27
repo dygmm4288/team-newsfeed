@@ -116,7 +116,6 @@ const StMyNickName = styled.p`
 `;
 
 const StButtonSmallContainer = styled.div`
-  /* border: 1px solid green; */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -136,7 +135,6 @@ const StProfilePicture = styled.img`
 `;
 
 const StHiMyNickname = styled.div`
-  /* border: 1px solid black; */
   display: flex;
   flex-direction: row;
   align-items: flex-end;

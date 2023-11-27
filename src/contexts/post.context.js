@@ -20,12 +20,8 @@ const initialState = {
   updatePosts: ({ userInfo }) => Promise.all([])
 };
 
-// context 생성
 const PostContext = createContext(initialState);
-// context에서 제공하는 conext.Provider
-// CRUD 로직이나 상태 데이터들을 PostProvider에서 관리를 한다.
 const PostProvider = ({ children }) => {
-  // posts를 데이터베이스에서 요청을 해야 한다.
   const [posts, setPosts] = useState([]);
   const [isLoading, executeFireStore, error] = useAsync();
 
@@ -52,8 +48,6 @@ const PostProvider = ({ children }) => {
       }
     );
 
-  // 밑에 들어가는 로직은 똑같은 입력이 주어지면 똑같은 출력(로직을 수행할 수 있어야 한다)을 할 수 있어야 한다.
-  // C
   const executeFireStoreWithGetPost = (taskName, api) =>
     executeFireStore(taskName, api, { finallyTask: getPost });
 
@@ -69,7 +63,6 @@ const PostProvider = ({ children }) => {
       const collectionRef = collection(db, 'posts');
       return addDoc(collectionRef, newPost);
     });
-  // U
   const updatePost = ({ postId, data }) =>
     executeFireStoreWithGetPost('updating posts', () => {
       const postRef = doc(db, 'posts', postId);
@@ -89,7 +82,6 @@ const PostProvider = ({ children }) => {
     );
   };
 
-  // D
   const deletePost = ({ postId }) =>
     executeFireStoreWithGetPost('deleting posts', () => {
       const postRef = doc(db, 'posts', postId);

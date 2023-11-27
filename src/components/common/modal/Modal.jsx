@@ -9,7 +9,7 @@ import {
 } from '../../../modules/modal';
 
 export default function Modal() {
-  const { isModalOpen, name, content, errorContent, confirm, openType } =
+  const { isModalOpen, name, content, errorContent, openType } =
     useSelector(selectModalState);
   const dispatch = useDispatch();
   const handleCloseModal = useCallback(() => {
