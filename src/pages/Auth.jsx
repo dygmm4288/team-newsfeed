@@ -218,7 +218,6 @@ const StSignInBtnBox = styled.div`
     }
   }
 
-  /* Github 버튼 CSS */
   button {
     display: flex;
     justify-content: center;

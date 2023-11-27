@@ -15,7 +15,6 @@ import useAsync from '../hooks/useAsync';
 import useModal from '../hooks/useModal';
 import getErrorContent from '../lib/handlerAuthError';
 
-// initialState
 const initialState = {
   userInfo: auth.currentUser,
   isLoading: false,
@@ -29,9 +28,7 @@ const initialState = {
   updateProfileByNickname: (nickname) => {},
   updateProfileByProfileImgUrl: (profileImgUrl) => {}
 };
-// context 생성
 export const AuthContext = createContext(initialState);
-// Provider 생성
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(auth.currentUser);
 

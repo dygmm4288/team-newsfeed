@@ -101,11 +101,7 @@ export default function MyPageEditForm({
           />
         </StNickNameAfter>
         <StImageInputAfterWrapper>
-          <StImageInput
-            type="file"
-            // value={imgInputValue}
-            onChange={handleFileSelect}
-          />
+          <StImageInput type="file" onChange={handleFileSelect} />
         </StImageInputAfterWrapper>
       </StMyInformationDetailsSmallContainer>
       {children}
