@@ -13,6 +13,7 @@ import { auth } from '../firebase/firebase.config';
 import { getDefaultProfileImgURL } from '../firebase/firebaseStorage';
 import useAsync from '../hooks/useAsync';
 import useModal from '../hooks/useModal';
+import getErrorContent from '../lib/handlerAuthError';
 
 // initialState
 const initialState = {
@@ -123,48 +124,14 @@ export const AuthProvider = ({ children }) => {
       }
     });
   }, []);
-  // ! 더 줄일 수 있음 분명히...
+
   useEffect(() => {
     if (!error) return;
-    const loginAlertModal = (content) =>
-      alertModal({ name: '오류', content, errorContent: error.code });
-    switch (error.code) {
-      case 'auth/invalid-login-credentials':
-        loginAlertModal('이메일 혹은 비밀번호가 일치하지 않습니다.');
-        break;
-      case 'auth/user-not-found':
-        loginAlertModal('이메일 혹은 비밀번호가 일치하지 않습니다.');
-        break;
-      case 'auth/wrong-password':
-        loginAlertModal('이메일 혹은 비밀번호가 일치하지 않습니다.');
-        break;
-      case 'auth/network-request-failed':
-        loginAlertModal('네트워크 연결에 실패 하였습니다.');
-        break;
-      case 'auth/internal-error':
-        loginAlertModal('잘못된 요청입니다.');
-        break;
-      case 'auth/email-already-exists':
-        loginAlertModal('이메일을 기존 사용자가 이미 사용 중입니다.');
-        break;
-      case 'auth/email-already-in-use':
-        loginAlertModal('이메일을 기존 사용자가 이미 사용 중입니다.');
-        break;
-      case 'auth/weak-password':
-        loginAlertModal('비밀번호는 6글자 이상이어야 합니다.');
-        break;
-      case 'auth/invalid-email':
-        loginAlertModal('잘못된 이메일 형식입니다.');
-        break;
-      case 'auth/account-exists-with-different-credential':
-        loginAlertModal(
-          '이미 사용 중인 이메일로 로그인할 수 없습니다. 다른 로그인 방법을 선택해주십시오.'
-        );
-        break;
-      default:
-        loginAlertModal('로그인에 실패 하였습니다.');
-        break;
-    }
+    alertModal({
+      name: '오류',
+      content: getErrorContent(error.code),
+      errorContent: error.code
+    });
   }, [error]);
 
   const userInfo = user
