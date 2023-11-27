@@ -190,14 +190,14 @@ const StSignInBtnBox = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 15px;
-  height: 25%;
+  height: 28%;
 
   button:nth-child(1) {
     display: flex;
     justify-content: center;
     align-items: center;
     width: 220px;
-    height: 40px;
+    height: 49px;
     font-size: 16px;
     text-align: center;
     background: transparent;
@@ -224,7 +224,7 @@ const StSignInBtnBox = styled.div`
     justify-content: center;
     align-items: center;
     width: 220px;
-    height: 40px;
+    height: 49px;
     font-size: 16px;
     text-align: center;
     background: transparent;
@@ -250,7 +250,7 @@ const StGoToSignUpPage = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 20px;
+  margin-top: 25px;
 
   p {
     color: #acacac;

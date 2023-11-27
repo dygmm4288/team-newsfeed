@@ -163,7 +163,7 @@ const StInput = styled.input`
   height: 30px;
   padding: 7px 15px;
   border: none;
-  border-bottom: 3px solid black;
+  border-bottom: 2px solid black;
   background-color: #2c2c2c;
   font-size: 20px;
   text-align: center;

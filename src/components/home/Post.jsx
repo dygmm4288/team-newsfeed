@@ -64,7 +64,6 @@ export default function Post({ post }) {
       }
     }
   };
-
   return (
     <StPost>
       <StPostTop>
