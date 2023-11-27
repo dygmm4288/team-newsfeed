@@ -13,19 +13,19 @@ import { auth } from '../firebase/firebase.config';
 import { getDefaultProfileImgURL } from '../firebase/firebaseStorage';
 import useAsync from '../hooks/useAsync';
 import useModal from '../hooks/useModal';
+import getErrorContent from '../lib/handlerAuthError';
 
 // initialState
 const initialState = {
   userInfo: auth.currentUser,
   isLoading: false,
   error: null,
-  isProfileUpdatingLoading: false,
   signInWithEmail: (email, password) => {},
   signOutUser: () => {},
   signInWithGithub: () => {},
   signInWithGoogle: () => {},
   signUpByEmail: (email, password, nickname) => {},
-  updateProfileBy: async (updatedValue) => {},
+  updateProfileBy: (updatedValue) => {},
   updateProfileByNickname: (nickname) => {},
   updateProfileByProfileImgUrl: (profileImgUrl) => {}
 };
@@ -36,8 +36,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(auth.currentUser);
 
   const [isLoading, executeAuth, error] = useAsync();
-  const [isProfileUpdatingLoading, setIsProfileUpdatingLoading] =
-    useState(false);
+
   const { alertModal } = useModal();
 
   const signInWithEmail = async (email, password) =>
@@ -46,15 +45,17 @@ export const AuthProvider = ({ children }) => {
       () => signInWithEmailAndPassword(auth, email, password),
       { asyncTask: (userCredential) => setUser(userCredential.user) }
     );
-  const updateProfileBy = async (updatedValue) => {
+  const updateProfileBy = (updatedValue) => {
     if (!auth.currentUser) {
-      return new Promise((_, rej) => {
-        rej(new Error('Not valid auth current user'));
-      });
+      throw new Error('No user is signed in');
     }
-    setIsProfileUpdatingLoading(true);
-    return updateProfile(auth.currentUser, updatedValue)
+    let prevUser = { ...user };
+    updateProfile(auth.currentUser, {
+      displayName: updatedValue.nickname,
+      photoURL: updatedValue.profileImgUrl
+    })
       .then(() => {
+        setUser((prevUser) => ({ ...prevUser, ...updatedValue }));
         console.log(
           '[updateProfile] : Update Profile Success, update value is : ',
           updatedValue
@@ -65,10 +66,10 @@ export const AuthProvider = ({ children }) => {
           '[Error updateProfile] : Update Profile Fail, err is : ',
           err
         );
+        setUser(prevUser);
       })
       .finally(() => {
         console.log('[updateProfile] : update Profile processed');
-        setIsProfileUpdatingLoading(false);
       });
   };
   const updateProfileByNickname = (nickname) => {
@@ -89,7 +90,7 @@ export const AuthProvider = ({ children }) => {
 
     if (!profileImgUrl) profileImgUrl = await getDefaultProfileImgURL();
     if (!displayName) nickname = getNicknameWithEmail(user.email);
-    await updateProfileBy({
+    updateProfileBy({
       displayName: userInputNickname || nickname,
       photoURL: profileImgUrl
     });
@@ -123,48 +124,14 @@ export const AuthProvider = ({ children }) => {
       }
     });
   }, []);
-  // ! 더 줄일 수 있음 분명히...
+
   useEffect(() => {
     if (!error) return;
-    const loginAlertModal = (content) =>
-      alertModal({ name: '오류', content, errorContent: error.code });
-    switch (error.code) {
-      case 'auth/invalid-login-credentials':
-        loginAlertModal('이메일 혹은 비밀번호가 일치하지 않습니다.');
-        break;
-      case 'auth/user-not-found':
-        loginAlertModal('이메일 혹은 비밀번호가 일치하지 않습니다.');
-        break;
-      case 'auth/wrong-password':
-        loginAlertModal('이메일 혹은 비밀번호가 일치하지 않습니다.');
-        break;
-      case 'auth/network-request-failed':
-        loginAlertModal('네트워크 연결에 실패 하였습니다.');
-        break;
-      case 'auth/internal-error':
-        loginAlertModal('잘못된 요청입니다.');
-        break;
-      case 'auth/email-already-exists':
-        loginAlertModal('이메일을 기존 사용자가 이미 사용 중입니다.');
-        break;
-      case 'auth/email-already-in-use':
-        loginAlertModal('이메일을 기존 사용자가 이미 사용 중입니다.');
-        break;
-      case 'auth/weak-password':
-        loginAlertModal('비밀번호는 6글자 이상이어야 합니다.');
-        break;
-      case 'auth/invalid-email':
-        loginAlertModal('잘못된 이메일 형식입니다.');
-        break;
-      case 'auth/account-exists-with-different-credential':
-        loginAlertModal(
-          '이미 사용 중인 이메일로 로그인할 수 없습니다. 다른 로그인 방법을 선택해주십시오.'
-        );
-        break;
-      default:
-        loginAlertModal('로그인에 실패 하였습니다.');
-        break;
-    }
+    alertModal({
+      name: '오류',
+      content: getErrorContent(error.code),
+      errorContent: error.code
+    });
   }, [error]);
 
   const userInfo = user
@@ -180,7 +147,6 @@ export const AuthProvider = ({ children }) => {
     isLoading,
     signInWithEmail,
     error,
-    isProfileUpdatingLoading,
     signOutUser,
     signInWithGithub,
     signInWithGoogle,
@@ -195,6 +161,5 @@ export const AuthProvider = ({ children }) => {
 
 export const useAuth = () => useContext(AuthContext);
 function getNicknameWithEmail(email) {
-  console.log(email);
   return email ? email.split('@')[0] : '닉네임 변경 바람';
 }

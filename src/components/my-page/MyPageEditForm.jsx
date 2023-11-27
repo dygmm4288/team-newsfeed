@@ -15,12 +15,7 @@ export default function MyPageEditForm({
   const [imgInputValue, setImgInputValue] = useState(null);
   const [editedNickname, setEditedNickname] = useState(nickname || '');
 
-  const {
-    updateProfileByNickname,
-    updateProfileByProfileImgUrl,
-    userInfo,
-    isProfileUpdatingLoading
-  } = useAuth();
+  const { updateProfileBy, userInfo } = useAuth();
   const { updatePosts } = usePost();
 
   const { alertModal, confirmModal } = useModal();
@@ -37,6 +32,7 @@ export default function MyPageEditForm({
     const newUserInfo = {
       ...userInfo
     };
+
     if (imgInputValue) {
       const imageRef = ref(storage, `profile/${email}`);
       try {
@@ -48,7 +44,6 @@ export default function MyPageEditForm({
       }
       try {
         const downloadURL = await getDownloadURL(imageRef);
-        updateProfileByProfileImgUrl(downloadURL);
         newUserInfo.profileImgUrl = downloadURL;
       } catch (e) {
         console.error(
@@ -60,14 +55,9 @@ export default function MyPageEditForm({
       }
     }
     if (userInfo.nickname !== editedNickname) {
-      try {
-        updateProfileByNickname(editedNickname);
-        newUserInfo.nickname = editedNickname;
-      } catch (e) {
-        console.error('error occurred while setting user nickname', e);
-        alert('닉네임을 변경하는데 실패했습니다.');
-      }
+      newUserInfo.nickname = editedNickname;
     }
+    updateProfileBy(newUserInfo);
     updatePosts({ userInfo: newUserInfo });
   };
 
@@ -84,16 +74,16 @@ export default function MyPageEditForm({
   };
 
   const checkValidation = (nickname) => {
+    let content;
     if (nickname.length === 0) {
-      alertModalWithValidate('닉네임을 입력해주세요.');
-      return false;
+      content = '닉네임을 입력해주세요.';
+    } else if (nickname.length > 10) {
+      content = '닉네임을 10자 이내로 입력해주세요.';
+    } else if (/^\s*$/.test(nickname)) {
+      content = '공백만 입력하셨습니다. 다시 입력해주세요.';
     }
-    if (nickname.length > 10) {
-      alertModalWithValidate('닉네임을 10자 이내로 입력해주세요.');
-      return false;
-    }
-    if (/^\s*$/.test(nickname)) {
-      alertModalWithValidate('공백만 입력하셨습니다. 다시 입력해주세요.');
+    if (content) {
+      alertModalWithValidate(content);
       return false;
     }
     return true;
