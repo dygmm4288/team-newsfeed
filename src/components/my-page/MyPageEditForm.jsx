@@ -15,12 +15,8 @@ export default function MyPageEditForm({
   const [imgInputValue, setImgInputValue] = useState(null);
   const [editedNickname, setEditedNickname] = useState(nickname || '');
 
-  const {
-    updateProfileByNickname,
-    updateProfileByProfileImgUrl,
-    userInfo,
-    isProfileUpdatingLoading
-  } = useAuth();
+  const { updateProfileByNickname, updateProfileByProfileImgUrl, userInfo } =
+    useAuth();
   const { updatePosts } = usePost();
 
   const { alertModal, confirmModal } = useModal();
