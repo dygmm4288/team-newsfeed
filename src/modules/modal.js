@@ -40,8 +40,7 @@ const reducer = createReducer(initialState, {
       name,
       content,
       errorContent,
-      confirmLogic: null,
-      confirm: false
+      confirmLogic: null
     };
   },
   [OPEN_CONFIRM_MODAL]: (state, action) => {
@@ -51,8 +50,7 @@ const reducer = createReducer(initialState, {
       openType: TYPE_CONFIRM,
       name: action.payload.name,
       content: action.payload.content,
-      confirmLogic: action.payload.confirmLogic,
-      confirm: true
+      confirmLogic: action.payload.confirmLogic
     };
   },
   [CLOSE_MODAL]: (state, action) => {
@@ -62,7 +60,6 @@ const reducer = createReducer(initialState, {
       name: '',
       content: '',
       errorContent: '',
-      confirm: false,
       confirmLogic: null
     };
   },
@@ -73,7 +70,6 @@ const reducer = createReducer(initialState, {
       ...state,
       isModalOpen: false,
       confirmLogic: null,
-      confirm: false,
       name: '',
       content: ''
     };
