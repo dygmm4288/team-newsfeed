@@ -47,14 +47,14 @@ export const AuthProvider = ({ children }) => {
       () => signInWithEmailAndPassword(auth, email, password),
       { asyncTask: (userCredential) => setUser(userCredential.user) }
     );
-  const updateProfileBy = async (updatedValue) => {
+  const updateProfileBy = (updatedValue) => {
     if (!auth.currentUser) {
-      return new Promise((_, rej) => {
-        rej(new Error('Not valid auth current user'));
-      });
+      throw new Error('No user is signed in');
     }
+    let prevUser = { ...user };
     setIsProfileUpdatingLoading(true);
-    return updateProfile(auth.currentUser, updatedValue)
+    setUser((prevUser) => ({ ...prevUser, ...updatedValue }));
+    updateProfile(auth.currentUser, updatedValue)
       .then(() => {
         console.log(
           '[updateProfile] : Update Profile Success, update value is : ',
@@ -66,6 +66,7 @@ export const AuthProvider = ({ children }) => {
           '[Error updateProfile] : Update Profile Fail, err is : ',
           err
         );
+        setUser(prevUser);
       })
       .finally(() => {
         console.log('[updateProfile] : update Profile processed');
@@ -162,6 +163,5 @@ export const AuthProvider = ({ children }) => {
 
 export const useAuth = () => useContext(AuthContext);
 function getNicknameWithEmail(email) {
-  console.log(email);
   return email ? email.split('@')[0] : '닉네임 변경 바람';
 }
