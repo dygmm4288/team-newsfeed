@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { useAuth } from '../../contexts/auth.context';
 import { usePost } from '../../contexts/post.context';
 import { storage } from '../../firebase/firebase.config';
+import useModal from '../../hooks/useModal';
 
 export default function MyPageEditForm({
   nickname,
@@ -14,18 +15,25 @@ export default function MyPageEditForm({
   const [imgInputValue, setImgInputValue] = useState(null);
   const [editedNickname, setEditedNickname] = useState(nickname || '');
 
-  const { setUserProfileImgUrl, setUserNickname, userInfo } = useAuth();
+  const {
+    updateProfileByNickname,
+    updateProfileByProfileImgUrl,
+    userInfo,
+    isProfileUpdatingLoading
+  } = useAuth();
   const { updatePosts } = usePost();
+
+  const { alertModal, confirmModal } = useModal();
+  const alertModalWithValidate = (content) =>
+    alertModal({ name: '유효성 검사 실패', content });
+
   const handleFileSelect = (e) => {
     setImgInputValue(e.target.files[0]);
   };
   const handleChangeEditedNickname = (e) => {
     setEditedNickname(e.target.value);
   };
-
-  const handleSaveUpdatedProfile = async (e) => {
-    e.preventDefault();
-    if (!checkValidation(editedNickname)) return;
+  const saveUpdateProfile = async () => {
     const newUserInfo = {
       ...userInfo
     };
@@ -40,53 +48,63 @@ export default function MyPageEditForm({
       }
       try {
         const downloadURL = await getDownloadURL(imageRef);
-        await setUserProfileImgUrl(downloadURL);
+        updateProfileByProfileImgUrl(downloadURL);
         newUserInfo.profileImgUrl = downloadURL;
       } catch (e) {
         console.error(
           'error occurred while downloading image from storage or setting user profile image url',
           e
         );
-        alert('이미지를 변경 하는데 실패했습니다.');
+        alert('이미지를 다운로드하는데 실패했습니다.');
         return;
       }
     }
     if (userInfo.nickname !== editedNickname) {
       try {
-        setUserNickname(editedNickname);
-        setIsEditing(false);
-        alert('성공적으로 변경되었습니다.');
+        updateProfileByNickname(editedNickname);
         newUserInfo.nickname = editedNickname;
       } catch (e) {
         console.error('error occurred while setting user nickname', e);
-        alert('사용자 닉네임을 변경하는데 실패했습니다.');
+        alert('닉네임을 변경하는데 실패했습니다.');
       }
     }
-
     updatePosts({ userInfo: newUserInfo });
+  };
+
+  const handleSaveUpdatedProfile = async (e) => {
+    e.preventDefault();
+    setIsEditing(false);
+    if (!checkValidation(editedNickname)) return;
+
+    confirmModal({
+      name: '프로필 변경',
+      content: '변경 사항을 저장하시겠습니까?',
+      confirmLogic: () => saveUpdateProfile()
+    });
   };
 
   const checkValidation = (nickname) => {
     if (nickname.length === 0) {
-      alert('닉네임을 입력해주세요.');
+      alertModalWithValidate('닉네임을 입력해주세요.');
       return false;
     }
     if (nickname.length > 10) {
-      alert('닉네임을 10자 이내로 입력해주세요.');
+      alertModalWithValidate('닉네임을 10자 이내로 입력해주세요.');
       return false;
     }
     if (/^\s*$/.test(nickname)) {
-      alert('공백만 입력하셨습니다. 다시 입력해주세요.');
+      alertModalWithValidate('공백만 입력하셨습니다. 다시 입력해주세요.');
       return false;
     }
-    return window.confirm('변경사항을 저장하시겠습니까?');
+    return true;
   };
 
   return (
     <StEditForm onSubmit={handleSaveUpdatedProfile}>
       <StMyInformationDetailsSmallContainer>
         <StMyEmail>E-mail:&nbsp;{email}</StMyEmail>
-        <StNickNameAfter>닉네임:
+        <StNickNameAfter>
+          닉네임:
           <StNicknameEditInput
             value={editedNickname}
             onChange={handleChangeEditedNickname}

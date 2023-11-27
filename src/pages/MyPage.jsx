@@ -12,7 +12,6 @@ function MyPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // 유저정보가 없을 때
     if (!userInfo) {
       alert('잘못된 접근입니다.');
       navigate('/');
@@ -72,7 +71,6 @@ function MyPage() {
 export default MyPage;
 
 const StOuterFrame = styled.div`
-  /* border: 1px solid red; */
   display: flex;
   flex-direction: column;
   align-items: center;

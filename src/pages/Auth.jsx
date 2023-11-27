@@ -1,58 +1,35 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import signInBGImg from '../assets/background/signIn.jpg';
 import { useAuth } from '../contexts/auth.context';
+import useModal from '../hooks/useModal';
 
 export default function Auth() {
-  //이메일, 비밀번호
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { alertModal } = useModal();
 
   const navigate = useNavigate();
-  const { signInWithEmail, signInWithGithub } = useAuth();
-
-  const signInBgWithGithub = () => {
-    signInWithGithub()
-      .then(() => {
-        alert('로그인에 성공했습니다.');
-        navigate('/');
-      })
-      .catch((error) => {
-        switch (error.code) {
-          case 'auth/user-not-found' || 'auth/wrong-password':
-            return alert('이메일 혹은 비밀번호가 일치하지 않습니다.');
-          case 'auth/network-request-failed':
-            return alert('네트워크 연결에 실패 하였습니다.');
-          case 'auth/internal-error':
-            return alert('잘못된 요청입니다.');
-          default:
-            return alert('로그인에 실패 하였습니다.');
-        }
-      });
-  };
+  const {
+    userInfo,
+    error,
+    signInWithEmail,
+    signInWithGithub,
+    signInWithGoogle
+  } = useAuth();
 
   const signInBG = async (event) => {
     event.preventDefault();
 
-    signInWithEmail(email, password)
-      .then(() => {
-        alert('로그인에 성공했습니다.');
-        navigate('/');
-      })
-      .catch((error) => {
-        switch (error.code) {
-          case 'auth/user-not-found' || 'auth/wrong-password':
-            return alert('이메일 혹은 비밀번호가 일치하지 않습니다.');
-          case 'auth/network-request-failed':
-            return alert('네트워크 연결에 실패 하였습니다.');
-          case 'auth/internal-error':
-            return alert('잘못된 요청입니다.');
-          default:
-            return alert('로그인에 실패 하였습니다.');
-        }
-      });
+    signInWithEmail(email, password);
   };
+  useEffect(() => {
+    if (!userInfo || error) return;
+    alertModal({ name: '로그인 성공', content: '로그인에 성공했습니다.' });
+    navigate('/');
+  }, [userInfo, error]);
+
   return (
     <>
       <StContainer>
@@ -67,7 +44,7 @@ export default function Auth() {
             <img src={signInBGImg} alt="signInBG"></img>
           </StSignInLeft>
           <StSignInRight>
-            <StSignInForm>
+            <StSignInForm onSubmit={signInBG}>
               <StSignInInputBox>
                 <input
                   type="email"
@@ -85,15 +62,16 @@ export default function Auth() {
                 />
               </StSignInInputBox>
               <StSignInBtnBox>
-                <button type="submit" onClick={signInBG}>
-                  Login
-                </button>
-                <button type="button" onClick={signInBgWithGithub}>
+                <button type="submit">Login</button>
+                <button type="button" onClick={() => signInWithGithub()}>
                   Github
+                </button>
+                <button type="button" onClick={() => signInWithGoogle()}>
+                  Google
                 </button>
               </StSignInBtnBox>
               <StGoToSignUpPage>
-                <Link to="/signup">
+                <Link to="/sign-up">
                   <p>회원가입</p>
                 </Link>
               </StGoToSignUpPage>
@@ -200,7 +178,6 @@ const StSignInInputBox = styled.div`
       font-size: 25px;
     }
 
-    /* 자동완성 시 텍스트 및 배경 색 컨트롤 */
     &:-webkit-autofill {
       -webkit-box-shadow: 0 0 0 1000px #2c2c2c inset;
       -webkit-text-fill-color: #fff;
@@ -242,7 +219,7 @@ const StSignInBtnBox = styled.div`
   }
 
   /* Github 버튼 CSS */
-  button:nth-child(2) {
+  button {
     display: flex;
     justify-content: center;
     align-items: center;

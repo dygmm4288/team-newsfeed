@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { useAuth } from '../contexts/auth.context';
 import signupImg from '../assets/background/signUp.jpg';
+import { useAuth } from '../contexts/auth.context';
+import useModal from '../hooks/useModal';
 
 export default function SignUp() {
   const [formState, setFormState] = useState({
@@ -13,9 +14,10 @@ export default function SignUp() {
   });
   const { email, password, nickname, confirmPassword } = formState;
   const navigate = useNavigate();
-  const { signUpByEmail } = useAuth();
+  const { signUpByEmail, userInfo, error } = useAuth();
+  const { alertModal } = useModal();
 
-  const onChange = (event) => {
+  const handleChangeFormState = (event) => {
     const {
       target: { name, value }
     } = event;
@@ -25,79 +27,68 @@ export default function SignUp() {
   const signUp = (event) => {
     event.preventDefault();
     if (confirmPassword !== password) {
-      alert('비밀번호가 일치하지 않습니다.');
+      setFormState((prev) => ({ ...prev, password: '', confirmPassword: '' }));
+      alertModal({
+        name: '비밀번호 오류',
+        content: '비밀번호가 일치하지 않습니다.'
+      });
       return;
     }
-    signUpByEmail(email, password, nickname)
-      .then(() => {
-        alert('회원가입에 성공했습니다.');
-        navigate('/');
-      })
-      .catch((error) => {
-        switch (error.code) {
-          case 'auth/email-already-in-use':
-            return alert('이미 사용 중인 이메일입니다.');
-          case 'auth/internal-error':
-            return alert('잘못된 요청입니다.');
-          case 'auth/weak-password':
-            return alert('비밀번호는 6글자 이상이어야 합니다.');
-          case 'auth/network-request-failed':
-            return alert('네트워크 연결에 실패 하였습니다.');
-          case 'auth/invalid-email':
-            return alert('잘못된 이메일 형식입니다.');
-          default:
-            return alert('회원가입에 실패했습니다.');
-        }
-      });
+    signUpByEmail(email, password, nickname);
   };
+  useEffect(() => {
+    if (!userInfo || error) return;
+    alertModal({ name: '회원가입 성공', content: '회원가입에 성공했습니다.' });
+    navigate('/');
+  }, [userInfo, error]);
 
   return (
     <StContainer>
       <StSignUpWrapper>
-        <StSignUpLeft>
-          <Form>
-            <Input
+        <StFormWrapper onSubmit={signUp}>
+          <StFormContainer>
+            <StInput
               type="email"
               value={email}
               name="email"
-              onChange={onChange}
+              onChange={handleChangeFormState}
               placeholder={'Email'}
               required
-            ></Input>
-            <Input
+            ></StInput>
+            <StInput
               type="password"
               value={password}
               name="password"
-              onChange={onChange}
+              onChange={handleChangeFormState}
               placeholder={'Password'}
               required
-            ></Input>
-            <Input
+            ></StInput>
+            <StInput
               type="password"
               value={confirmPassword}
               name="confirmPassword"
-              onChange={onChange}
+              onChange={handleChangeFormState}
               placeholder={'Repeat Password'}
               required
-            ></Input>
-            <Input
+            ></StInput>
+            <StInput
               type=""
               value={nickname}
               name="nickname"
-              onChange={onChange}
+              onChange={handleChangeFormState}
               placeholder={'Nickname'}
               required
-            ></Input>
-          </Form>
-          <BtnWrapper>
-            <SignUpBtn onClick={signUp}>Sign Up</SignUpBtn>
+            ></StInput>
+          </StFormContainer>
+          <StBtnWrapper>
+            <StSignUpBtn>Sign Up</StSignUpBtn>
             <Link to="/auth">
-              <GoToLogIn>로그인 화면으로 이동</GoToLogIn>
+              <StGoToLogIn>로그인 화면으로 이동</StGoToLogIn>
             </Link>
-          </BtnWrapper>
-        </StSignUpLeft>
+          </StBtnWrapper>
+        </StFormWrapper>
         <StSignUpRight>
-          <SignUpImg src={signupImg} alt="사람이 기타를 치고 있는 그림" />
+          <StSignUpImg src={signupImg} alt="사람이 기타를 치고 있는 그림" />
         </StSignUpRight>
       </StSignUpWrapper>
     </StContainer>
@@ -109,7 +100,6 @@ const StContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  /* border: 2px solid black; */
   height: 100vh;
 `;
 const StSignUpWrapper = styled.div`
@@ -122,7 +112,7 @@ const StSignUpWrapper = styled.div`
   box-shadow: 3px 3px 8px black;
 `;
 
-const StSignUpLeft = styled.form`
+const StFormWrapper = styled.form`
   width: 400px;
   height: 400px;
   border: 1px solid black;
@@ -137,7 +127,7 @@ const StSignUpRight = styled.div`
   border: 1px solid black;
 `;
 
-const Form = styled.div`
+const StFormContainer = styled.div`
   height: 65%;
   display: flex;
   flex-direction: column;
@@ -147,7 +137,7 @@ const Form = styled.div`
   gap: 15px;
 `;
 
-const BtnWrapper = styled.div`
+const StBtnWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
@@ -156,19 +146,19 @@ const BtnWrapper = styled.div`
   padding-bottom: 20px;
 `;
 
-const SignUpImg = styled.img`
+const StSignUpImg = styled.img`
   height: 400px;
   width: 400px;
   object-fit: cover;
 `;
 
-const GoToLogIn = styled.p`
+const StGoToLogIn = styled.p`
   font-size: 12px;
   color: #acacac;
   margin-top: 10px;
 `;
 
-const Input = styled.input`
+const StInput = styled.input`
   width: 70%;
   height: 30px;
   padding: 7px 15px;
@@ -189,7 +179,7 @@ const Input = styled.input`
   }
 `;
 
-const SignUpBtn = styled.button`
+const StSignUpBtn = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;

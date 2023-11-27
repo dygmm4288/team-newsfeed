@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import DefaultProfileImg from '../../assets/Layout/default-profile-img2.png';
 import { useAuth } from '../../contexts/auth.context';
 import { usePost } from '../../contexts/post.context';
+import useModal from '../../hooks/useModal';
 export default function Post({ post }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(post.title);
@@ -15,15 +16,16 @@ export default function Post({ post }) {
     setIsEditing((prev) => !prev);
   };
 
+  const { alertModal, confirmModal } = useModal();
+
   const handleDeletePost = async () => {
-    const confirmDelete = window.confirm('정말로 삭제하시겠습니까?');
-    if (confirmDelete) {
-      try {
-        await deletePost({ postId: post.id });
-      } catch (error) {
-        console.log('error', error);
+    confirmModal({
+      name: '게시글 삭제',
+      content: '정말로 삭제하시겠습니까?',
+      confirmLogic: () => {
+        deletePost({ postId: post.id });
       }
-    }
+    });
   };
   const handleUpdatePost = async () => {
     updatePost({
@@ -35,7 +37,7 @@ export default function Post({ post }) {
 
   const checkValidation = (validate, alertMsg) => (value) => {
     if (validate(value)) return true;
-    alert(alertMsg);
+    alertModal({ name: '유효성 검사 실패', content: alertMsg });
     return false;
   };
 
@@ -47,20 +49,18 @@ export default function Post({ post }) {
   };
 
   const handleTextareaKeyPress = (event) => {
-    // 엔터 키를 눌렀을 때 행 수를 제한합니다.
     if (event.key === 'Enter') {
-      // 현재 textarea의 행 수를 계산합니다.
       const currentRowCount = editedContent.split('\n').length;
-      // 최대 허용 행 수를 설정합니다.
       const maxRowCount = 6;
       console.log(currentRowCount);
 
-      // 최대 허용 행 수를 초과하면 엔터 키 이벤트를 무시합니다.
       if (currentRowCount >= maxRowCount) {
-        console.log('여기까지옴');
         event.preventDefault();
         event.stopPropagation();
-        alert('6줄 이하로 작성해 주세요! 😲');
+        alertModal({
+          name: '유효성 검사 실패',
+          content: '6줄 이하로 작성해 주세요! 😲'
+        });
       }
     }
   };
@@ -155,7 +155,7 @@ function checkValidateContent(content) {
   return content.length <= 192;
 }
 
-const StPost = styled.li`
+export const StPost = styled.li`
   width: 580px;
   height: 300px;
 `;
