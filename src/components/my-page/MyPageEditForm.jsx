@@ -74,16 +74,16 @@ export default function MyPageEditForm({
   };
 
   const checkValidation = (nickname) => {
+    let content;
     if (nickname.length === 0) {
-      alertModalWithValidate('닉네임을 입력해주세요.');
-      return false;
+      content = '닉네임을 입력해주세요.';
+    } else if (nickname.length > 10) {
+      content = '닉네임을 10자 이내로 입력해주세요.';
+    } else if (/^\s*$/.test(nickname)) {
+      content = '공백만 입력하셨습니다. 다시 입력해주세요.';
     }
-    if (nickname.length > 10) {
-      alertModalWithValidate('닉네임을 10자 이내로 입력해주세요.');
-      return false;
-    }
-    if (/^\s*$/.test(nickname)) {
-      alertModalWithValidate('공백만 입력하셨습니다. 다시 입력해주세요.');
+    if (content) {
+      alertModalWithValidate(content);
       return false;
     }
     return true;

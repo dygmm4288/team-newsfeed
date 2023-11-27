@@ -50,7 +50,6 @@ export const AuthProvider = ({ children }) => {
       throw new Error('No user is signed in');
     }
     let prevUser = { ...user };
-    console.log(updatedValue);
     updateProfile(auth.currentUser, {
       displayName: updatedValue.nickname,
       photoURL: updatedValue.profileImgUrl

@@ -28,7 +28,6 @@ const initialState = {
   name: '',
   content: '',
   errorContent: '',
-  confirm: false,
   confirmLogic: null
 };
 // 리듀서
@@ -82,6 +81,5 @@ const reducer = createReducer(initialState, {
 });
 export const selectModalState = (state) => state.modalReducer;
 export const selectIsModalOpen = (state) => state.modalReducer.isModalOpen;
-export const selectConfirmState = (state) => state.modalReducer.confirm;
 
 export default reducer;
