@@ -2,10 +2,10 @@ import {
   GithubAuthProvider,
   GoogleAuthProvider,
   createUserWithEmailAndPassword,
+  signOut as firebaseSignOut,
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signInWithPopup,
-  signOut,
   updateProfile
 } from 'firebase/auth';
 import { createContext, useContext, useEffect, useState } from 'react';
@@ -13,71 +13,62 @@ import { auth } from '../firebase/firebase.config';
 import { getDefaultProfileImgURL } from '../firebase/firebaseStorage';
 import useAsync from '../hooks/useAsync';
 import useModal from '../hooks/useModal';
-import getErrorContent from '../lib/handlerAuthError';
+import handlerAuthError from '../lib/handlerAuthError';
 
 const initialState = {
   userInfo: auth.currentUser,
   isLoading: false,
-  error: null,
   signInWithEmail: (email, password) => {},
-  signOutUser: () => {},
+  signOut: () => {},
   signInWithGithub: () => {},
   signInWithGoogle: () => {},
   signUpByEmail: (email, password, nickname) => {},
-  updateProfileBy: (updatedValue) => {},
-  updateProfileByNickname: (nickname) => {},
-  updateProfileByProfileImgUrl: (profileImgUrl) => {}
+  updateProfileBy: (updatedValue) => {}
 };
 export const AuthContext = createContext(initialState);
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(auth.currentUser);
 
-  const [isLoading, executeAuth, error] = useAsync();
-
   const { alertModal } = useModal();
+  // 에러를 처리하는 다른 방법. 공통된 내용을 하나의 에러 핸들러로 등록하여 관리한다.
+  const [isLoading, runAuth] = useAsync({
+    handleError: (error) => {
+      alertModal({
+        name: '오류',
+        content: handlerAuthError(error.code),
+        errorContent: error.code
+      });
+    }
+  });
 
   const signInWithEmail = async (email, password) =>
-    executeAuth(
-      'sign in with email',
-      () => signInWithEmailAndPassword(auth, email, password),
-      { asyncTask: (userCredential) => setUser(userCredential.user) }
-    );
-  const updateProfileBy = (updatedValue) => {
-    if (!auth.currentUser) {
+    runAuth('sign in with email', {
+      asyncAction: () => signInWithEmailAndPassword(auth, email, password),
+      onSuccess: (userCredential) => setUser(userCredential.user)
+    });
+
+  const signOut = () => {
+    firebaseSignOut(auth);
+  };
+
+  const updateProfileBy = async (updatedValue) => {
+    if (!user) {
       throw new Error('No user is signed in');
     }
-    let prevUser = { ...user };
-    updateProfile(auth.currentUser, {
-      displayName: updatedValue.nickname,
-      photoURL: updatedValue.profileImgUrl
-    })
-      .then(() => {
-        setUser((prevUser) => ({ ...prevUser, ...updatedValue }));
-        console.log(
-          '[updateProfile] : Update Profile Success, update value is : ',
-          updatedValue
-        );
-      })
-      .catch((err) => {
-        console.error(
-          '[Error updateProfile] : Update Profile Fail, err is : ',
-          err
-        );
-        setUser(prevUser);
-      })
-      .finally(() => {
-        console.log('[updateProfile] : update Profile processed');
+    try {
+      await updateProfile(auth.currentUser, {
+        displayName: updatedValue.nickname,
+        photoURL: updatedValue.profileImgUrl
       });
+      setUser((prevUser) => ({ ...prevUser, ...updatedValue }));
+    } catch (error) {
+      console.error(
+        '[Error updateProfile] : Update Profile Fail, err is : ',
+        error
+      );
+    }
   };
-  const updateProfileByNickname = (nickname) => {
-    return updateProfileBy({ displayName: nickname });
-  };
-  const updateProfileByProfileImgUrl = (nickname) => {
-    return updateProfileBy({ photoURL: nickname });
-  };
-  const signOutUser = () => {
-    signOut(auth);
-  };
+
   const setUserProfile = (userInputNickname) => async (userCredential) => {
     const user = userCredential.user;
     let { displayName, photoURL } = user;
@@ -92,25 +83,21 @@ export const AuthProvider = ({ children }) => {
       photoURL: profileImgUrl
     });
   };
+
   const signInWith = (provider, providerName) => async () =>
-    executeAuth(
-      'sign in with ' + providerName,
-      () => signInWithPopup(auth, new provider()),
-      {
-        asyncTask: setUserProfile()
-      }
-    );
+    runAuth('sign in with ' + providerName, {
+      asyncAction: () => signInWithPopup(auth, new provider()),
+      onSuccess: setUserProfile()
+    });
+
   const signInWithGithub = signInWith(GithubAuthProvider, 'github');
   const signInWithGoogle = signInWith(GoogleAuthProvider, 'google');
 
   const signUpByEmail = async (email, password, nickname) =>
-    executeAuth(
-      'sign up with email',
-      () => createUserWithEmailAndPassword(auth, email, password),
-      {
-        asyncTask: setUserProfile(nickname)
-      }
-    );
+    runAuth('sign up with email', {
+      asyncAction: () => createUserWithEmailAndPassword(auth, email, password),
+      onSuccess: setUserProfile(nickname)
+    });
 
   useEffect(() => {
     onAuthStateChanged(auth, (authUser) => {
@@ -121,15 +108,6 @@ export const AuthProvider = ({ children }) => {
       }
     });
   }, []);
-
-  useEffect(() => {
-    if (!error) return;
-    alertModal({
-      name: '오류',
-      content: getErrorContent(error.code),
-      errorContent: error.code
-    });
-  }, [error]);
 
   const userInfo = user
     ? {
@@ -143,14 +121,11 @@ export const AuthProvider = ({ children }) => {
     userInfo,
     isLoading,
     signInWithEmail,
-    error,
-    signOutUser,
+    signOut,
     signInWithGithub,
     signInWithGoogle,
     signUpByEmail,
-    updateProfileBy,
-    updateProfileByNickname,
-    updateProfileByProfileImgUrl
+    updateProfileBy
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

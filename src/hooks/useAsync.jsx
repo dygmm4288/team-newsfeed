@@ -1,24 +1,36 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-export default function useAsync() {
+export default function useAsync({ handleError }) {
   const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
   const [error, setError] = useState(null);
 
-  const executeAsyncLogic = async (taskName, asyncApi, options) => {
+  useEffect(() => {
+    if (!error || !handleError) return;
+    handleError(error);
+  }, [error]);
+
+  const runAsyncTask = async (
+    taskName,
+
+    { asyncAction, onSuccess, onError, onFinally }
+  ) => {
     setIsLoading(true);
+    setIsError(true);
     setError(null);
     try {
-      const result = await asyncApi();
-      if (options?.asyncTask) await options.asyncTask(result);
+      const result = await asyncAction();
+      if (onSuccess) await onSuccess(result);
     } catch (err) {
+      console.error('Error in ' + taskName, err);
       setError(err);
-      console.error(`An Error occurred while ${taskName}`);
-      console.error(err);
+      setIsError(false);
+      onError(err);
     } finally {
       setIsLoading(false);
-      if (options?.finallyTask) await options.finallyTask();
+      if (onFinally) await onFinally();
     }
   };
 
-  return [isLoading, executeAsyncLogic, error];
+  return [isLoading, runAsyncTask, isError];
 }

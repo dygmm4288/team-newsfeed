@@ -1,4 +1,4 @@
-export default function getErrorContent(code) {
+export default function handlerAuthError(code) {
   switch (code) {
     case 'auth/invalid-login-credentials':
     case 'auth/user-not-found':
