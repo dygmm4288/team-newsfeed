@@ -56,7 +56,6 @@ export const AuthProvider = ({ children }) => {
     if (!user) {
       throw new Error('No user is signed in');
     }
-    console.log(updatedValue);
     try {
       await updateProfile(auth.currentUser, {
         displayName: updatedValue.nickname,
