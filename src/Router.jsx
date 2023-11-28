@@ -10,10 +10,10 @@ export default function Router() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route exact path="/" element={<Home />}></Route>
-          <Route exact path="my-page" element={<MyPage />}></Route>
-          <Route exact path="auth" element={<Auth />} />
-          <Route exact path="sign-up" element={<SignUp />}></Route>
+          <Route path="/" element={<Home />}></Route>
+          <Route path="my-page" element={<MyPage />}></Route>
+          <Route path="auth" element={<Auth />} />
+          <Route path="sign-up" element={<SignUp />}></Route>
         </Route>
       </Routes>
     </BrowserRouter>

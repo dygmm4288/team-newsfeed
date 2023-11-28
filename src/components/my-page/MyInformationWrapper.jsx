@@ -5,7 +5,7 @@ import { useAuth } from '../../contexts/auth.context';
 import MyPageEditForm from './MyPageEditForm';
 
 export default function MyInformationWrapper() {
-  const { userInfo, signOutUser } = useAuth();
+  const { userInfo, signOut } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const navigate = useNavigate();
   if (!userInfo) return;
@@ -13,7 +13,7 @@ export default function MyInformationWrapper() {
   const { email, nickname, profileImgUrl } = userInfo;
 
   const handleSignOut = async () => {
-    await signOutUser();
+    await signOut();
     navigate('/');
   };
   const handleToggleEditMode = () => {

@@ -1,32 +1,29 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import {
   TYPE_CONFIRM,
   closeModal,
-  executeConfirm,
+  handleConfirm,
   selectModalState
 } from '../../../modules/modal';
 
 export default function Modal() {
   const { isModalOpen, name, content, errorContent, openType } =
     useSelector(selectModalState);
-  const dispatch = useDispatch();
-  const handleCloseModal = useCallback(() => {
-    dispatch(closeModal());
-  }, []);
 
-  const handleExecuteConfirm = useCallback(() => {
-    dispatch(executeConfirm());
-  }, []);
+  const dispatch = useDispatch();
+
+  const handleCloseModal = (event) => {
+    if (event.target !== event.currentTarget) return;
+    dispatch(closeModal());
+  };
+
+  const handleConfirmAction = () => {
+    dispatch(handleConfirm());
+  };
   return (
-    <StModalOverlay
-      isModalOpen={isModalOpen}
-      onClick={(event) => {
-        if (event.target !== event.currentTarget) return;
-        handleCloseModal();
-      }}
-    >
+    <StModalOverlay isModalOpen={isModalOpen} onClick={handleCloseModal}>
       {isModalOpen && (
         <StModal>
           <StModalHeader>
@@ -38,7 +35,7 @@ export default function Modal() {
           </StModalMain>
           <StModalFooter>
             {openType === TYPE_CONFIRM && (
-              <StConfirmBtn onClick={handleExecuteConfirm}>확인</StConfirmBtn>
+              <StConfirmBtn onClick={handleConfirmAction}>확인</StConfirmBtn>
             )}
             <StCancelBtn onClick={handleCloseModal}>
               {openType === TYPE_CONFIRM ? '취소' : '확인'}

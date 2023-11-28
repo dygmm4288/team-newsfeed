@@ -22,7 +22,7 @@ export default function Post({ post }) {
     confirmModal({
       name: '게시글 삭제',
       content: '정말로 삭제하시겠습니까?',
-      confirmLogic: () => {
+      onConfirm: () => {
         deletePost({ postId: post.id });
       }
     });

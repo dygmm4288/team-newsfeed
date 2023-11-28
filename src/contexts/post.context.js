@@ -24,7 +24,7 @@ const initialState = {
 const PostContext = createContext(initialState);
 const PostProvider = ({ children }) => {
   const [posts, setPosts] = useState([]);
-  const [isLoading, runFireStore] = useAsync();
+  const [isLoading, runFireStore] = useAsync({});
   const { alertModal } = useModal();
 
   useEffect(() => {

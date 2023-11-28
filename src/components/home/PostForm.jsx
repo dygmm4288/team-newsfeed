@@ -36,7 +36,7 @@ export default function PostForm() {
       content: `Beat를 ${
         paramCategory || category
       } 카테고리에 등록하시겠습니까?`,
-      confirmLogic: () => {
+      onConfirm: () => {
         createPost({
           title,
           content,
@@ -54,7 +54,7 @@ export default function PostForm() {
     confirmModal({
       name: '로그인',
       content: '로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?',
-      confirmLogic: () => {
+      onConfirm: () => {
         navigate('/auth');
       }
     });

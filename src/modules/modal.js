@@ -2,24 +2,29 @@ import createReducer from '../lib/createReducer';
 export const TYPE_CONFIRM = 'confirm';
 export const TYPE_ALERT = 'alert';
 // 액션 타입
-const OPEN_ALERT_MODAL = 'modal/OPEN_ALERT_MODAL';
-const OPEN_CONFIRM_MODAL = 'modal/OPEN_CONFIRM_MODAL';
+const OPEN_MODAL = 'modal/OPEN_MODAL';
 const CLOSE_MODAL = 'modal/CLOSE_MODAL';
 const EXECUTE_CONFIRM = 'modal/SET_CONFIRM';
+// ? 네이밍이 마음에 걸린다. confirm 모달의 경우 확인을 눌렀을 경우에 동작을 진행해라 라는 의미인데
+// ? 어차피 Button에 들어가야하는 거니까  HandleConfirm? 아니면 처음처럼 confirm action?
+const HANDLE_CONFIRM = 'modal/HANDLE_CONFIRM';
 
 // 액션 생성자 함수
-export const openAlertModal = ({ name, content, errorContent }) => ({
-  type: OPEN_ALERT_MODAL,
-  payload: { name, content, errorContent }
-});
-export const openConfirmModal = ({ name, content, confirmLogic }) => ({
-  type: OPEN_CONFIRM_MODAL,
-  payload: { name, content, confirmLogic }
+export const openModal = ({
+  name,
+  openType,
+  content,
+  errorContent,
+  onConfirm
+}) => ({
+  type: OPEN_MODAL,
+  payload: { name, openType, content, errorContent, onConfirm }
 });
 export const closeModal = () => ({ type: CLOSE_MODAL });
 export const executeConfirm = () => ({
   type: EXECUTE_CONFIRM
 });
+export const handleConfirm = () => ({ type: HANDLE_CONFIRM });
 
 // 초기 상태
 const initialState = {
@@ -28,50 +33,31 @@ const initialState = {
   name: '',
   content: '',
   errorContent: '',
-  confirmLogic: null
+  confirmLogic: null,
+  onConfirm: null
 };
 // 리듀서
 const reducer = createReducer(initialState, {
-  [OPEN_ALERT_MODAL]: (state, action) => {
-    const { name, content, errorContent } = action.payload;
+  [OPEN_MODAL]: (state, action) => {
+    const { name, openType, content, onConfirm, errorContent } = action.payload;
     return {
       isModalOpen: true,
-      openType: TYPE_ALERT,
+      openType,
       name,
       content,
       errorContent,
-      confirmLogic: null
+      onConfirm
     };
   },
-  [OPEN_CONFIRM_MODAL]: (state, action) => {
+  [HANDLE_CONFIRM]: (state, action) => {
+    if (state.onConfirm) state.onConfirm();
     return {
-      ...state,
-      isModalOpen: true,
-      openType: TYPE_CONFIRM,
-      name: action.payload.name,
-      content: action.payload.content,
-      confirmLogic: action.payload.confirmLogic
+      ...initialState
     };
   },
   [CLOSE_MODAL]: (state, action) => {
     return {
-      ...state,
-      isModalOpen: false,
-      name: '',
-      content: '',
-      errorContent: '',
-      confirmLogic: null
-    };
-  },
-  [EXECUTE_CONFIRM]: (state, action) => {
-    console.log(state, action);
-    if (state.confirmLogic) state.confirmLogic();
-    return {
-      ...state,
-      isModalOpen: false,
-      confirmLogic: null,
-      name: '',
-      content: ''
+      ...initialState
     };
   }
 });

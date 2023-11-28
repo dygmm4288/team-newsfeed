@@ -1,13 +1,18 @@
 import { useDispatch } from 'react-redux';
-import { openAlertModal, openConfirmModal } from '../modules/modal';
+import {
+  openModal as openModalAction,
+  TYPE_ALERT,
+  TYPE_CONFIRM
+} from '../modules/modal';
 
 export default function useModal() {
   const dispatch = useDispatch();
 
-  const alertModal = ({ name, content, errorContent }) =>
-    dispatch(openAlertModal({ name, content, errorContent }));
-  const confirmModal = ({ name, content, confirmLogic }) =>
-    dispatch(openConfirmModal({ name, content, confirmLogic }));
+  const openModal = (openType) => (args) =>
+    dispatch(openModalAction({ openType, ...args }));
+
+  const alertModal = openModal(TYPE_ALERT);
+  const confirmModal = openModal(TYPE_CONFIRM);
 
   return { alertModal, confirmModal };
 }
